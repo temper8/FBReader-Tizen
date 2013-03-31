@@ -1,0 +1,13 @@
+*.o
+*.d
+.Target-Debug
+.Target-Release
+Target-Debug
+Target-Release
+Debug-Tizen-Emulator
+crash-info
+DebugInfo
+FBReader.htb
+.settings
+.cproject
+

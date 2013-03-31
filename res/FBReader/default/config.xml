@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+	<group name="Options">
+		<option name="BookPath" value=""/>
+		<option name="DownloadDirectory" value=""/>
+	</group>
+	<group name="TapScrolling">
+		<option name="Enabled" value="true"/>
+	</group>
+</config>

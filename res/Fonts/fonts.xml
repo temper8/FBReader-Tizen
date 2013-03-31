@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?> 
+<fontslist>
+	<font>
+		<family>PT Serif</family>
+		<regular>PTF55F.ttf</regular>
+		<bold>PTF55F.ttf</bold>
+		<italic>PTF56F-FC.ttf</italic>
+		<boldItalic>PTF56F.ttf</boldItalic>
+	</font>
+	<font>
+		<family>PT Sans </family>
+		<regular>PTS55F.ttf</regular>
+		<bold>PTS55F.ttf</bold>
+		<italic>PTS56F-FC.ttf</italic>
+		<boldItalic>PTS56F.ttf</boldItalic>
+	</font>
+</fontslist>
