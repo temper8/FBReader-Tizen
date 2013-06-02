@@ -5,6 +5,7 @@
 Target-Debug
 Target-Release
 Debug-Tizen-Emulator
+Debug-Tizen-Device
 crash-info
 DebugInfo
 FBReader.htb
