@@ -93,9 +93,9 @@ SQLiteStatement::SQLiteStatement(Database *db, const char *zSql, const char **pz
 }
 
 SQLiteStatement::~SQLiteStatement(){
-	AppLog( "~SQLiteStatement");
+//	AppLog( "~SQLiteStatement");
 	const size_t size = myCharBuffer.size();
-	AppLog("myCharBuffer size = %d",size);
+//	AppLog("myCharBuffer size = %d",size);
 	for (size_t i = 0; i < size; ++i) {
 		char* chPtrBuf = myCharBuffer[i];
 		delete chPtrBuf;
@@ -106,7 +106,7 @@ SQLiteStatement::~SQLiteStatement(){
 char* SQLiteStatement::GetCString(const String& sBadaStr) {
     if (sBadaStr.GetLength() == 0) return null;
     ByteBuffer* pBuffer = Tizen::Base::Utility::StringUtil::StringToUtf8N(sBadaStr);
-    AppLog( "SQLiteStatement::GetCString %s",(char *)pBuffer->GetPointer());
+ //   AppLog( "SQLiteStatement::GetCString %s",(char *)pBuffer->GetPointer());
     int byteCount = 0;
     if (pBuffer != null){
         byteCount = pBuffer->GetLimit();
@@ -217,7 +217,7 @@ int SQLiteStatement::step(){
 	} else {
 		res = pEnum->MoveNext();
 	}
-	AppLog("res %d", res);
+//	AppLog("res %d", res);
 	switch (res) {
 		case E_SUCCESS: return SQLITE_ROW;
 		case E_OUT_OF_RANGE: return SQLITE_DONE;
@@ -241,19 +241,19 @@ int SQLiteStatement::finalize(){
 	return SQLITE_OK;
 }
 int SQLiteStatement::prepare(Database *db, const char *zSql, SQLiteStatement** ppStmt, const char **pzTail) {
-	AppLog("SQLiteStatement::prepare");
+//	AppLog("SQLiteStatement::prepare");
 	if (zSql[0]==0) {
 		*ppStmt = 0;
-	} else {AppLog("new SQLiteStatement");
+	} else {//AppLog("new SQLiteStatement");
 		*ppStmt = new SQLiteStatement(db, zSql, pzTail);
 		if (*ppStmt == 0) AppLog("ppStmt == 0");
-		AppLog("new SQLiteStatement 2");
+		//AppLog("new SQLiteStatement 2");
 		if ((*ppStmt)->pStmt==0) {
 			AppLog("delete ppStmt");
 			delete *ppStmt;
 			*ppStmt = 0;
 		}
-		AppLog("new SQLiteStatement 3");
+		//AppLog("new SQLiteStatement 3");
 	}
 	return SQLITE_OK;
 }

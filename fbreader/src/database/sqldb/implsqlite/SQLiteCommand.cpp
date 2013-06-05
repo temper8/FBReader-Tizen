@@ -100,7 +100,7 @@ bool SQLiteCommand::execute() {
 
 shared_ptr<DBValue> SQLiteCommand::executeScalar() {
 	ZLLogger::Instance().println("sqlite", "executeScalar: " + commandString());
-	AppLog("myStatements size %d",myStatements.size());
+//	AppLog("myStatements size %d",myStatements.size());
 	SQLiteConnection &con = (SQLiteConnection &) connection();
 	if (!con.isOpened()) {
 		myStatements.clear();
@@ -109,8 +109,8 @@ shared_ptr<DBValue> SQLiteCommand::executeScalar() {
 	if (!prepareStatements(con)) {
 		return 0;
 	}
-	AppLog("after prepareStatements");
-	AppLog("myStatements size %d",myStatements.size());
+//	AppLog("after prepareStatements");
+//	AppLog("myStatements size %d",myStatements.size());
 	// без этого вылетает на tizen
 	if (myStatements.size() == 0 ) {
 		return 0;
@@ -157,7 +157,7 @@ shared_ptr<DBDataReader> SQLiteCommand::executeReader() {
 	if (!prepareStatements(con)) {
 		return 0;
 	}
-	AppLog("after prepareStatements");
+//	AppLog("after prepareStatements");
 	// без этого вылетает на tizen
 	if (myStatements.size() == 0 ) {
 		AppLog("not myStatements");
@@ -192,14 +192,14 @@ bool SQLiteCommand::prepareStatements(SQLiteConnection &conn) {
 	const int length = -1;
 	const char *tail = sql.c_str();
 
-	AppLog("tail = %s", tail);
+//	AppLog("tail = %s", tail);
 	while (true) {
 		SQLiteStatement* statement;
 		int res = SQLiteStatement::prepare(db, tail, &statement, &tail);
-		AppLog("while (true) 0");
+	//	AppLog("while (true) 0");
 		//int res = SQLiteStatement::prepare(db, tail, statement, &tail);
 		if (res != SQLITE_OK) {
-			AppLog("while  != SQLITE_OK");
+		//	AppLog("while  != SQLITE_OK");
 			dumpError();
 			finalizeStatements();
 			return false;
@@ -207,22 +207,22 @@ bool SQLiteCommand::prepareStatements(SQLiteConnection &conn) {
 
 
 		if (statement == 0) {
-			AppLog("statement == 0");
+		//	AppLog("statement == 0");
 			break;
 		}
-		AppLog("while (true) 1");
+	//	AppLog("while (true) 1");
 		myStatements.push_back(statement);
 		//AppLog("while (true) 2");
 		conn.addStatement(statement);
 		//AppLog("while (true) 3");
 	}
-	AppLog("while (true) 4");
+//	AppLog("while (true) 4");
 	if (!bindParameters()) {
-		AppLog("finalizeStatements false");
+	//	AppLog("finalizeStatements false");
 		finalizeStatements();
 		return false;
 	}
-	AppLog("while (true) 5");
+//	AppLog("while (true) 5");
 	return true;
 }
 
@@ -256,7 +256,7 @@ void SQLiteCommand::prepareBindContext() {
 
 
 bool SQLiteCommand::bindParameters() {
-	AppLog("bindParameters start");
+//	AppLog("bindParameters start");
 	prepareBindContext();
 
 	std::vector<DBCommandParameter> &params = parameters();
@@ -356,10 +356,10 @@ bool SQLiteCommand::bindParameter(SQLiteStatement *statement, int number, shared
 
 
 void SQLiteCommand::finalizeStatements() {
-	AppLog("finalizeStatements start");
+//	AppLog("finalizeStatements start");
 	SQLiteConnection &con = (SQLiteConnection &) connection();
 	const size_t size = myStatements.size();
-	AppLog("finalizeStatements size = %d",size);
+//	AppLog("finalizeStatements size = %d",size);
 	for (size_t i = 0; i < size; ++i) {
 		SQLiteStatement *statement = myStatements[i];
 		con.removeStatement(statement);
@@ -370,9 +370,9 @@ void SQLiteCommand::finalizeStatements() {
 		}
 		delete statement;
 	}
-	AppLog("myStatements.clear()");
+//	AppLog("myStatements.clear()");
 	myStatements.clear();
-	AppLog("myStatements.clear() OK");
+//	AppLog("myStatements.clear() OK");
 }
 
 

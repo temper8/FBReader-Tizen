@@ -24,7 +24,7 @@
 
 
 shared_ptr<DBCommand> SQLiteFactory::createCommand(const std::string &command, DBConnection &connection) {
-	AppLog("new SQLiteCommand");
+//	AppLog("new SQLiteCommand");
 	shared_ptr<DBCommand> cmd = new SQLiteCommand(command, connection);
 	return cmd;
 }
