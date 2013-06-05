@@ -43,9 +43,9 @@ result badaForm::OnDraw(void)
 	switch(__drawMode) {
 		case DRAW_BLACK_SCREEN:
 			AppLog("DRAW_BLACK_SCREEN");
-			//pCanvas->FillRectangle(Tizen::Graphics::Color::COLOR_BLACK, formRect);
+			pCanvas->FillRectangle(Tizen::Graphics::Color::GetColor(COLOR_ID_BLACK), formRect);
 			this->SendUserEvent(3, null);
-			//pCanvas->Show();
+			pCanvas->Show();
 			break;
 
 		case SLIDE_NEXT:
@@ -98,19 +98,19 @@ result badaForm::GetSystemInfomation(void)
     String key(L"PlatformVersion");
     String platformVersion;
 
-    r = SystemInfo::GetValue(key, platformVersion);
-    TryCatch(r == E_SUCCESS, , "MySystemInfo: To get a value is failed");
+  //  r = SystemInfo::GetValue(key, platformVersion);
+  //  TryCatch(r == E_SUCCESS, , "MySystemInfo: To get a value is failed");
   //  AppLog("platformVersion %s",platformVersion.GetPointer());
   //  mchar ch;
    // platformVersion.GetCharAt(0,ch);
   //  if (ch == '2') apiVersion = 2;
   //  else
-    	apiVersion = 1;
+    	apiVersion = 2;
     AppLog("apiVersion %d",apiVersion);
     return E_SUCCESS;
 
-   CATCH:
-    return r;
+  // CATCH:
+  //  return r;
 }
 
 //virtual bool onStylusPress(int x, int y);
