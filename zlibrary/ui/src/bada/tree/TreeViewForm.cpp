@@ -23,7 +23,9 @@ using namespace Tizen::Base::Runtime;
 #define ID_ACT_DELETE	1601
 #define ID_ACT_CLOSE	1602
 
-TreeViewForm::TreeViewForm():__pCustomListItemFormat(0),__pCustomList(0),showIcons(true) {
+#define ID_HEADER_ITEM  1000
+
+TreeViewForm::TreeViewForm():__pCustomListItemFormat(0),__pListView(0),showIcons(true), ItemCount(0) {
 	// TODO Auto-generated constructor stub
 
 }
@@ -36,9 +38,9 @@ TreeViewForm::~TreeViewForm() {
 	myTreeDialog = 0;
 	//__pCustomList->RemoveAllItems();
 	AppLog("__pCustomList->RemoveAllItems()");
-    delete __pCustomListItemFormat;
-	AppLog("delete __pCustomListItemFormat;");
-	delete __pNoIconsListItemFormat;
+//    delete __pCustomListItemFormat;
+//	AppLog("delete __pCustomListItemFormat;");
+//	delete __pNoIconsListItemFormat;
 //    delete __pCustomList;
     AppLog("delete __pCustomList;");
 }
@@ -56,24 +58,31 @@ void TreeViewForm::OnStop(void){
 //bool TreeViewForm::Initialize(const char *title)
 bool TreeViewForm::Initialize(ZLTreeDialog* treeDialog)
 {
-	AppLog("TreeViewForm::Initialize \n");
-	myTreeDialog = treeDialog;
-	const char *title = myTreeDialog->myResource["title"].value().c_str();
-	// Construct an XML form FORM_STYLE_INDICATOR|
-	Form::Construct(FORM_STYLE_NORMAL|FORM_STYLE_TITLE|FORM_STYLE_SOFTKEY_1);
-//	Thread::Construct(THREAD_TYPE_EVENT_DRIVEN);
+	AppLog("TreeViewForm::Initialize");
 
-	SetTitleText(String(title));
+	myTreeDialog = treeDialog;
+
+	const char *title = myTreeDialog->myResource["title"].value().c_str();
+
+	Form::Construct(FORM_STYLE_NORMAL|FORM_STYLE_HEADER |FORM_STYLE_FOOTER );
+
+	Header* pHeader = GetHeader();
+    pHeader->SetTitleText(String(title));
+
 	if (String(title).EndsWith("Content") ) {
 		exitFlag = true;
 		AppLog("exitFlag = true;");
 	}
 	else exitFlag= false;
 
-//	AddSoftkeyActionListener(SOFTKEY_0, *this);
-	AddSoftkeyActionListener(SOFTKEY_1, *this);
-//	SetSoftkeyActionId(SOFTKEY_0, ID_ACT_UPDATE);
-	SetSoftkeyActionId(SOFTKEY_1, ID_ACT_CLOSE);
+	Footer* pFooter = GetFooter();
+	pFooter->SetStyle(FOOTER_STYLE_BUTTON_TEXT);
+	pFooter->SetBackButton();
+
+
+	SetFormBackEventListener(this);
+
+	//pFooter->AddActionEventListener(*this);
 
 	return true;
 }
@@ -89,21 +98,32 @@ result TreeViewForm::OnInitializing(void)
 	SetSoftkeyText(SOFTKEY_1, L"Back");
 
 	AddOrientationEventListener(*this);
+
+
+	__pListView = new (std::nothrow) ListView();
+	__pListView->Construct(Rectangle(0, 0, formArea.width, formArea.height), true, false);
+	__pListView->SetItemProvider(*this);
+	__pListView->AddListViewItemEventListener(*this);
+
+	AddControl(*__pListView);
+
+
 	AppLog("TreeViewForm::OnInitializing height=%d",formArea.height);
    // Creates CustomList
-    __pCustomList = new CustomList();
+   // __pCustomList = new CustomList();
 	//__pCustomList->Construct(Rectangle(0, 0, 480, 800), CUSTOM_LIST_STYLE_NORMAL);
-	__pCustomList->Construct(Rectangle(0, 0, formArea.width, formArea.height), CUSTOM_LIST_STYLE_MARK);
+	//__pCustomList->Construct(Rectangle(0, 0, formArea.width, formArea.height), CUSTOM_LIST_STYLE_MARK);
 
-	__pCustomList->AddCustomItemEventListener(*this);
+	//__pCustomList->AddCustomItemEventListener(*this);
 
 	// Creates an item format of the CustomList
+	/*
 	iconRect = Tizen::Graphics::Rectangle(5, 5, 70, 90);
 
 	__pNoIconsListItemFormat = new CustomListItemFormat();
 	__pNoIconsListItemFormat->Construct();
 	__pNoIconsListItemFormat->AddElement(ID_LIST_TEXT_TITLE, Tizen::Graphics::Rectangle(10, 15, formArea.width - 10, 40), 30);
-	__pNoIconsListItemFormat->AddElement(ID_LIST_TEXT_SUBTITLE, Tizen::Graphics::Rectangle(10, 55, formArea.width - 10, 80), 22);
+	__pNoIconsListItemFormat->AddElement(ID_LIST_TEXT_SUBTITLE, Tizen::Graphics::Rectangle(10, 40, formArea.width - 10, 80), 22);
 	__pNoIconsListItemFormat->AddElement(ID_LIST_BITMAP, iconRect);
 	__pNoIconsListItemFormat->AddElement(ID_LIST_CHECKBOX, Tizen::Graphics::Rectangle(420, 15, 50, 50));
 
@@ -111,12 +131,14 @@ result TreeViewForm::OnInitializing(void)
 	__pCustomListItemFormat = new CustomListItemFormat();
 	__pCustomListItemFormat->Construct();
 	__pCustomListItemFormat->AddElement(ID_LIST_TEXT_TITLE, Tizen::Graphics::Rectangle(85, 12, formArea.width - 85, 40), 30);
-	__pCustomListItemFormat->AddElement(ID_LIST_TEXT_SUBTITLE, Tizen::Graphics::Rectangle(85, 52, formArea.width - 85, 80), 22);
+	__pCustomListItemFormat->AddElement(ID_LIST_TEXT_SUBTITLE, Tizen::Graphics::Rectangle(85, 37, formArea.width - 85, 80), 22);
 	__pCustomListItemFormat->AddElement(ID_LIST_BITMAP, iconRect);
 	__pCustomListItemFormat->AddElement(ID_LIST_CHECKBOX, Tizen::Graphics::Rectangle(420, 15, 50, 50));
 
     AddControl(*__pCustomList);
 	CreateContextMenuListStyle();
+	*/
+
 	return r;
 }
 
@@ -138,13 +160,15 @@ Bitmap* TreeViewForm::makeIcon(Bitmap* srcBmp){
 }
 
 void   TreeViewForm::updateItem(ZLTreeTitledNode &node, int index){
-
+		AppLog("updateItem ");
 	 	Bitmap *pBmp = null;
 		String title = String(node.title().c_str());
 	    CustomListItem* pItem = new CustomListItem();
 	    //CustomListItem* pItem = (CustomListItem*)__pCustomList->GetItemAt(index);
 	    pItem->Construct(100);
+
 	    if (showIcons){
+	    	 AppLog("есть иконки ");
 	    	 pItem->SetItemFormat(*__pCustomListItemFormat);
 	       	 shared_ptr<ZLImage> cover =node.image();
 	    	 if (!cover.isNull()) 	{
@@ -162,26 +186,61 @@ void   TreeViewForm::updateItem(ZLTreeTitledNode &node, int index){
 
 	    pItem->SetElement(ID_LIST_TEXT_TITLE, title);
 	    pItem->SetElement(ID_LIST_TEXT_SUBTITLE, String(node.subtitle().c_str()));
-
 	    if (pBmp!=null) pItem->SetElement(ID_LIST_BITMAP, *pBmp, pBmp);
-
 	    result r =__pCustomList->SetItemAt(index, *pItem, ID_LIST_TEXT_TITLE);
-
 	    if (r==E_SUCCESS) AppLog("SetItemAt E_SUCCESS");
 	    		else AppLog("SetItemAt error");
 
 	    if (pBmp != null) delete pBmp;
 
-	    __pCustomList->RefreshItem(index);
+	//    __pCustomList->RefreshItem(index);
 
-	 	RequestRedraw(true);
+	 //	RequestRedraw(true);
 }
 
-result TreeViewForm::AddListItem(CustomList& customList, String title,String subTitle, Bitmap* pBitmapNormal)
+Tizen::Ui::Controls::ListItemBase* TreeViewForm::CreateItem (int index, int itemWidth){
+	AppLog("CreateItem");
+	SimpleItem* pItem = null;
+	ZLTreeNode* node = myTreeDialog->myCurrentNode->children().at(index);
+	if (const ZLTreeTitledNode *TitledNode = zlobject_cast<const ZLTreeTitledNode*>(node)) {
+			AppLog("ZLTreeTitledNode.titile %s",TitledNode->title().c_str());
+			//AppLog("ZLTreeTitledNode.imageUrl =  %s",TitledNode->imageUrl().c_str());
+
+			String strName = String(TitledNode->title().c_str());
+			String strSub = String(TitledNode->subtitle().c_str());
+
+			pItem = new (std::nothrow) SimpleItem();
+			Dimension itemDimension(itemWidth,100);
+			pItem->Construct(itemDimension, LIST_ANNEX_STYLE_NORMAL);
+			pItem->SetElement(strName,null);
+	}
+
+	return pItem;
+}
+
+bool  TreeViewForm::DeleteItem (int index, Tizen::Ui::Controls::ListItemBase *pItem, int itemWidth){
+	delete pItem;
+	pItem = null;
+	return true;
+}
+
+int TreeViewForm::GetItemCount(void){
+	AppLog("GetItemCount %d", ItemCount);
+	return ItemCount;
+}
+
+
+result TreeViewForm::AddListItem(String title,String subTitle, Bitmap* pBitmapNormal)
 {
     // Creates an item of the CustomList
-    CustomListItem* pItem = new CustomListItem();
+	AppLog("AddListItem ");
+	SimpleItem* pItem = new (std::nothrow) SimpleItem();
+	Dimension itemDimension(720,100);
+	pItem->Construct(itemDimension, LIST_ANNEX_STYLE_NORMAL);
+	pItem->SetElement(title,null);
 
+/*
+    CustomListItem* pItem = new CustomListItem();
     pItem->Construct(100);
     if (showIcons)
     	pItem->SetItemFormat(*__pCustomListItemFormat);
@@ -191,7 +250,7 @@ result TreeViewForm::AddListItem(CustomList& customList, String title,String sub
     pItem->SetElement(ID_LIST_TEXT_SUBTITLE, subTitle);
     if (pBitmapNormal!=null) pItem->SetElement(ID_LIST_BITMAP, *pBitmapNormal, pBitmapNormal);
     customList.AddItem(*pItem, ID_LIST_ITEM);
-
+*/
     return E_SUCCESS;
 }
 
@@ -207,6 +266,79 @@ void TreeViewForm::SetPreviousForm(Tizen::Ui::Controls::Form* preForm)
 {
 	pPreviousForm = preForm;
 }
+
+void TreeViewForm::OnFormBackRequested(Tizen::Ui::Controls::Form& source){
+	AppLog("Back is clicked!");
+	if (myTreeDialog->back()) {
+		//UpdateContent();
+	}
+	else	{
+	    pPreviousForm->SendUserEvent(0, null);
+	}
+}
+
+void TreeViewForm::OnListViewContextItemStateChanged(Tizen::Ui::Controls::ListView &listView, int index, int elementId, Tizen::Ui::Controls::ListContextItemStatus state){
+	AppLog("OnListViewContextItemStateChanged");
+
+
+
+
+}
+
+void TreeViewForm::OnListViewItemStateChanged(Tizen::Ui::Controls::ListView &listView, int index, int elementId, Tizen::Ui::Controls::ListItemStatus status){
+	AppLog("OnListViewItemStateChanged");
+	if (status == LIST_ITEM_STATUS_SELECTED) {
+		AppLog("index %d",index);
+
+			Frame *pFrame = Application::GetInstance()->GetAppFrame()->GetFrame();
+			String strName;
+
+			//ZLTreeNode* node = myModel->myCurrentNode->children().at(index);
+			ZLTreeNode* node = myTreeDialog->myCurrentNode->children().at(index);
+		    int actionsCount = node->actions().size();
+			AppLog("node->actions().size %d", actionsCount);
+
+
+			switch (actionsCount){
+			case  0: if (ZLTreeTitledNode *TitledNode = zlobject_cast<ZLTreeTitledNode*>(node))
+						{
+					 	 AppLog("Node is  %s ",TitledNode->title().c_str());
+					 	 myTreeDialog->enter(node);
+					 	 AppLog("exit enter");
+						};
+					 break;
+			//case  1:
+					// pFrame->SetCurrentForm(*pPreviousForm);
+				//TODO испраивть на приличную проверку что действие в содежаннии
+
+				// break;
+			default:
+				/*
+				if (exitFlag){
+						AppLog("exitFlag == true");
+						//pFrame->SetCurrentForm(*pPreviousForm);
+
+					}
+				*/
+				      std::string actionName = node->actions()[0]->key().Name;
+				      AppLog("action name %s",actionName.c_str());
+				      if (actionName == "gotoParagraph") pPreviousForm->SendUserEvent(0, null);
+					  myTreeDialog->treadTerminator();
+					  node->actions()[0]->run();
+					  break;
+			}
+
+	}
+}
+
+void TreeViewForm::OnListViewItemSwept(Tizen::Ui::Controls::ListView &listView, int index, Tizen::Ui::Controls::SweepDirection direction){
+	AppLog("OnListViewItemSwept");
+}
+
+void TreeViewForm::OnListViewItemLongPressed(Tizen::Ui::Controls::ListView &listView, int index, int elementId, bool& invokeListViewItemCallback){
+	AppLog("OnListViewItemLongPressed");
+}
+
 
 
 void TreeViewForm::OnActionPerformed(const Tizen::Ui::Control& source, int actionId)
@@ -230,6 +362,7 @@ void TreeViewForm::OnActionPerformed(const Tizen::Ui::Control& source, int actio
 			if (!_action.isNull()) {
 				AppLog("doAction %s",actionText.c_str());
 				_action->run();
+				AppLog("doAction end");
 			   //pPreviousForm->SendUserEvent(0, null);
 			}
 		}
@@ -293,11 +426,14 @@ void TreeViewForm::OnItemStateChanged (const Tizen::Ui::Control &source, int ind
 	ZLTreeNode* node = myTreeDialog->myCurrentNode->children().at(index);
     int actionsCount = node->actions().size();
 	AppLog("node->actions().size %d", actionsCount);
+
+
 	switch (actionsCount){
 	case  0: if (ZLTreeTitledNode *TitledNode = zlobject_cast<ZLTreeTitledNode*>(node))
 				{
 			 	 AppLog("Node is ZLTreeTitledNode %s ",TitledNode->title().c_str());
-			 	 myTreeDialog->enter(node);
+			 	 //myTreeDialog->enter(node);
+			 	 AppLog("exit enter");
 				};
 			 break;
 	//case  1:
@@ -320,12 +456,15 @@ void TreeViewForm::OnItemStateChanged (const Tizen::Ui::Control &source, int ind
 
 
 			  myTreeDialog->treadTerminator();
-			  node->actions()[0]->run();
-
+			  //node->actions()[0]->run();
+			  break;
 	}
 
 }
 
+void TreeViewForm::RemoveAllListItems(){
+
+}
 
 void TreeViewForm::UpdateContent(){
 	AppLog("TreeViewForm::UpdateContent()");
@@ -336,17 +475,31 @@ void TreeViewForm::UpdateContent(){
 //	__pLstSearchList->RemoveAllItems();  // Clear ui list
   // Clear ui list
 	//AppLog("__pCustomList->RemoveAllItems()");
+
+	Header* pHeader = GetHeader();
+
+
    if (ZLTreeTitledNode *myNode = zlobject_cast<ZLTreeTitledNode*>(myTreeDialog->myCurrentNode)) {
 	  strName = String(myNode->title().c_str());
-	  SetTitleText(strName);
+	 // SetTitleText(strName);
+	  pHeader->SetTitleText(strName);
    }
    else {
 		const char *title = myTreeDialog->myResource["title"].value().c_str();
-		SetTitleText(String(title));
+		//SetTitleText(String(title));
+		pHeader->SetTitleText(String(title));
    }
 
-   __pCustomList->RemoveAllItems();
+   //__pCustomList->RemoveAllItems();
+   RemoveAllListItems();
+
+
 	AppLog("children().size() = %d ",myTreeDialog->myCurrentNode->children().size());
+
+	ItemCount = myTreeDialog->myCurrentNode->children().size();
+
+	__pListView->UpdateList();
+	/*
 	ZLTreeNode::List::iterator it;
 	for (int i =0; i<myTreeDialog->myCurrentNode->children().size(); i++) {
 		ZLTreeNode* node = myTreeDialog->myCurrentNode->children().at(i);
@@ -358,6 +511,7 @@ void TreeViewForm::UpdateContent(){
 				strSub = String(TitledNode->subtitle().c_str());
 
 				Bitmap *pBmp = null;
+
 				if (showIcons)  {
 					shared_ptr<ZLImage> cover =TitledNode->extractCoverImage();
 					if (!cover.isNull()) 	{
@@ -373,21 +527,25 @@ void TreeViewForm::UpdateContent(){
 					}
 				}
 
-				AddListItem(*__pCustomList, strName, strSub, pBmp);
+				AddListItem(strName, strSub, pBmp);
 				if (pBmp != null) delete pBmp;
 				}
 	}
-
+	*/
+	AppLog("before Draw");
 //	delete pBitmapLeftIcon;
 //	delete pBitmapRightIcon;
-	__pCustomList->Draw();
-	__pCustomList->Show();
+	//__pCustomList->Draw();
+	AppLog("before Show");
+	//__pCustomList->Show();
+	AppLog("before ReDraw");
 	  RequestRedraw(true);
 	return;
 }
 
 void TreeViewForm::_ClearContentInfoList()
 {
+	AppLog("_ClearContentInfoList");
 	if(__pLstContentInfo != null)
 	{
 		__pLstContentInfo->RemoveAll(true);
@@ -396,7 +554,7 @@ void TreeViewForm::_ClearContentInfoList()
 	}
 }
 
-
+/*
 void TreeViewForm::OnTouchDoublePressed(const Control &source, const Point &currentPosition, const TouchEventInfo &touchInfo)
 {
 	AppLog("OnTouchDoublePressed");
@@ -438,7 +596,7 @@ void TreeViewForm::OnTouchReleased(const Control &source, const Point &currentPo
 	AppLog("OnTouchReleased");
 
 }
-
+*/
 
 void TreeViewForm::OnUserEventReceivedN(RequestId requestId, Tizen::Base::Collection::IList* pArgs)
 {

@@ -65,13 +65,14 @@ ZLbadaTreeDialog::~ZLbadaTreeDialog() {
 }
 
 void ZLbadaTreeDialog::setShowIcons(bool value){
-	showIcons = value;
-	if (myForm) myForm->showIcons = value;
+	showIcons =  value;
+	if (myForm) myForm->showIcons =  value;
 }
 
 Object* ZLbadaTreeDialog::Run(void){
 	AppLog("__pThread Run");
-	loadCovers();
+//	loadCovers();
+	AppLog("__pThread Run end");
 	return null;
 }
 
@@ -102,7 +103,7 @@ bool ZLbadaTreeDialog::back() {
 	}
 	myCurrentNode = myCurrentNode->parent();
 	myForm->UpdateContent();
-	 AppLog("UpdateContent finish");
+	 AppLog("UpdateContent finish back");
 	 if (showIcons){
 		 __pThread = new Thread();
 		 __pThread->Construct(*this);
@@ -139,15 +140,25 @@ bool ZLbadaTreeDialog::enter(ZLTreeNode* node) {
 	}
 	 AppLog("__pThread kill????");
 	 myCurrentNode = node;
+	 AppLog("enter node 1");
 	 myCurrentNode->requestChildren(0);
+	 AppLog("enter node 2");
 	 myForm->UpdateContent();
-	 AppLog("UpdateContent finish");
+
+	 AppLog("UpdateContent finish enter");
 	 if (showIcons){
-		 __pThread = new Thread();
-		 __pThread->Construct(*this);
-		__terminateThread = false;
-		 __pThread->Start();
+		// __pThread = new Thread();
+		// __pThread->Construct(*this);
+		//__terminateThread = false;
+		// __pThread->Start();
 	 }
+	/* result r;
+		AppLog("GetFrame");
+		Frame *pFrame = Application::GetInstance()->GetAppFrame()->GetFrame();
+		r = pFrame->Draw();
+		AppLog("pFrame->Draw();");
+		r = pFrame->Show();
+		AppLog("pFrame->Show()");*/
 	return true;
 }
 
@@ -182,7 +193,7 @@ void ZLbadaTreeDialog::run() {
 	// myCurrentNode->requestChildren(myWaitWidgetListener);
 	 myForm->UpdateContent();
 
-	 AppLog("UpdateContent finish");
+	 AppLog("UpdateContent finish run");
 	 if (showIcons){
 			__pThread = new Thread();
 			__pThread->Construct(*this);
@@ -191,10 +202,11 @@ void ZLbadaTreeDialog::run() {
 			__terminateThread = false;
 			__pThread->Start();
 		 }
-	Frame *pFrame = Application::GetInstance()->GetAppFrame()->GetFrame();
-	r = pFrame->Draw();
+	AppLog("GetFrame");
+	//Frame *pFrame = Application::GetInstance()->GetAppFrame()->GetFrame();
+	//r = pFrame->Draw();
 	AppLog("pFrame->Draw();");
-	r = pFrame->Show();
+	//r = pFrame->Show();
 	AppLog("pFrame->Show()");
 	//myForm->Start();
 	//pMonitor->Enter();
