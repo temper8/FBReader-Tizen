@@ -102,14 +102,15 @@ result OpenFileForm::OnInitializing(void)
 	Image *pImage = new Image();
     r = pImage->Construct();
 	//Bitmap *pBitmap1 = pAppResource->GetBitmapN("/blue/progressing00_big.png");
-	Bitmap *pBitmap1 = pImage->DecodeN("/Res/icons/ani/progressing00.png", BITMAP_PIXEL_FORMAT_R8G8B8A8);
-	Bitmap *pBitmap2 = pImage->DecodeN("/Res/icons/ani/progressing01.png", BITMAP_PIXEL_FORMAT_R8G8B8A8);
-	Bitmap *pBitmap3 = pImage->DecodeN("/Res/icons/ani/progressing02.png", BITMAP_PIXEL_FORMAT_R8G8B8A8);
-	Bitmap *pBitmap4 = pImage->DecodeN("/Res/icons/ani/progressing03.png", BITMAP_PIXEL_FORMAT_R8G8B8A8);
-	Bitmap *pBitmap5 = pImage->DecodeN("/Res/icons/ani/progressing04.png", BITMAP_PIXEL_FORMAT_R8G8B8A8);
-	Bitmap *pBitmap6 = pImage->DecodeN("/Res/icons/ani/progressing05.png", BITMAP_PIXEL_FORMAT_R8G8B8A8);
-	Bitmap *pBitmap7 = pImage->DecodeN("/Res/icons/ani/progressing06.png", BITMAP_PIXEL_FORMAT_R8G8B8A8);
-	Bitmap *pBitmap8 = pImage->DecodeN("/Res/icons/ani/progressing07.png", BITMAP_PIXEL_FORMAT_R8G8B8A8);
+	Tizen::Base::String aniPath = Tizen::App::App::GetInstance()->GetAppRootPath() +"/res/icons/ani/" ;
+	Bitmap *pBitmap1 = pImage->DecodeN(aniPath + "progressing00.png", BITMAP_PIXEL_FORMAT_R8G8B8A8);
+	Bitmap *pBitmap2 = pImage->DecodeN(aniPath + "progressing01.png", BITMAP_PIXEL_FORMAT_R8G8B8A8);
+	Bitmap *pBitmap3 = pImage->DecodeN(aniPath + "progressing02.png", BITMAP_PIXEL_FORMAT_R8G8B8A8);
+	Bitmap *pBitmap4 = pImage->DecodeN(aniPath + "progressing03.png", BITMAP_PIXEL_FORMAT_R8G8B8A8);
+	Bitmap *pBitmap5 = pImage->DecodeN(aniPath + "progressing04.png", BITMAP_PIXEL_FORMAT_R8G8B8A8);
+	Bitmap *pBitmap6 = pImage->DecodeN(aniPath + "progressing05.png", BITMAP_PIXEL_FORMAT_R8G8B8A8);
+	Bitmap *pBitmap7 = pImage->DecodeN(aniPath + "progressing06.png", BITMAP_PIXEL_FORMAT_R8G8B8A8);
+	Bitmap *pBitmap8 = pImage->DecodeN(aniPath + "progressing07.png", BITMAP_PIXEL_FORMAT_R8G8B8A8);
 
 	// Creates AnimationFrame.
 	AnimationFrame *pAniFrame1 = new AnimationFrame(*pBitmap1, 100);
