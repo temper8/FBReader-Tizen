@@ -77,19 +77,12 @@ void ZLbadaDialogManager::startOpenFileDialog() const{
 
 void ZLbadaDialogManager::informationBox(const std::string &title, const std::string &message) const {
 	MessageBox messageBox;
-	messageBox.Construct(title.c_str(), message.c_str(), MSGBOX_STYLE_NONE , 0);
+	messageBox.Construct(title.c_str(), message.c_str(), MSGBOX_STYLE_NONE , 2000);
 
 	// Calls ShowAndWait - draw, show itself and process events
 	int modalResult = 0;
 	messageBox.ShowAndWait(modalResult);
 
-
-	//	QMessageBox::information(
-//		qApp->mainWidget(),
-//		::qtString(title),
-//		::qtString(message),
-//		::qtButtonName(OK_BUTTON)
-//	);
 }
 
 void ZLbadaDialogManager::errorBox(const ZLResourceKey &key, const std::string &message) const {
