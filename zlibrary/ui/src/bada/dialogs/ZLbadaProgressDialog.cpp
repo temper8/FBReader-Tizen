@@ -11,6 +11,7 @@
 #include <FBase.h>
 #include <FUi.h>
 #include <FMedia.h>
+#include <FAppApp.h>
 
 using namespace Tizen::App;
 using namespace Tizen::Base;
@@ -81,23 +82,29 @@ void LoadingIcon::rotate() {
 Tizen::Base::Collection::ArrayList* 	ZLbadaProgressDialog::__pAnimationFrameList = 0;
 
 ZLbadaProgressDialog::ZLbadaProgressDialog(const ZLResourceKey &key) : ZLProgressDialog(key), myRunnable(null), __pProgressPopup(null) {
+
 	AppLog("ZLbadaProgressDialog  = %s",messageText().c_str());
+
+
 	__pProgressPopup  = new Tizen::Ui::Controls::Popup();
 	if (__pProgressPopup) {
 			result r;
-			r = __pProgressPopup->Construct(true, Tizen::Graphics::Dimension(400,250));
+			r = __pProgressPopup->Construct(true, Tizen::Graphics::Dimension(500,300));
 			AppLog("r = %d",r);
 			r =__pProgressPopup->SetTitleText(messageText().c_str());
 			AppLog("r = %d",r);
 			r = __pProgressPopup->SetShowState(true);
 			AppLog("r = %d",r);
-			r = __pProgressPopup->Show();
+			//r = __pProgressPopup->Show();
+
 			if (r!=0)	{
 				delete __pProgressPopup;
 				__pProgressPopup = null;
 				AppLog("delete __pPopup");
 				}
 			}
+
+
 }
 
 static const double COEF_PROGRESS_BAR_WIDTH = 0.75;
@@ -107,14 +114,15 @@ void ZLbadaProgressDialog::ConstructAnimationFrameList(void){
 	Image image;// = new Image();
 	result r = image.Construct();
 		//Bitmap *pBitmap1 = pAppResource->GetBitmapN("/blue/progressing00_big.png");
-		Bitmap *pBitmap1 = image.DecodeN("/Res/icons/ani/progressing00.png", BITMAP_PIXEL_FORMAT_R8G8B8A8);
-		Bitmap *pBitmap2 = image.DecodeN("/Res/icons/ani/progressing01.png", BITMAP_PIXEL_FORMAT_R8G8B8A8);
-		Bitmap *pBitmap3 = image.DecodeN("/Res/icons/ani/progressing02.png", BITMAP_PIXEL_FORMAT_R8G8B8A8);
-		Bitmap *pBitmap4 = image.DecodeN("/Res/icons/ani/progressing03.png", BITMAP_PIXEL_FORMAT_R8G8B8A8);
-		Bitmap *pBitmap5 = image.DecodeN("/Res/icons/ani/progressing04.png", BITMAP_PIXEL_FORMAT_R8G8B8A8);
-		Bitmap *pBitmap6 = image.DecodeN("/Res/icons/ani/progressing05.png", BITMAP_PIXEL_FORMAT_R8G8B8A8);
-		Bitmap *pBitmap7 = image.DecodeN("/Res/icons/ani/progressing06.png", BITMAP_PIXEL_FORMAT_R8G8B8A8);
-		Bitmap *pBitmap8 = image.DecodeN("/Res/icons/ani/progressing07.png", BITMAP_PIXEL_FORMAT_R8G8B8A8);
+		Tizen::Base::String appPath = Tizen::App::App::GetInstance()->GetAppRootPath() +"/res/icons/ani/" ;
+		Bitmap *pBitmap1 = image.DecodeN(appPath + "progressing00.png", BITMAP_PIXEL_FORMAT_R8G8B8A8);
+		Bitmap *pBitmap2 = image.DecodeN(appPath + "progressing01.png", BITMAP_PIXEL_FORMAT_R8G8B8A8);
+		Bitmap *pBitmap3 = image.DecodeN(appPath + "progressing02.png", BITMAP_PIXEL_FORMAT_R8G8B8A8);
+		Bitmap *pBitmap4 = image.DecodeN(appPath + "progressing03.png", BITMAP_PIXEL_FORMAT_R8G8B8A8);
+		Bitmap *pBitmap5 = image.DecodeN(appPath + "progressing04.png", BITMAP_PIXEL_FORMAT_R8G8B8A8);
+		Bitmap *pBitmap6 = image.DecodeN(appPath + "progressing05.png", BITMAP_PIXEL_FORMAT_R8G8B8A8);
+		Bitmap *pBitmap7 = image.DecodeN(appPath + "progressing06.png", BITMAP_PIXEL_FORMAT_R8G8B8A8);
+		Bitmap *pBitmap8 = image.DecodeN(appPath + "progressing07.png", BITMAP_PIXEL_FORMAT_R8G8B8A8);
 
 		// Creates AnimationFrame.
 		AnimationFrame *pAniFrame1 = new AnimationFrame(*pBitmap1, 100);
@@ -327,6 +335,7 @@ void TimerThread::OnTimerExpired(Tizen::Base::Runtime::Timer& timer){
 Tizen::Base::Object* ZLbadaProgressDialog::Run(void){
 	AppLog("ZLbadaProgressDialog RRRun");
 	myRunnable->run();
+	__pProgressPopup->EndModal(1);
 	__pMonitor->Notify();
 	AppLog("ZLbadaProgressDialog RRRun end");
 	return null;
@@ -352,6 +361,7 @@ void ZLbadaProgressDialog::run(ZLRunnable &runnable) {
 			__pMonitor->Enter();
 			AppLog("Animation Monitor");
 			//runnable.run();
+
 			__pMonitor->Wait();
 
 			__pMonitor->Exit();
@@ -368,7 +378,9 @@ void ZLbadaProgressDialog::run(ZLRunnable &runnable) {
 			__pMonitor->Enter();
 			AppLog("Thread Start()");
 			//runnable.run();
-			__pMonitor->Wait();
+			r = __pProgressPopup->DoModal(modalResult);
+				AppLog("after doModal r = %d",r);
+		//	__pMonitor->Wait();
 
 			__pMonitor->Exit();
 			AppLog("_pMonitor->Exit())");
@@ -393,6 +405,7 @@ void ZLbadaProgressDialog::run(ZLRunnable &runnable) {
 			delete __pMonitor;
 			AppLog("delete __pMonitor;");
 			__pProgressPopup->SetShowState(false);
+		//	__pProgressPopup->EndModal(0);
 			AppLog("SetShowState");
 			delete __pProgressPopup;
 			AppLog("delete __pPopup");

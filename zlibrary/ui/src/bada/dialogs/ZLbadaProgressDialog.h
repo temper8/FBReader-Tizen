@@ -119,6 +119,7 @@ private:
 		void ConstructAnimationFrameList(void);
 		static Tizen::Base::Collection::ArrayList* 	__pAnimationFrameList;
 	 	Tizen::Ui::Controls::Popup*			__pProgressPopup;
+	 	int   modalResult;
 	    //Tizen::Base::Runtime::Thread* 		__pThread;
 	 	Tizen::Base::Runtime::Monitor*        __pMonitor;
 	 //   TimerThread*  __pTimerThread;

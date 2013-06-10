@@ -329,8 +329,8 @@ void FBReader::openBook(shared_ptr<Book> book) {
 	AppLog("FBReader::openBook");
 	OpenBookRunnable runnable(book);
 	AppLog("runnable(book)");
-//	ZLDialogManager::Instance().wait(ZLResourceKey("loadingBook"), runnable);
-	runnable.run();
+	ZLDialogManager::Instance().wait(ZLResourceKey("loadingBook"), runnable);
+//	runnable.run();
 	AppLog("ZLDialogManager::Instance().wait");
 	resetWindowCaption();
 	AppLog("resetWindowCaption();");
