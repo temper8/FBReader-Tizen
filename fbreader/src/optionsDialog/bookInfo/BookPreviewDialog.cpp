@@ -45,8 +45,8 @@ public:
 
 BookMenuEntry::BookMenuEntry(shared_ptr<Book> book) : ZLMenuOptionEntry() {
 
-//tizen	menuActions.push_back(new BookReadAction(book));
-//tizen	menuActions.push_back(new BookReadAction(book));
+menuActions.push_back(new BookReadAction(book));
+menuActions.push_back(new BookReadAction(book));
 //	menuActions.push_back(new BookRemoveAction(book));
 }
 
