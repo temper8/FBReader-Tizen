@@ -116,9 +116,11 @@ result TreeViewForm::OnInitializing(void)
 
 	//__pCustomList->AddCustomItemEventListener(*this);
 
+	iconRect = Tizen::Graphics::Rectangle(5, 5, 70, 90);
+
 	// Creates an item format of the CustomList
 	/*
-	iconRect = Tizen::Graphics::Rectangle(5, 5, 70, 90);
+
 
 	__pNoIconsListItemFormat = new CustomListItemFormat();
 	__pNoIconsListItemFormat->Construct();
@@ -212,7 +214,28 @@ Tizen::Ui::Controls::ListItemBase* TreeViewForm::CreateItem (int index, int item
 			pItem = new (std::nothrow) SimpleItem();
 			Dimension itemDimension(itemWidth,100);
 			pItem->Construct(itemDimension, LIST_ANNEX_STYLE_NORMAL);
-			pItem->SetElement(strName,null);
+
+			Bitmap *pBmp = null;
+
+			if (showIcons)  {
+				shared_ptr<ZLImage> cover = TitledNode->extractCoverImage();
+				if (!cover.isNull()) 	{
+						shared_ptr<ZLImageData> coverData = ZLImageManager::Instance().imageData(*cover);
+						if (!coverData.isNull()) {
+								ZLImageData &image = *coverData;
+								Bitmap *tmpBmp = 	((ZLbadaImageData&)image).pBitmap;
+								//int imageWidth = tmpBmp->GetWidth();
+								//int imageHeight = tmpBmp->GetHeight();
+								//AppLog("image w = %d, h = %d", imageWidth, imageHeight);
+								pBmp = makeIcon(tmpBmp);
+								}
+						}
+				}
+
+
+			pItem->SetElement(strName,pBmp);
+			if (pBmp != null) delete pBmp;
+
 	}
 
 	return pItem;
