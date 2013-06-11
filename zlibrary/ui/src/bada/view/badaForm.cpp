@@ -159,7 +159,8 @@ void badaForm::OnTimerExpired(Timer& timer){
 		case SLIDE_NEXT:
 			srcRect = Rectangle(dx,0,formRect.width-dx,formRect.height);
 			if (dx<formRect.width) {
-					Draw();
+					//Draw();
+					Invalidate(false);
 					myTimer->Start(1);
 			}
 			else	{
@@ -170,14 +171,16 @@ void badaForm::OnTimerExpired(Timer& timer){
 					myTimer = 0;
 					//touchMove = 0;
 					//showNewPage = true;
-					Draw();
+					//Draw();
+					Invalidate(false);
 			}
 			break;
 
 		case SLIDE_PREV:
 			srcRect = Rectangle(formRect.width-dx,0,dx,formRect.height);
 			if (dx<formRect.width) {
-		 			Draw();
+		 			//Draw();
+		 			Invalidate(false);
 		 			myTimer->Start(1);
 		 		}
 		 	else	{
@@ -186,7 +189,8 @@ void badaForm::OnTimerExpired(Timer& timer){
 		 			delete myTimer;
 		 			myTimer = 0;
 
-		 			Draw();
+		 			//Draw();
+		 			Invalidate(false);
 		 	}
 			break;
 	default:
@@ -336,7 +340,8 @@ void badaForm::OnTouchMoved(const Tizen::Ui::Control &source, const Point &curre
 		srcRect = Rectangle(formRect.width-currentPosition.x,0,currentPosition.x,formRect.height);
 	}
 	AppLog("pCanvas->Show");
-	Draw();
+	//Draw();
+	Invalidate(false);
 }
 
 void badaForm::OnTouchPressed(const Control &source, const Point &currentPosition, const TouchEventInfo &touchInfo)
@@ -359,7 +364,8 @@ void badaForm::OnTouchReleased(const Control &source, const Point &currentPositi
 	if (touchMoved) {
 		AppLog("if (touchMoved) DRAW_CURRENT_PAGE");
 		myDrawMode = DRAW_CURRENT_PAGE;
-		Draw();
+		Invalidate(false);
+		//Draw();
 		return;
 	}
 
@@ -388,8 +394,8 @@ void badaForm::OnTouchReleased(const Control &source, const Point &currentPositi
 //	else
 	{
 	AppLog("currentPosition x=%d, y=%d",currentPosition.x, currentPosition.y);
-	if ((Math::Abs(2*currentPosition.y-formRect.height)<200)
-		&&(Math::Abs(2*currentPosition.x-formRect.width)<200)){
+	if ((Math::Abs(2*currentPosition.y-formRect.height)<600)
+		&&(Math::Abs(2*currentPosition.x-formRect.width)<600)){AppLog("OptionMenu");
 						if (__pOptionMenu != null){
 									__pOptionMenu->SetShowState(true);
 									__pOptionMenu->Show();
@@ -550,7 +556,8 @@ void badaForm::OnActionPerformed(const Tizen::Ui::Control& source, int actionId)
     	fbreader.showBookTextView();
     	RemoveOptionkeyActionListener(*this);
     	SetFormStyle(FORM_STYLE_NORMAL);
-    	RequestRedraw();
+    	//RequestRedraw();
+    	Invalidate(false);
     	return;
     }
 
@@ -565,7 +572,8 @@ void badaForm::OnActionPerformed(const Tizen::Ui::Control& source, int actionId)
     else
     {
     	myHolder->doAction(ActionIdList[indx]);
-    	RequestRedraw(true);
+    	//RequestRedraw(true);
+    	Invalidate(false);
     }
 }
 
@@ -631,8 +639,8 @@ void badaForm::OnUserEventReceivedN(RequestId requestId, Tizen::Base::Collection
 		{
 			AppLog("badaForm::OnUserEventReceivedN requestId = 0 ");
 			pFrame->SetCurrentForm(*this);
-			pFrame->RequestRedraw();
-
+			//pFrame->RequestRedraw();
+			Invalidate(false);
 			//myHolder.doAction(ActionIdList[2]);
 			//DetailForm* pDetailForm = static_cast<DetailForm *>(pFrame->GetControl("DetailForm"));
 			//badaForm* pbadaForm = (badaForm*)(pFrame->GetControl("badaForm"));
@@ -652,7 +660,8 @@ void badaForm::OnUserEventReceivedN(RequestId requestId, Tizen::Base::Collection
 		{
 			AppLog("badaForm::а теперь Акшен открываем файл");
 			pFrame->SetCurrentForm(*this);
-			pFrame->RequestRedraw();
+			//pFrame->RequestRedraw();
+			Invalidate(false);
 			myHolder->doAction(ActionIdList[2]);
 		/*	pFrame->SetCurrentForm(*this);
 			pFrame->RequestRedraw();
@@ -668,7 +677,8 @@ void badaForm::OnUserEventReceivedN(RequestId requestId, Tizen::Base::Collection
 		{
 			AppLog("badaForm::OnUserEventReceivedN requestId = 0 ");
 				pFrame->SetCurrentForm(*this);
-				pFrame->RequestRedraw();
+				//pFrame->RequestRedraw();
+				Invalidate(false);
 				//myHolder.doAction(ActionIdList[2]);
 				//DetailForm* pDetailForm = static_cast<DetailForm *>(pFrame->GetControl("DetailForm"));
 				//badaForm* pbadaForm = (badaForm*)(pFrame->GetControl("badaForm"));
