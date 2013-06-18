@@ -284,6 +284,10 @@ void badaForm::OnTouchMoved(const Tizen::Ui::Control &source, const Point &curre
 	if (myTimer) return;
 	AppLog("OnTouchMoved");
 	//touchMoved = true;
+	int dx = currentPosition.x - startTouchPosition.x;
+	int dy = currentPosition.y - startTouchPosition.y;
+	if (Math::Abs(dx)<10) return;
+
 	FBReader &fbreader = FBReader::Instance();
 	if ((!fbreader.EnableTapScrollingOption.value()) ||
 			(fbreader.TapScrollingOnFingerOnlyOption.value())) {
@@ -298,21 +302,20 @@ void badaForm::OnTouchMoved(const Tizen::Ui::Control &source, const Point &curre
 		endOfBook = true;
 		return;
 	}
-	int x = currentPosition.x - startTouchPosition.x;
-	int y = currentPosition.y - startTouchPosition.y;
+
 	if (endOfBook) return;
 
 	if (!touchMoved) {
 		AppLog("if (!touchMoved)");
 
-		if ((x<0)&& !(!textArea.myEndCursor.paragraphCursor().isLast() || !textArea.myEndCursor.isEndOfParagraph()))
+		if ((dx<0)&& !(!textArea.myEndCursor.paragraphCursor().isLast() || !textArea.myEndCursor.isEndOfParagraph()))
 		{
 			touchMoved = true;
 			endOfBook = true;
 			return;
 		}
 
-		if ((x>0)&& !(!textArea.myStartCursor.paragraphCursor().isFirst() || !textArea.myStartCursor.isStartOfParagraph()))
+		if ((dx>0)&& !(!textArea.myStartCursor.paragraphCursor().isFirst() || !textArea.myStartCursor.isStartOfParagraph()))
 		{
 			touchMoved = true;
 			endOfBook = true;
@@ -321,7 +324,7 @@ void badaForm::OnTouchMoved(const Tizen::Ui::Control &source, const Point &curre
 
 		AppLog("catch canvas");
 		if (myHolder->myCanvas) capturedCanvas->Copy(Point(0,0),*myHolder->myCanvas,formRect);
-		if (x<0)
+		if (dx<0)
 			FBReader::Instance().doAction(ActionCode::TAP_SCROLL_FORWARD);
 		else
 			FBReader::Instance().doAction(ActionCode::TAP_SCROLL_BACKWARD);
@@ -330,10 +333,10 @@ void badaForm::OnTouchMoved(const Tizen::Ui::Control &source, const Point &curre
 
 	touchMoved = true;
 
-	if (x<0){
+	if (dx<0){
 		myDrawMode = SLIDE_NEXT;
 		AppLog("OnTouchMoved 1");
-		srcRect = Rectangle(-x,0,formRect.width+x,formRect.height);
+		srcRect = Rectangle(-dx, 0, formRect.width + dx, formRect.height);
 	}
 	else {
 		myDrawMode = SLIDE_PREV;
@@ -360,6 +363,17 @@ void badaForm::OnTouchPressed(const Control &source, const Point &currentPositio
 
 void badaForm::OnTouchReleased(const Control &source, const Point &currentPosition, const TouchEventInfo &touchInfo)
 {
+	AppLog("currentPosition x=%d, y=%d",currentPosition.x, currentPosition.y);
+	AppLog("formRect x=%d, y=%d",formRect.width, formRect.height);
+	bool tapMenu = false;
+	int dx = currentPosition.x - startTouchPosition.x;
+	int dy = currentPosition.y - startTouchPosition.y;
+	if ((Math::Abs(2*currentPosition.y-formRect.height)<500)
+			&&(Math::Abs(2*currentPosition.x-formRect.width)<200))//&&
+	//	(Math::Abs(dx)<5)&&(Math::Abs(dy)<5))
+			{AppLog("OptionMenu");
+			tapMenu = true;
+			}
 
 	if (touchMoved) {
 		AppLog("if (touchMoved) DRAW_CURRENT_PAGE");
@@ -369,9 +383,10 @@ void badaForm::OnTouchReleased(const Control &source, const Point &currentPositi
 		return;
 	}
 
-	if (myTimer) return;
+//	if (myTimer) return;
 
 	FBReader &fbreader = FBReader::Instance();
+/*
 	AppLog("OnTouchReleased 1");
 	myHolder->view()->onStylusPress(currentPosition.x, currentPosition.y);
 	AppLog("OnTouchReleased 2");
@@ -387,15 +402,15 @@ void badaForm::OnTouchReleased(const Control &source, const Point &currentPositi
 			myDrawMode = DRAW_CURRENT_PAGE;
 
 		}
-		RequestRedraw();
+		//RequestRedraw();
+		Invalidate(false);
 		return;
 	}
-
+*/
 //	else
 	{
-	AppLog("currentPosition x=%d, y=%d",currentPosition.x, currentPosition.y);
-	if ((Math::Abs(2*currentPosition.y-formRect.height)<600)
-		&&(Math::Abs(2*currentPosition.x-formRect.width)<600)){AppLog("OptionMenu");
+
+	if (tapMenu){AppLog("OptionMenu");
 						if (__pOptionMenu != null){
 									__pOptionMenu->SetShowState(true);
 									__pOptionMenu->Show();
