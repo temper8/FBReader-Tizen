@@ -63,6 +63,7 @@ public:
 class DialogForm :
 	public Tizen::Ui::Controls::Form,
 	public Tizen::Ui::IActionEventListener,
+	public Tizen::Ui::Controls::IFormBackEventListener,
     public Tizen::Ui::IGroupedItemEventListener {
 
  protected:
@@ -98,7 +99,13 @@ public:
 	void SetPreviousForm(Tizen::Ui::Controls::Form* preForm);
 	//result  AddControls();
 	result  AddTab(const char *title);
+
 //protected:
+
+	//Tizen::Ui::Controls::FooterItem* footerItem;
+
+
+public:
 	// Ui
 //	int YPos;
 //	Tizen::Ui::Controls::ScrollPanel* pScrollPanel;
@@ -121,6 +128,8 @@ public:
  //  virtual void OnItemStateChanged(const Tizen::Ui::Control &source, int index, int itemId, Tizen::Ui::ItemStatus status);
     virtual void  OnItemStateChanged (const Tizen::Ui::Control &source, int groupIndex, int itemIndex, int itemId, Tizen::Ui::ItemStatus status);
     virtual void  OnItemStateChanged (const Tizen::Ui::Control &source, int groupIndex, int itemIndex, int itemId, int elementId, Tizen::Ui::ItemStatus status);
+
+	virtual void OnFormBackRequested(Tizen::Ui::Controls::Form& source);
 
 
 public:

@@ -29,25 +29,38 @@ bool DialogForm::Initialize(const char *title, bool __showApplyButton)
 	showApplyButton = __showApplyButton;
 	AppLog("DialogForm::Initialize \n");
 	// Construct an XML form FORM_STYLE_INDICATOR|
+	Form::Construct(FORM_STYLE_NORMAL|FORM_STYLE_HEADER |FORM_STYLE_FOOTER );
 
+
+		//AddSoftkeyActionListener(SOFTKEY_0, *this);
+		//SetSoftkeyActionId(SOFTKEY_0, ID_ACT_UPDATE);
+		//SetSoftkeyText(SOFTKEY_0, L"Apply");
+
+	//SetTitleText(String(title));
+	Header* pHeader = GetHeader();
+    pHeader->SetTitleText(String(title));
+
+
+	//AddSoftkeyActionListener(SOFTKEY_1, *this);
+	//SetSoftkeyActionId(SOFTKEY_1, ID_ACT_CLOSE);
+	//SetSoftkeyText(SOFTKEY_1, L"Back");
+
+	Footer* pFooter = GetFooter();
+	pFooter->SetStyle(FOOTER_STYLE_BUTTON_TEXT);
+	pFooter->SetBackButton();
+	pFooter->AddActionEventListener(*this);
+
+/*
 	if (showApplyButton) {
-//	if (true) {
-		AppLog("showApplyButton true");
-		Construct(FORM_STYLE_NORMAL|FORM_STYLE_TITLE|FORM_STYLE_SOFTKEY_0|FORM_STYLE_SOFTKEY_1);
-	//	Construct(FORM_STYLE_NORMAL|FORM_STYLE_TITLE|FORM_STYLE_SOFTKEY_0|FORM_STYLE_SOFTKEY_1|FORM_STYLE_OPTIONKEY);
-		AddSoftkeyActionListener(SOFTKEY_0, *this);
-		SetSoftkeyActionId(SOFTKEY_0, ID_ACT_UPDATE);
-		SetSoftkeyText(SOFTKEY_0, L"Apply");
+	ButtonItem buttonItem;
+    buttonItem.Construct(BUTTON_ITEM_STYLE_TEXT, ID_ACT_CLOSE);
+
+	buttonItem.SetText(L"Text");
+	pFooter->SetButton(BUTTON_POSITION_LEFT, buttonItem);
 	}
-	else
-		Construct(FORM_STYLE_NORMAL|FORM_STYLE_TITLE|FORM_STYLE_SOFTKEY_1);
+*/
 
-	SetTitleText(String(title));
-
-	AddSoftkeyActionListener(SOFTKEY_1, *this);
-	SetSoftkeyActionId(SOFTKEY_1, ID_ACT_CLOSE);
-	SetSoftkeyText(SOFTKEY_1, L"Back");
-
+	SetFormBackEventListener(this);
 	return true;
 }
 
@@ -128,7 +141,15 @@ void DialogForm::updateMenu(){
 		shared_ptr<ZLRunnableWithKey> a = myMenuView->myActions[i];
 		if (a->makesSense()) { AppLog("makesSense true %d",actionsCount);
 			std::string text = a->text(ZLResource::resource("networkView")["bookNode"]);
-			if (actionsCount == 0) SetSoftkeyText(SOFTKEY_0, text.c_str());
+			if (actionsCount == 0) {
+				Footer* pFooter = GetFooter();
+				FooterItem footerItem;
+			    footerItem.Construct(ID_ACT_UPDATE);
+			    footerItem.SetText(text.c_str());
+
+				pFooter->AddItem(footerItem);
+				//SetSoftkeyText(SOFTKEY_0, text.c_str());
+			}
 			else
 				if (__pOptionMenu != null) __pOptionMenu->AddItem(text.c_str(),ID_OPTIONMENU_ITEM0+i);
 			actionsCount++;
@@ -304,6 +325,13 @@ void DialogForm::SetPreviousForm(Tizen::Ui::Controls::Form* preForm)
 	pPreviousForm = preForm;
 }
 
+void DialogForm::OnFormBackRequested(Tizen::Ui::Controls::Form& source){
+	AppLog("Close button is clicked!");
+	__badaOptionsDialog->accept();
+	Frame *pFrame = Application::GetInstance()->GetAppFrame()->GetFrame();
+
+	pPreviousForm->SendUserEvent(0, null);
+}
 
 void DialogForm::OnActionPerformed(const Tizen::Ui::Control & source, int actionId)
 {
