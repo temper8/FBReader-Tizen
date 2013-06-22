@@ -40,6 +40,11 @@ public:
 	Tizen::Base::Runtime::Monitor* myMonitor;
 	shared_ptr<ZLTreeDialog> __myTreeDialog;
     bool showIcons;
+
+private:
+	static const int ID_FORMAT_TITLE = 500;
+	static const int ID_FORMAT_SUBTITLE = 501;
+	static const int ID_FORMAT_BITMAP = 502;
 protected:
 	// Ui
 //	bool OnStart(void);
@@ -120,11 +125,10 @@ protected:
 //	static const int ID_FORMAT_CUSTOM = 106;
 	Tizen::Graphics::Bitmap* makeIcon(Tizen::Graphics::Bitmap* srcBmp);
 	Tizen::Graphics::Rectangle iconRect;
+	Tizen::Graphics::Rectangle formArea;
 	Tizen::Ui::Controls::ListView*  __pListView;
-    Tizen::Ui::Controls::CustomList* __pCustomList;
-    Tizen::Ui::Controls::CustomListItemFormat* __pNoIconsListItemFormat;
-    Tizen::Ui::Controls::CustomListItemFormat* __pCustomListItemFormat;
-   // CustomListElement* __pListElement;
+
+
     result AddListItem(Tizen::Base::String title, Tizen::Base::String subTitle, Tizen::Graphics::Bitmap* pBitmapNormal);
 
     void RemoveAllListItems();

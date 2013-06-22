@@ -25,7 +25,7 @@ using namespace Tizen::Base::Runtime;
 
 #define ID_HEADER_ITEM  1000
 
-TreeViewForm::TreeViewForm():__pCustomListItemFormat(0),__pListView(0),showIcons(true), ItemCount(0) {
+TreeViewForm::TreeViewForm():__pListView(0),showIcons(true), ItemCount(0) {
 	// TODO Auto-generated constructor stub
 
 }
@@ -91,14 +91,12 @@ bool TreeViewForm::Initialize(ZLTreeDialog* treeDialog)
 
 result TreeViewForm::OnInitializing(void)
 {
-	result r = E_SUCCESS;
+
 	AppLog("TreeViewForm::OnInitializing \n");
-	Rectangle formArea = GetClientAreaBounds();
+	result r = E_SUCCESS;
 
-	SetSoftkeyText(SOFTKEY_1, L"Back");
-
-	AddOrientationEventListener(*this);
-
+	formArea = GetClientAreaBounds();
+	iconRect = Tizen::Graphics::Rectangle(5, 5, 70, 90);
 
 	__pListView = new (std::nothrow) ListView();
 	__pListView->Construct(Rectangle(0, 0, formArea.width, formArea.height), true, false);
@@ -106,40 +104,10 @@ result TreeViewForm::OnInitializing(void)
 	__pListView->AddListViewItemEventListener(*this);
 
 	AddControl(*__pListView);
-
+	AddOrientationEventListener(*this);
 
 	AppLog("TreeViewForm::OnInitializing height=%d",formArea.height);
-   // Creates CustomList
-   // __pCustomList = new CustomList();
-	//__pCustomList->Construct(Rectangle(0, 0, 480, 800), CUSTOM_LIST_STYLE_NORMAL);
-	//__pCustomList->Construct(Rectangle(0, 0, formArea.width, formArea.height), CUSTOM_LIST_STYLE_MARK);
 
-	//__pCustomList->AddCustomItemEventListener(*this);
-
-	iconRect = Tizen::Graphics::Rectangle(5, 5, 70, 90);
-
-	// Creates an item format of the CustomList
-	/*
-
-
-	__pNoIconsListItemFormat = new CustomListItemFormat();
-	__pNoIconsListItemFormat->Construct();
-	__pNoIconsListItemFormat->AddElement(ID_LIST_TEXT_TITLE, Tizen::Graphics::Rectangle(10, 15, formArea.width - 10, 40), 30);
-	__pNoIconsListItemFormat->AddElement(ID_LIST_TEXT_SUBTITLE, Tizen::Graphics::Rectangle(10, 40, formArea.width - 10, 80), 22);
-	__pNoIconsListItemFormat->AddElement(ID_LIST_BITMAP, iconRect);
-	__pNoIconsListItemFormat->AddElement(ID_LIST_CHECKBOX, Tizen::Graphics::Rectangle(420, 15, 50, 50));
-
-
-	__pCustomListItemFormat = new CustomListItemFormat();
-	__pCustomListItemFormat->Construct();
-	__pCustomListItemFormat->AddElement(ID_LIST_TEXT_TITLE, Tizen::Graphics::Rectangle(85, 12, formArea.width - 85, 40), 30);
-	__pCustomListItemFormat->AddElement(ID_LIST_TEXT_SUBTITLE, Tizen::Graphics::Rectangle(85, 37, formArea.width - 85, 80), 22);
-	__pCustomListItemFormat->AddElement(ID_LIST_BITMAP, iconRect);
-	__pCustomListItemFormat->AddElement(ID_LIST_CHECKBOX, Tizen::Graphics::Rectangle(420, 15, 50, 50));
-
-    AddControl(*__pCustomList);
-	CreateContextMenuListStyle();
-	*/
 
 	return r;
 }
@@ -162,7 +130,7 @@ Bitmap* TreeViewForm::makeIcon(Bitmap* srcBmp){
 }
 
 void   TreeViewForm::updateItem(ZLTreeTitledNode &node, int index){
-		AppLog("updateItem ");
+/*		AppLog("updateItem ");
 	 	Bitmap *pBmp = null;
 		String title = String(node.title().c_str());
 	    CustomListItem* pItem = new CustomListItem();
@@ -194,7 +162,7 @@ void   TreeViewForm::updateItem(ZLTreeTitledNode &node, int index){
 	    		else AppLog("SetItemAt error");
 
 	    if (pBmp != null) delete pBmp;
-
+*/
 	//    __pCustomList->RefreshItem(index);
 
 	 //	RequestRedraw(true);
@@ -202,7 +170,7 @@ void   TreeViewForm::updateItem(ZLTreeTitledNode &node, int index){
 
 Tizen::Ui::Controls::ListItemBase* TreeViewForm::CreateItem (int index, int itemWidth){
 	AppLog("CreateItem");
-	SimpleItem* pItem = null;
+	CustomItem* pItem = null;
 	ZLTreeNode* node = myTreeDialog->myCurrentNode->children().at(index);
 	if (const ZLTreeTitledNode *TitledNode = zlobject_cast<const ZLTreeTitledNode*>(node)) {
 			AppLog("ZLTreeTitledNode.titile %s",TitledNode->title().c_str());
@@ -211,11 +179,12 @@ Tizen::Ui::Controls::ListItemBase* TreeViewForm::CreateItem (int index, int item
 			String strName = String(TitledNode->title().c_str());
 			String strSub = String(TitledNode->subtitle().c_str());
 
-			pItem = new (std::nothrow) SimpleItem();
+			pItem = new (std::nothrow) CustomItem();
 			Dimension itemDimension(itemWidth,100);
 			pItem->Construct(itemDimension, LIST_ANNEX_STYLE_NORMAL);
 
 			Bitmap *pBmp = null;
+			Color blk = Color::GetColor(COLOR_ID_BLACK);
 
 			if (showIcons)  {
 				shared_ptr<ZLImage> cover = TitledNode->extractCoverImage();
@@ -230,10 +199,19 @@ Tizen::Ui::Controls::ListItemBase* TreeViewForm::CreateItem (int index, int item
 								pBmp = makeIcon(tmpBmp);
 								}
 						}
+
+				pItem->AddElement(iconRect, ID_FORMAT_BITMAP, *pBmp, null, null);
+				pItem->AddElement(Rectangle(85, 12, formArea.width - 85, 40), ID_FORMAT_TITLE, strName,30, blk,blk,blk, true);
+				pItem->AddElement(Rectangle(85, 37, formArea.width - 85, 80), ID_FORMAT_SUBTITLE, strSub,22, blk,blk,blk, true);
 				}
+			else
+			{
+				pItem->AddElement(Rectangle(15, 12, formArea.width - 15, 40), ID_FORMAT_TITLE, strName,30, blk,blk,blk, true);
+				pItem->AddElement(Rectangle(15, 37, formArea.width - 15, 80), ID_FORMAT_SUBTITLE, strSub,22, blk,blk,blk, true);
+
+			}
 
 
-			pItem->SetElement(strName,pBmp);
 			if (pBmp != null) delete pBmp;
 
 	}
