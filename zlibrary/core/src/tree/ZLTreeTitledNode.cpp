@@ -47,5 +47,9 @@ shared_ptr<ZLImage> ZLTreeTitledNode::image() const {
 	return shared_ptr<ZLImage>();
 }
 
+bool ZLTreeTitledNode::imageIsUploaded() const {
+ return false;
+}
+
 void ZLTreeTitledNode::init() {
 }

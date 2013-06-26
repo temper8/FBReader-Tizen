@@ -19,11 +19,11 @@ using namespace Tizen::Content;
 using namespace Tizen::Graphics;
 using namespace Tizen::Base::Runtime;
 
-#define	ID_ACT_UPDATE	1600
-#define ID_ACT_DELETE	1601
-#define ID_ACT_CLOSE	1602
+#define	ID_ACT_UPDATE	600
+#define ID_ACT_DELETE	601
+#define ID_ACT_CLOSE	602
 
-#define ID_HEADER_ITEM  1000
+#define ID_HEADER_ITEM  700
 
 TreeViewForm::TreeViewForm():__pListView(0),showIcons(true), ItemCount(0) {
 	// TODO Auto-generated constructor stub
@@ -130,8 +130,10 @@ Bitmap* TreeViewForm::makeIcon(Bitmap* srcBmp){
 }
 
 void   TreeViewForm::updateItem(ZLTreeTitledNode &node, int index){
-/*		AppLog("updateItem ");
-	 	Bitmap *pBmp = null;
+		AppLog("updateItem %d",index);
+//		__pListView->UpdateList();
+		__pListView->RefreshList(index,LIST_REFRESH_TYPE_ITEM_MODIFY);
+/*	 	Bitmap *pBmp = null;
 		String title = String(node.title().c_str());
 	    CustomListItem* pItem = new CustomListItem();
 	    //CustomListItem* pItem = (CustomListItem*)__pCustomList->GetItemAt(index);
@@ -169,7 +171,7 @@ void   TreeViewForm::updateItem(ZLTreeTitledNode &node, int index){
 }
 
 Tizen::Ui::Controls::ListItemBase* TreeViewForm::CreateItem (int index, int itemWidth){
-	AppLog("CreateItem");
+	AppLog("CreateItem %d",index);
 	CustomItem* pItem = null;
 	ZLTreeNode* node = myTreeDialog->myCurrentNode->children().at(index);
 	if (const ZLTreeTitledNode *TitledNode = zlobject_cast<const ZLTreeTitledNode*>(node)) {
@@ -187,7 +189,10 @@ Tizen::Ui::Controls::ListItemBase* TreeViewForm::CreateItem (int index, int item
 			Color blk = Color::GetColor(COLOR_ID_BLACK);
 
 			if (showIcons)  {
-				shared_ptr<ZLImage> cover = TitledNode->extractCoverImage();
+				shared_ptr<ZLImage> cover;
+				if (TitledNode->imageIsUploaded()) 	cover = TitledNode->image();
+				else
+					 cover = TitledNode->extractCoverImage();
 				if (!cover.isNull()) 	{
 						shared_ptr<ZLImageData> coverData = ZLImageManager::Instance().imageData(*cover);
 						if (!coverData.isNull()) {
@@ -601,6 +606,11 @@ void TreeViewForm::OnTouchReleased(const Control &source, const Point &currentPo
 
 void TreeViewForm::OnUserEventReceivedN(RequestId requestId, Tizen::Base::Collection::IList* pArgs)
 {
+	if (requestId>999) {
+		__pListView->RefreshList(requestId-1000,LIST_REFRESH_TYPE_ITEM_MODIFY);
+		return;
+	}
+
 	Frame *pFrame = Application::GetInstance()->GetAppFrame()->GetFrame();
 	AppLog("TreeViewForm::OnUserEventReceivedN requestId = %d", requestId);
 	Form* prevForm = pFrame->GetCurrentForm();

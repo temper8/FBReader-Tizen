@@ -71,7 +71,7 @@ void ZLbadaTreeDialog::setShowIcons(bool value){
 
 Object* ZLbadaTreeDialog::Run(void){
 	AppLog("__pThread Run");
-//	loadCovers();
+	loadCovers();
 	AppLog("__pThread Run end");
 	return null;
 }
@@ -147,10 +147,11 @@ bool ZLbadaTreeDialog::enter(ZLTreeNode* node) {
 
 	 AppLog("UpdateContent finish enter");
 	 if (showIcons){
-		// __pThread = new Thread();
-		// __pThread->Construct(*this);
-		//__terminateThread = false;
-		// __pThread->Start();
+		// loadCovers();
+		 __pThread = new Thread();
+		 __pThread->Construct(*this);
+		__terminateThread = false;
+		__pThread->Start();
 	 }
 	/* result r;
 		AppLog("GetFrame");
@@ -164,7 +165,8 @@ bool ZLbadaTreeDialog::enter(ZLTreeNode* node) {
 
 void ZLbadaTreeDialog::updateNode(ZLTreeTitledNode &node, int index){
 	AppLog("updateNode %d", index);
-	myForm->updateItem(node, index);
+	//myForm->updateItem(node, index);
+	myForm->SendUserEvent(1000+index,null);
 }
 /*
 bool ZLbadaTreeDialog::isAlive(ZLbadaTreeDialog *dialog) {

@@ -56,6 +56,7 @@ public:
 	virtual std::string imageUrl() const;
 	// Or the image if there is no url
 	virtual shared_ptr<ZLImage> image() const;
+	virtual bool imageIsUploaded() const;
 
 	virtual shared_ptr<ZLImage> extractCoverImage() const = 0;
 };

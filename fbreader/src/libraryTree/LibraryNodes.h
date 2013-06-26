@@ -151,6 +151,7 @@ public:
 	std::string title() const;
 	std::string subtitle() const;
 	shared_ptr<ZLImage> image() const;
+	virtual bool imageIsUploaded() const;
 	virtual shared_ptr<ZLImage> extractCoverImage() const;
 	std::string imageUrl() const;
 //	void fillContent(ZLDialogContent &content) const;

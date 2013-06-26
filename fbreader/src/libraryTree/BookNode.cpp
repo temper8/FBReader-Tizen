@@ -110,6 +110,10 @@ shared_ptr<ZLImage> BookNode::image() const {
 	return image;
 }
 
+bool BookNode::imageIsUploaded() const {
+	return myCoverImageIsStored;
+}
+
 shared_ptr<ZLImage> BookNode::originalImage() const {
 	if (myCoverImageIsStored)
 		return myStoredCoverImage;

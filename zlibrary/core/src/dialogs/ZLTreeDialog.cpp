@@ -122,7 +122,9 @@ void ZLTreeDialog::loadCovers() {
 	shared_ptr<CoverUpdater> updater = CoverUpdater::create();
 	if (!updater.isNull())	{
 		AppLog("!updater.isNull");
+
 		const ZLTreeNode::List &nodes = myCurrentNode->children();
+		AppLog("countnode = %d ",nodes.size());
 		int index =0;
 		for (ZLTreeNode::List::const_iterator it = nodes.begin(); it != nodes.end(); ++it) {
 			//if (terminateThread) {
@@ -130,7 +132,7 @@ void ZLTreeDialog::loadCovers() {
 			//	break;
 			//}
 			ZLTreeTitledNode &node = *(ZLTreeTitledNode*)*it;
-			AppLog("ZLTreeTitledNode");
+			AppLog("loadNode %d",index);
 			shared_ptr<ZLImage> coverImage = node.image();
 			//if (terminateThread) {
 			//	AppLog("terminateThread 2");
@@ -138,7 +140,7 @@ void ZLTreeDialog::loadCovers() {
 			//}
 			if (!coverImage.isNull()) {
 					AppLog("addTask");
-					shared_ptr<ZLExecutionData> exe = coverImage->synchronizationData();
+					/*shared_ptr<ZLExecutionData> exe = coverImage->synchronizationData();
 					//if (!exe.isNull()) {AppLog("exe not null");ZLExecutionData::perform(exe);}
 					//else {AppLog("exe = null");}
 					if (!exe.isNull()) {
@@ -146,17 +148,17 @@ void ZLTreeDialog::loadCovers() {
 						updater->addTask(exe);
 						if (updater->hasTasks()) updater->run();
 
-						}
+						}*/
 					//ZLExecutionData::perform(coverImage->synchronizationData());
 					updateNode(node,index);
 				}
 
 
 			index++;
-			if (exitThread()) {
-					AppLog("terminateThread 3");
-					break;
-				}
+		//	if (exitThread()) {
+		//			AppLog("terminateThread 3");
+		//			break;
+		//		}
 			}
 		/*
 		if (updater->hasTasks()) {
