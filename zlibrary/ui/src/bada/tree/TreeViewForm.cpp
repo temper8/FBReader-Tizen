@@ -129,46 +129,7 @@ Bitmap* TreeViewForm::makeIcon(Bitmap* srcBmp){
 	return pBmp;
 }
 
-void   TreeViewForm::updateItem(ZLTreeTitledNode &node, int index){
-		AppLog("updateItem %d",index);
-//		__pListView->UpdateList();
-		__pListView->RefreshList(index,LIST_REFRESH_TYPE_ITEM_MODIFY);
-/*	 	Bitmap *pBmp = null;
-		String title = String(node.title().c_str());
-	    CustomListItem* pItem = new CustomListItem();
-	    //CustomListItem* pItem = (CustomListItem*)__pCustomList->GetItemAt(index);
-	    pItem->Construct(100);
 
-	    if (showIcons){
-	    	 AppLog("есть иконки ");
-	    	 pItem->SetItemFormat(*__pCustomListItemFormat);
-	       	 shared_ptr<ZLImage> cover =node.image();
-	    	 if (!cover.isNull()) 	{
-	    	 		shared_ptr<ZLImageData> coverData = ZLImageManager::Instance().imageData(*cover);
-	    	 		if (!coverData.isNull()) {
-	    	 				ZLImageData &image = *coverData;
-	    	 				Bitmap *tmpBmp = 	((ZLbadaImageData&)image).pBitmap;
-	    	 				pBmp = makeIcon(tmpBmp);
-	    	 				}
-	    	 		}
-	    	}
-
-	    else
-	    	pItem->SetItemFormat(*__pNoIconsListItemFormat);
-
-	    pItem->SetElement(ID_LIST_TEXT_TITLE, title);
-	    pItem->SetElement(ID_LIST_TEXT_SUBTITLE, String(node.subtitle().c_str()));
-	    if (pBmp!=null) pItem->SetElement(ID_LIST_BITMAP, *pBmp, pBmp);
-	    result r =__pCustomList->SetItemAt(index, *pItem, ID_LIST_TEXT_TITLE);
-	    if (r==E_SUCCESS) AppLog("SetItemAt E_SUCCESS");
-	    		else AppLog("SetItemAt error");
-
-	    if (pBmp != null) delete pBmp;
-*/
-	//    __pCustomList->RefreshItem(index);
-
-	 //	RequestRedraw(true);
-}
 
 Tizen::Ui::Controls::ListItemBase* TreeViewForm::CreateItem (int index, int itemWidth){
 	AppLog("CreateItem %d",index);
@@ -198,9 +159,6 @@ Tizen::Ui::Controls::ListItemBase* TreeViewForm::CreateItem (int index, int item
 						if (!coverData.isNull()) {
 								ZLImageData &image = *coverData;
 								Bitmap *tmpBmp = 	((ZLbadaImageData&)image).pBitmap;
-								//int imageWidth = tmpBmp->GetWidth();
-								//int imageHeight = tmpBmp->GetHeight();
-								//AppLog("image w = %d, h = %d", imageWidth, imageHeight);
 								pBmp = makeIcon(tmpBmp);
 								}
 						}
@@ -235,30 +193,6 @@ int TreeViewForm::GetItemCount(void){
 	return ItemCount;
 }
 
-
-result TreeViewForm::AddListItem(String title,String subTitle, Bitmap* pBitmapNormal)
-{
-    // Creates an item of the CustomList
-	AppLog("AddListItem ");
-	SimpleItem* pItem = new (std::nothrow) SimpleItem();
-	Dimension itemDimension(720,100);
-	pItem->Construct(itemDimension, LIST_ANNEX_STYLE_NORMAL);
-	pItem->SetElement(title,null);
-
-/*
-    CustomListItem* pItem = new CustomListItem();
-    pItem->Construct(100);
-    if (showIcons)
-    	pItem->SetItemFormat(*__pCustomListItemFormat);
-    else
-    	pItem->SetItemFormat(*__pNoIconsListItemFormat);
-    pItem->SetElement(ID_LIST_TEXT_TITLE,title);
-    pItem->SetElement(ID_LIST_TEXT_SUBTITLE, subTitle);
-    if (pBitmapNormal!=null) pItem->SetElement(ID_LIST_BITMAP, *pBitmapNormal, pBitmapNormal);
-    customList.AddItem(*pItem, ID_LIST_ITEM);
-*/
-    return E_SUCCESS;
-}
 
 
 result TreeViewForm::OnTerminating(void)
@@ -468,9 +402,6 @@ void TreeViewForm::OnItemStateChanged (const Tizen::Ui::Control &source, int ind
 
 }
 
-void TreeViewForm::RemoveAllListItems(){
-
-}
 
 void TreeViewForm::UpdateContent(){
 	AppLog("TreeViewForm::UpdateContent()");
@@ -478,74 +409,25 @@ void TreeViewForm::UpdateContent(){
 	String strSub;
 	String strName;
 	result r = E_SUCCESS;
-//	__pLstSearchList->RemoveAllItems();  // Clear ui list
-  // Clear ui list
-	//AppLog("__pCustomList->RemoveAllItems()");
 
 	Header* pHeader = GetHeader();
-
-
-   if (ZLTreeTitledNode *myNode = zlobject_cast<ZLTreeTitledNode*>(myTreeDialog->myCurrentNode)) {
-	  strName = String(myNode->title().c_str());
-	 // SetTitleText(strName);
-	  pHeader->SetTitleText(strName);
-   }
+	if (ZLTreeTitledNode *myNode = zlobject_cast<ZLTreeTitledNode*>(myTreeDialog->myCurrentNode)) {
+			strName = String(myNode->title().c_str());
+			pHeader->SetTitleText(strName);
+		}
    else {
-		const char *title = myTreeDialog->myResource["title"].value().c_str();
-		//SetTitleText(String(title));
-		pHeader->SetTitleText(String(title));
+			const char *title = myTreeDialog->myResource["title"].value().c_str();
+			pHeader->SetTitleText(String(title));
    }
 
-   //__pCustomList->RemoveAllItems();
-   RemoveAllListItems();
-
-
-	AppLog("children().size() = %d ",myTreeDialog->myCurrentNode->children().size());
+	//AppLog("children().size() = %d ",myTreeDialog->myCurrentNode->children().size());
 
 	ItemCount = myTreeDialog->myCurrentNode->children().size();
 
 	__pListView->UpdateList();
-	/*
-	ZLTreeNode::List::iterator it;
-	for (int i =0; i<myTreeDialog->myCurrentNode->children().size(); i++) {
-		ZLTreeNode* node = myTreeDialog->myCurrentNode->children().at(i);
-		if (const ZLTreeTitledNode *TitledNode = zlobject_cast<const ZLTreeTitledNode*>(node)) {
-				AppLog("ZLTreeTitledNode.titile %s",TitledNode->title().c_str());
-				//AppLog("ZLTreeTitledNode.imageUrl =  %s",TitledNode->imageUrl().c_str());
 
-				strName = String(TitledNode->title().c_str());
-				strSub = String(TitledNode->subtitle().c_str());
-
-				Bitmap *pBmp = null;
-
-				if (showIcons)  {
-					shared_ptr<ZLImage> cover =TitledNode->extractCoverImage();
-					if (!cover.isNull()) 	{
-							shared_ptr<ZLImageData> coverData = ZLImageManager::Instance().imageData(*cover);
-							if (!coverData.isNull()) {
-								ZLImageData &image = *coverData;
-								Bitmap *tmpBmp = 	((ZLbadaImageData&)image).pBitmap;
-								//int imageWidth = tmpBmp->GetWidth();
-								//int imageHeight = tmpBmp->GetHeight();
-								//AppLog("image w = %d, h = %d", imageWidth, imageHeight);
-								pBmp = makeIcon(tmpBmp);
-								}
-					}
-				}
-
-				AddListItem(strName, strSub, pBmp);
-				if (pBmp != null) delete pBmp;
-				}
-	}
-	*/
-	AppLog("before Draw");
-//	delete pBitmapLeftIcon;
-//	delete pBitmapRightIcon;
-	//__pCustomList->Draw();
-	AppLog("before Show");
-	//__pCustomList->Show();
 	AppLog("before ReDraw");
-	  RequestRedraw(true);
+    RequestRedraw(true);
 	return;
 }
 

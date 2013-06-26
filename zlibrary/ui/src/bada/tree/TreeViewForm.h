@@ -109,7 +109,6 @@ public:
 
 	void	LoadContentInfo(Tizen::Content::ContentSearchResult* pSearchResult);
 
-	void    updateItem(ZLTreeTitledNode &node, int index);
 	void	UpdateContent();
 	void	DeleteContent();
 //	ZLbadaTreeModel* myModel;
@@ -129,14 +128,12 @@ protected:
 	Tizen::Ui::Controls::ListView*  __pListView;
 
 
-    result AddListItem(Tizen::Base::String title, Tizen::Base::String subTitle, Tizen::Graphics::Bitmap* pBitmapNormal);
 
-    void RemoveAllListItems();
 
 public :
 
 	void SetPreviousForm(Tizen::Ui::Controls::Form* preForm);
- //   void setModel(ZLbadaTreeModel* TreeModel);
+
 };
-//inline void TreeViewForm::setModel(ZLbadaTreeModel* TreeModel) {myModel = TreeModel; };
+
 #endif /* TREEVIEWFORM_H_ */
