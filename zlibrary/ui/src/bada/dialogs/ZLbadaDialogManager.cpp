@@ -33,7 +33,7 @@
 #include "ZLbadaDialog.h"
 #include "ZLbadaDialogManager.h"
 #include "ZLbadaOpenFileDialog.h"
-#include "ZLbadaOptionsDialog.h"
+#include "ZLTizenOptionsDialog.h"
 #include "ZLbadaTreeDialog.h"
 #include "ZLTypeId.h"
 
@@ -50,6 +50,20 @@ shared_ptr<ZLDialog> ZLbadaDialogManager::createDialog(const ZLResourceKey &key)
 	return new ZLbadaDialog(resource()[key]);
 }
 
+
+shared_ptr<ZLOptionsDialog> ZLbadaDialogManager::createOptionsDialog(const ZLResourceKey &key, shared_ptr<ZLRunnable> applyAction, bool showApplyButton) const {
+	AppLog("ZLbadaDialogManager::createOptionsDialog");
+	//ZLbadaOptionsDialog* b= new ZLbadaOptionsDialog(myApplicationWindow->viewWidget().mybadaForm,resource()[key], applyAction, showApplyButton);
+	//mybadaOptionsDialog =new ZLbadaOptionsDialog(myApplicationWindow->viewWidget().mybadaForm,resource()[key], applyAction, showApplyButton);
+	shared_ptr<ZLOptionsDialog> b = new ZLTizenOptionsDialog(myApplicationWindow->viewWidget().mybadaForm,resource()[key], applyAction, showApplyButton);
+	Frame *pFrame = Application::GetInstance()->GetAppFrame()->GetFrame();
+	TizenDialogForm* d = (TizenDialogForm*)pFrame->GetCurrentForm();
+	d->__badaOptionsDialog = b;
+	//b->myDialogForm = myApplicationWindow->viewWidget().mybadaForm->CreateDalogForm();
+	return b;//new ZLbadaOptionsDialog(myApplicationWindow->viewWidget().mybadaForm,resource()[key], applyAction, showApplyButton);
+}
+
+/*
 shared_ptr<ZLOptionsDialog> ZLbadaDialogManager::createOptionsDialog(const ZLResourceKey &key, shared_ptr<ZLRunnable> applyAction, bool showApplyButton) const {
 	AppLog("ZLbadaDialogManager::createOptionsDialog");
 	//ZLbadaOptionsDialog* b= new ZLbadaOptionsDialog(myApplicationWindow->viewWidget().mybadaForm,resource()[key], applyAction, showApplyButton);
@@ -62,6 +76,7 @@ shared_ptr<ZLOptionsDialog> ZLbadaDialogManager::createOptionsDialog(const ZLRes
 	return b;//new ZLbadaOptionsDialog(myApplicationWindow->viewWidget().mybadaForm,resource()[key], applyAction, showApplyButton);
 }
 
+*/
 
 shared_ptr<ZLOpenFileDialog> ZLbadaDialogManager::createOpenFileDialog(const ZLResourceKey &key, const std::string &directoryPath, const std::string &filePath, const ZLOpenFileDialog::Filter &filter) const {
 //TODO корректно ли без shared_pt<>?
