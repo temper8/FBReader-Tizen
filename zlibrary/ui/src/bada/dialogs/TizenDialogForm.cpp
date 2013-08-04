@@ -11,8 +11,9 @@ using namespace Tizen::App;
 using namespace Tizen::Base;
 using namespace Tizen::Ui;
 using namespace Tizen::Ui::Controls;
+using namespace Tizen::Graphics;
 
-TizenDialogForm::TizenDialogForm() {
+TizenDialogForm::TizenDialogForm(): __pTableView(null) {
 	// TODO Auto-generated constructor stub
 
 }
@@ -37,6 +38,19 @@ bool TizenDialogForm::Initialize(const char *title, bool __showApplyButton)
 //	pFooter->AddActionEventListener(*this);
 
 	SetFormBackEventListener(this);
+
+    // Creates an instance of TableView
+    __pTableView = new GroupedTableView();
+    //__pTableView->Construct(Rectangle(0, 0, GetClientAreaBounds().width, GetClientAreaBounds().height), true, TABLE_VIEW_SCROLL_BAR_STYLE_FADE_OUT);
+    __pTableView->Construct(Rectangle(0, 0, GetClientAreaBounds().width, GetClientAreaBounds().height), true, TABLE_VIEW_SCROLL_BAR_STYLE_FADE_OUT);
+
+    __pTableView->SetItemProvider(this);
+    __pTableView->AddGroupedTableViewItemEventListener(*this);
+
+    // Adds the TableView to the form
+    AddControl(__pTableView);
+
+
 	return true;
 }
 
@@ -54,3 +68,148 @@ void TizenDialogForm::OnFormBackRequested(Tizen::Ui::Controls::Form& source){
 
 	pPreviousForm->SendUserEvent(0, null);
 }
+
+
+
+// IGroupedTableViewItemEventListener implementation
+void
+TizenDialogForm::OnGroupedTableViewGroupItemStateChanged(GroupedTableView& tableView, int groupIndex, TableViewGroupItem* pItem, TableViewItemStatus status)
+{
+    if (tableView.IsGroupExpanded(groupIndex))
+    {
+        tableView.CollapseGroup(groupIndex);
+    }
+    else
+    {
+        tableView.ExpandGroup(groupIndex);
+    }
+}
+
+void
+TizenDialogForm::OnGroupedTableViewItemStateChanged(GroupedTableView& tableView, int groupIndex, int itemIndex, TableViewItem* pItem, TableViewItemStatus status)
+{
+    // ....
+}
+
+void
+TizenDialogForm::OnGroupedTableViewContextItemActivationStateChanged(GroupedTableView& tableView, int groupIndex, int itemIndex, TableViewContextItem* pContextItem, bool activated)
+{
+    // ....
+}
+
+
+// IGroupedTableViewItemProvider implementation
+int
+TizenDialogForm::GetGroupCount(void)
+{
+    return myTabs.size();;
+}
+
+int
+TizenDialogForm::GetItemCount(int groupIndex)
+{
+    return 3;
+}
+
+int
+TizenDialogForm::GetDefaultItemHeight(void)
+{
+    return 100;
+}
+
+int
+TizenDialogForm::GetDefaultGroupItemHeight(void)
+{
+    return 80;
+}
+
+TableViewGroupItem*
+TizenDialogForm::CreateGroupItem(int groupIndex, int itemWidth)
+{
+    TableViewGroupItem* pItem = new TableViewGroupItem();
+    pItem->Construct(Dimension(itemWidth, GetDefaultGroupItemHeight()));
+
+    String text;
+    text.Format(30, L"Group title %s", myTabs[groupIndex]->displayName().c_str());
+   // text.Format(30, L"Tab Name %s", myTabs[itemIndex]->displayName().c_str());
+    Label* pLabel = new Label();
+    pLabel->Construct(Rectangle(0, 0, itemWidth, GetDefaultGroupItemHeight()), text);
+
+    pItem->AddControl(pLabel);
+
+    return pItem;
+}
+
+bool
+TizenDialogForm::DeleteGroupItem(int groupIndex, TableViewGroupItem* pItem)
+{
+    pItem->Destroy();
+
+    return true;
+}
+
+void
+TizenDialogForm::UpdateGroupItem(int groupIndex, TableViewGroupItem* pItem)
+{
+    // ....
+}
+
+TableViewItem*
+TizenDialogForm::CreateItem(int groupIndex, int itemIndex, int itemWidth)
+{
+    TableViewAnnexStyle style = TABLE_VIEW_ANNEX_STYLE_NORMAL;
+    TableViewItem* pItem = new TableViewItem();
+
+    switch (itemIndex % 6)
+    {
+    case 0:
+        style = TABLE_VIEW_ANNEX_STYLE_NORMAL;
+        break;
+    case 1:
+        style = TABLE_VIEW_ANNEX_STYLE_MARK;
+        break;
+    case 2:
+        style = TABLE_VIEW_ANNEX_STYLE_ONOFF_SLIDING;
+        break;
+    case 3:
+        style = TABLE_VIEW_ANNEX_STYLE_DETAILED;
+        break;
+    case 4:
+        style = TABLE_VIEW_ANNEX_STYLE_RADIO;
+        break;
+    case 5:
+        style = TABLE_VIEW_ANNEX_STYLE_ONOFF_SLIDING_WITH_DIVIDER;
+        break;
+    default:
+        break;
+    }
+
+    pItem->Construct(Dimension(itemWidth, GetDefaultItemHeight()), style);
+
+    String text;
+    text.Format(30, L"TableViewItem %d", itemIndex);
+
+    Label* pLabel = new Label();
+    pLabel->Construct(Rectangle(0, 0, itemWidth, GetDefaultItemHeight()), text);
+
+    pItem->AddControl(pLabel);
+ //   pItem->SetContextItem(__pContextItem);
+
+    return pItem;
+}
+
+bool
+TizenDialogForm::DeleteItem(int groupIndex, int itemIndex, TableViewItem* pItem)
+{
+    pItem->Destroy();
+
+    return true;
+}
+
+void
+TizenDialogForm::UpdateItem(int groupIndex, int itemIndex, TableViewItem* pItem)
+{
+    // ....
+}
+
+
