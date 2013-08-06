@@ -409,8 +409,8 @@ bool ZLXMLReaderInternal::parseBuffer(const char *buffer, size_t len) {
 	TryReturn(r, E_FAILURE, "xmlParseChunk failed.");
 
 //	AppLog("ctxt->encoding = %s", ctxt->encoding);
-	CATCH:
-		AppLog("CATCH");
+//	CATCH:
+	//	AppLog("CATCH");
 	return (r == 0);
 	//return true;
 }
