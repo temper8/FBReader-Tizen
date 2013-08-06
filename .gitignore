@@ -11,4 +11,7 @@ DebugInfo
 FBReader.htb
 .settings
 .cproject
+.sdk_delta.info
+.rds_delta
+.sign
 
