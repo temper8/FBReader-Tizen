@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <Manifest xmlns="http://schemas.tizen.org/2012/12/manifest">
-    <Id>DVJAPebyiP</Id>
+    <Id>r2prVhfii7</Id>
     <Version>0.0.4</Version>
     <Type>C++App</Type>
     <Author>Alex</Author>
     <Requirements>
-        <Feature Name="http://tizen.org/feature/platform.core.cpu.arch.armv7">true</Feature>
+        <Feature Name="http://tizen.org/feature/platform.core.cpu.arch.x86">true</Feature>
         <Feature Name="http://tizen.org/feature/platform.core.fpu.arch.vfpv3">true</Feature>
     </Requirements>
     <Apps>
@@ -15,7 +15,7 @@
             <UiScalability BaseScreenSize="Normal" CoordinateSystem="Logical" LogicalCoordinate="720"/>
             <UiTheme SystemTheme="White"/>
             <DisplayNames>
-                <DisplayName Locale="eng-GB">FBReader</DisplayName>
+                <DisplayName Locale="eng-GB">FBReader2</DisplayName>
             </DisplayNames>
             <Icons>
                 <Icon Section="MainMenu" Type="Xhigh">FBReader-type1.png</Icon>
