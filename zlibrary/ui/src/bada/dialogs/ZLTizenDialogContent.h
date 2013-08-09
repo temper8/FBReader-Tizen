@@ -28,6 +28,7 @@ public:
 private:
 	void createViewByEntry(const std::string &name, const std::string &tooltip, ZLOptionEntry *option, int fromColumn, int toColumn);
 	TizenDialogForm *myForm;
+	int myRowCounter;
 
 };
 

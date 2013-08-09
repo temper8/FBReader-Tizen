@@ -188,6 +188,12 @@ TizenDialogForm::CreateItem(int groupIndex, int itemIndex, int itemWidth)
 
     String text;
     text.Format(30, L"TableViewItem %d", itemIndex);
+ //   shared_ptr<ZLDialogContent>  myTab =  myTabs[groupIndex];
+ //   myTab->
+    String text;
+      text.Format(30, L"Group title %s", myTabs[groupIndex]->displayName().c_str());
+
+
 
     Label* pLabel = new Label();
     pLabel->Construct(Rectangle(0, 0, itemWidth, GetDefaultItemHeight()), text);

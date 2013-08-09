@@ -8,6 +8,8 @@
 #include <FBase.h>
 
 #include "ZLTizenDialogContent.h"
+#include "optionView/TestTizenOptionView.h"
+
 
 ZLTizenDialogContent::ZLTizenDialogContent(TizenDialogForm *form, const ZLResource &resource) : ZLDialogContent(resource), myForm(form) {
 	// TODO Auto-generated constructor stub
@@ -44,5 +46,75 @@ void ZLTizenDialogContent::close() {
 
 
 void ZLTizenDialogContent::createViewByEntry(const std::string &name, const std::string &tooltip, ZLOptionEntry *option, int fromColumn, int toColumn) {
+	AppLog("createViewByEntry ");
+	if (option == 0) {
+		return;
+	}
+	ZLTizenOptionView *view = 0;
+	AppLog("createViewByEntry switch");
+	/*
+	switch (option->kind()) {
+		case ZLOptionEntry::BOOLEAN:
+			AppLog("ZLOptionEntry::BOOLEAN:");
+			view = new BooleanOptionView(name, tooltip, (ZLBooleanOptionEntry*)option, this, myRowCounter, fromColumn, toColumn);
+			break;
+		case ZLOptionEntry::BOOLEAN3:
+			AppLog("ZLOptionEntry::BOOLEAN3:");
+			view = new Boolean3OptionView(name, tooltip, (ZLBoolean3OptionEntry*)option, this, myRowCounter, fromColumn, toColumn);
+			break;
+		case ZLOptionEntry::STRING:
+			AppLog("ZLOptionEntry::STRING:");
+			view = new StringOptionView(name, tooltip, (ZLStringOptionEntry*)option, this, false, myRowCounter, fromColumn, toColumn);
+			break;
+		case ZLOptionEntry::PASSWORD:
+			AppLog("ZLOptionEntry::PASSWORD:");
+			//view = new StringOptionView(name, tooltip, (ZLStringOptionEntry*)option, this, true, myRowCounter, fromColumn, toColumn);
+			break;
+		case ZLOptionEntry::CHOICE:
+			AppLog("ZLOptionEntry::CHOICE:");
+			view = new ChoiceOptionView(name, tooltip, (ZLChoiceOptionEntry*)option, this, myRowCounter, fromColumn, toColumn);
+			break;
+		case ZLOptionEntry::SPIN:
+			AppLog("ZLOptionEntry::SPIN:");
+			view = new SpinOptionView(name, tooltip, (ZLSpinOptionEntry*)option, this, myRowCounter, fromColumn, toColumn);
+			break;
+		case ZLOptionEntry::COMBO:
+			AppLog("ZLOptionEntry::COMBO:");
+			view = new ComboOptionView(name, tooltip, (ZLComboOptionEntry*)option, this, myRowCounter, fromColumn, toColumn);
+			break;
+		case ZLOptionEntry::COLOR:
+			AppLog("ZLOptionEntry::COLOR:");
+			view = new ColorOptionView(name, tooltip, (ZLColorOptionEntry*)option, this, myRowCounter, fromColumn, toColumn);
+			break;
+		case ZLOptionEntry::KEY:
+			AppLog("ZLOptionEntry::KEY:");
+			//view = new KeyOptionView(name, tooltip, (ZLKeyOptionEntry*)option, this, myRowCounter, fromColumn, toColumn);
+			break;
+		case ZLOptionEntry::ORDER:
+			AppLog("ZLOptionEntry::ORDER:");
+			//view = new OrderOptionView(name, tooltip, (ZLOrderOptionEntry*)option, this, myRowCounter, fromColumn, toColumn);
+			break;
+		case ZLOptionEntry::STATIC:
+			AppLog("ZLOptionEntry::STATIC:");
+			  view = new StaticTextOptionView(name, tooltip, (ZLStaticTextOptionEntry*)option, this, myRowCounter, fromColumn, toColumn);
+			break;
+    	case ZLOptionEntry::PICTURE:
+		    view = new PictureView(name, tooltip, (ZLPictureOptionEntry*)option, this, myRowCounter, fromColumn, toColumn);
+		    break;
+    	case ZLOptionEntry::BUTTON:
+    		AppLog("ZLOptionEntry::BUTTON");
+    		    view = new ButtonView(name, tooltip, (ZLButtonOptionEntry*)option, this, myRowCounter, fromColumn, toColumn);
+    		    break;
+    	case ZLOptionEntry::MENU:
+    		AppLog("ZLOptionEntry::MENU");
+    		    view = new MenuView(name, tooltip, (ZLMenuOptionEntry*)option, this, myRowCounter, fromColumn, toColumn);
+    		    break;
+	}
+	*/
+  	view = new TestTizenOptionView(name, tooltip, option, this, myRowCounter, fromColumn, toColumn);
 
+	if (view != 0) {
+		//view->setVisible(option->isVisible());
+		addView(view);
+	}
 }
