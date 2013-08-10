@@ -53,10 +53,12 @@ public:
 									const ZLResourceKey &key1, ZLSimpleOption &option1);
 
 	void accept();
-	ZLOptionView* getView(int index) {return myViews[index];}
+	int getViewsCount() { return myViews.size(); }
+	ZLOptionView* getView(int index) { return (ZLOptionView*)myViews[index]; }
 
 protected:
 	void addView(ZLOptionView *view);
+
 
 private:
 	const ZLResource &myResource;

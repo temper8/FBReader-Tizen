@@ -11,6 +11,7 @@
 #include "ZLDialogContent.h"
 
 class TizenDialogForm;
+class ZLTizenOptionView;
 
 class ZLTizenDialogContent: public ZLDialogContent {
 public:
@@ -24,6 +25,9 @@ public:
 	//void addItem(DialogForm *form, int row, int fromColumn, int toColumn);
 
 	void close();
+
+
+	//ZLTizenOptionView* getView(int index) {return (ZLTizenOptionView*) ZLDialogContent::getView(index);}
 
 private:
 	void createViewByEntry(const std::string &name, const std::string &tooltip, ZLOptionEntry *option, int fromColumn, int toColumn);

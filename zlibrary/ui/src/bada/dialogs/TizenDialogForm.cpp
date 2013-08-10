@@ -6,6 +6,8 @@
  */
 
 #include "TizenDialogForm.h"
+#include "optionView/ZLTizenOptionView.h"
+
 
 using namespace Tizen::App;
 using namespace Tizen::Base;
@@ -102,13 +104,14 @@ TizenDialogForm::OnGroupedTableViewContextItemActivationStateChanged(GroupedTabl
 int
 TizenDialogForm::GetGroupCount(void)
 {
-    return myTabs.size();;
+    return myTabs.size();
 }
 
 int
 TizenDialogForm::GetItemCount(int groupIndex)
 {
-    return 3;
+	shared_ptr<ZLDialogContent>  myTab =  myTabs[groupIndex];
+    return myTab->getViewsCount();
 }
 
 int
@@ -186,12 +189,12 @@ TizenDialogForm::CreateItem(int groupIndex, int itemIndex, int itemWidth)
 
     pItem->Construct(Dimension(itemWidth, GetDefaultItemHeight()), style);
 
+    //String text;
+    //text.Format(30, L"TableViewItem %d", itemIndex);
+    shared_ptr<ZLDialogContent>  myTab =  myTabs[groupIndex];
+    ZLTizenOptionView* v = (ZLTizenOptionView*)myTab->getView(itemIndex);
     String text;
-    text.Format(30, L"TableViewItem %d", itemIndex);
- //   shared_ptr<ZLDialogContent>  myTab =  myTabs[groupIndex];
- //   myTab->
-    String text;
-      text.Format(30, L"Group title %s", myTabs[groupIndex]->displayName().c_str());
+    text.Format(30, L"Group title %s", v->myCaption.c_str());
 
 
 
