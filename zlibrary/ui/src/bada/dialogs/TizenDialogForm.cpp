@@ -160,6 +160,9 @@ TizenDialogForm::UpdateGroupItem(int groupIndex, TableViewGroupItem* pItem)
 TableViewItem*
 TizenDialogForm::CreateItem(int groupIndex, int itemIndex, int itemWidth)
 {
+    shared_ptr<ZLDialogContent>  myTab =  myTabs[groupIndex];
+    ZLTizenOptionView* v = (ZLTizenOptionView*)myTab->getView(itemIndex);
+  /*
     TableViewAnnexStyle style = TABLE_VIEW_ANNEX_STYLE_NORMAL;
     TableViewItem* pItem = new TableViewItem();
 
@@ -186,25 +189,16 @@ TizenDialogForm::CreateItem(int groupIndex, int itemIndex, int itemWidth)
     default:
         break;
     }
-
-    pItem->Construct(Dimension(itemWidth, GetDefaultItemHeight()), style);
+*/
+  //  pItem->Construct(Dimension(itemWidth, GetDefaultItemHeight()), style);
 
     //String text;
     //text.Format(30, L"TableViewItem %d", itemIndex);
-    shared_ptr<ZLDialogContent>  myTab =  myTabs[groupIndex];
-    ZLTizenOptionView* v = (ZLTizenOptionView*)myTab->getView(itemIndex);
-    String text;
-    text.Format(30, L"Group title %s", v->myCaption.c_str());
 
 
-
-    Label* pLabel = new Label();
-    pLabel->Construct(Rectangle(0, 0, itemWidth, GetDefaultItemHeight()), text);
-
-    pItem->AddControl(pLabel);
  //   pItem->SetContextItem(__pContextItem);
 
-    return pItem;
+    return v->createTableViewItem(itemWidth, GetDefaultItemHeight());
 }
 
 bool

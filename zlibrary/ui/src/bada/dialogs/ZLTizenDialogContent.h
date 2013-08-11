@@ -26,7 +26,6 @@ public:
 
 	void close();
 
-
 	//ZLTizenOptionView* getView(int index) {return (ZLTizenOptionView*) ZLDialogContent::getView(index);}
 
 private:
