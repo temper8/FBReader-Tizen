@@ -133,11 +133,11 @@ TizenDialogForm::CreateGroupItem(int groupIndex, int itemWidth)
     pItem->Construct(Dimension(itemWidth, GetDefaultGroupItemHeight()));
 
     String text;
-    text.Format(30, L"Group title %s", myTabs[groupIndex]->displayName().c_str());
+    text.Format(40, L"%s", myTabs[groupIndex]->displayName().c_str());
    // text.Format(30, L"Tab Name %s", myTabs[itemIndex]->displayName().c_str());
     Label* pLabel = new Label();
     pLabel->Construct(Rectangle(0, 0, itemWidth, GetDefaultGroupItemHeight()), text);
-
+    pLabel->SetTextHorizontalAlignment(ALIGNMENT_LEFT);
     pItem->AddControl(pLabel);
 
     return pItem;

@@ -9,6 +9,8 @@
 #define ZLTIZENDIALOGCONTENT_H_
 
 #include "ZLDialogContent.h"
+#include "ZLOptionEntry.h"
+//#include "../../../../core/src/dialogs/ZLOptionsDialog.h"
 
 class TizenDialogForm;
 class ZLTizenOptionView;

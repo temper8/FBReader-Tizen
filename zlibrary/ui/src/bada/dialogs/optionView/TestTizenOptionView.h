@@ -10,7 +10,6 @@
 
 #include "ZLTizenOptionView.h"
 
-
 class TestTizenOptionView: public ZLTizenOptionView {
 public:
 	

@@ -32,7 +32,7 @@ TableViewItem* TestTizenOptionView::createTableViewItem(int itemWidth, int defau
 	pItem->Construct(Dimension(itemWidth, defaultItemHeight), style);
 
 	String text;
-	text.Format(30, L"Group title %s", myCaption.c_str());
+	text.Format(30, L"t=%s", myCaption.c_str());
 
 	Label* pLabel = new Label();
 	pLabel->Construct(Rectangle(0, 0, itemWidth, defaultItemHeight), text);
