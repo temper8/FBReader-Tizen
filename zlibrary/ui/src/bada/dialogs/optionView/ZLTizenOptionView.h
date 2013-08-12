@@ -10,6 +10,7 @@
 
 #include "../../../../../core/src/dialogs/ZLOptionView.h"
 #include "../ZLTizenDialogContent.h"
+#include <FBase.h>
 #include <FUi.h>
 
 class ZLTizenOptionView: public ZLOptionView {
@@ -26,7 +27,8 @@ protected:
 	int itemIndex;
 	int myRow, myFromColumn, myToColumn;
 public :
-	std::string myCaption; 
+	//std::string myCaption;
+	Tizen::Base::String myCaption;
 	ZLTizenDialogContent *myTab;
 	virtual Tizen::Ui::Controls::TableViewItem* createTableViewItem(int itemWidth, int defaultItemHeight) = 0;
 

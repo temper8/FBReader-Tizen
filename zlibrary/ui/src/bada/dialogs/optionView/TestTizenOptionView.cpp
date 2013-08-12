@@ -17,8 +17,8 @@ using namespace Tizen::Graphics;
 void TestTizenOptionView::_createItem() {
 //	std::string myText = ((ZLStaticTextOptionEntry&)*myOption).initialValue();
 //	const char *text = myText.c_str();
-	 myCaption = ZLOptionView::name()+ ": 123";
-
+//	 myCaption = ZLOptionView::name()+ ": 123";
+	 myCaption.Format(30, L"%s", ZLOptionView::name().c_str());
 }
 
 void TestTizenOptionView::_onAccept() const {
@@ -31,11 +31,11 @@ TableViewItem* TestTizenOptionView::createTableViewItem(int itemWidth, int defau
 	TableViewItem* pItem = new TableViewItem();
 	pItem->Construct(Dimension(itemWidth, defaultItemHeight), style);
 
-	String text;
-	text.Format(30, L"t=%s", myCaption.c_str());
+	//String text;
+	//text.Format(30, L"t=%s", myCaption.c_str());
 
 	Label* pLabel = new Label();
-	pLabel->Construct(Rectangle(0, 0, itemWidth, defaultItemHeight), text);
+	pLabel->Construct(Rectangle(0, 0, itemWidth, defaultItemHeight), myCaption);
 
 	pItem->AddControl(pLabel);
 

@@ -10,6 +10,7 @@
 #include "ZLTizenDialogContent.h"
 #include "optionView/TestTizenOptionView.h"
 #include "optionView/TizenBooleanOptionView.h"
+#include "optionView/TizenTextOptionView.h"
 
 ZLTizenDialogContent::ZLTizenDialogContent(TizenDialogForm *form, const ZLResource &resource) : ZLDialogContent(resource), myForm(form) {
 	// TODO Auto-generated constructor stub
@@ -58,6 +59,11 @@ void ZLTizenDialogContent::createViewByEntry(const std::string &name, const std:
 			AppLog("ZLOptionEntry::BOOLEAN:");
 			view = new TizenBooleanOptionView(name, tooltip, (ZLBooleanOptionEntry*)option, this, myRowCounter, fromColumn, toColumn);
 			break;
+		case ZLOptionEntry::STATIC:
+			AppLog("ZLOptionEntry::STATIC:");
+			  view = new TizenTextOptionView(name, tooltip, (ZLStaticTextOptionEntry*)option, this, myRowCounter, fromColumn, toColumn);
+			break;
+
 	/*	case ZLOptionEntry::BOOLEAN3:
 			AppLog("ZLOptionEntry::BOOLEAN3:");
 			view = new Boolean3OptionView(name, tooltip, (ZLBoolean3OptionEntry*)option, this, myRowCounter, fromColumn, toColumn);
@@ -94,10 +100,7 @@ void ZLTizenDialogContent::createViewByEntry(const std::string &name, const std:
 			AppLog("ZLOptionEntry::ORDER:");
 			//view = new OrderOptionView(name, tooltip, (ZLOrderOptionEntry*)option, this, myRowCounter, fromColumn, toColumn);
 			break;
-		case ZLOptionEntry::STATIC:
-			AppLog("ZLOptionEntry::STATIC:");
-			  view = new StaticTextOptionView(name, tooltip, (ZLStaticTextOptionEntry*)option, this, myRowCounter, fromColumn, toColumn);
-			break;
+
     	case ZLOptionEntry::PICTURE:
 		    view = new PictureView(name, tooltip, (ZLPictureOptionEntry*)option, this, myRowCounter, fromColumn, toColumn);
 		    break;
@@ -114,7 +117,7 @@ void ZLTizenDialogContent::createViewByEntry(const std::string &name, const std:
 	if (view == 0) view = new TestTizenOptionView(name, tooltip, option, this, myRowCounter, fromColumn, toColumn);
 
 	if (view != 0) {
-		//view->setVisible(option->isVisible());
+		view->setVisible(option->isVisible());
 		addView(view);
 	}
 }
