@@ -7,6 +7,7 @@
 
 #include "TizenTextOptionView.h"
 #include <FUi.h>
+#include <FText.h>
 
 
 using namespace Tizen::App;
@@ -14,33 +15,33 @@ using namespace Tizen::Base;
 using namespace Tizen::Ui;
 using namespace Tizen::Ui::Controls;
 using namespace Tizen::Graphics;
-/*
-int stringLength(const char *str, int len){
+
+int trueStringLength(const char *str, int len){
     Tizen::Base:: String bada_str;
     ByteBuffer buffer;
     buffer.Construct(len + 1);
     buffer.SetArray(( byte*)str, 0, len);
     buffer.SetByte( '\0');
     buffer.Flip();
-    Utf8Encoding utf8;
+    Tizen::Text::Utf8Encoding utf8;
     int charCount;
- //   utf8.GetCharCount(buffer, charCount);
+    utf8.GetCharCount(buffer, charCount);
   return charCount;
 }
-*/
+
 void TizenTextOptionView::_createItem() {
 
-	//myCaption = ZLOptionView::name();
-	//String myCaption;// = L"TizenBooleanOptionView";
-	myCaption.Format(30, L"%s", name().c_str());
+	myCaption.Format(40, L"%s", name().c_str());
 	std::string text = ((ZLStaticTextOptionEntry&)*myOption).initialValue();
-	AppLog("text = %d",text.c_str());
-	myText.Format(30, L"%s", text.c_str());
+	int len = trueStringLength(text.c_str(), text.length());
+	AppLog("text = %s",text.c_str());
+	AppLog("text = %d",len);
+	myText.Format(len+1, L"%s", text.c_str());
 	//const char *text = myText.c_str();
 	std::string caption = ZLOptionView::name()+ ": ";
 
-	int len = 111;//stringLength(text, myText.length());
-	AppLog("myText.length = %d",len);
+
+
 	//TODO переделать эту фигню
 	int n = len / 20;
 	int h = 45;
@@ -165,13 +166,15 @@ void TizenTextOptionView::_onAccept() const {
 
 TableViewItem* TizenTextOptionView::createTableViewItem(int itemWidth, int defaultItemHeight) {
 	TableViewAnnexStyle style = TABLE_VIEW_ANNEX_STYLE_NORMAL;
+	//TableViewAnnexStyle style = TABLE_VIEW_ANNEX_STYLE_DETAILED;
+	//TableViewAnnexStyle style = TABLE_VIEW_ANNEX_STYLE_MARK;
 	TableViewItem* pItem = new TableViewItem();
-	pItem->Construct(Dimension(itemWidth, 2*defaultItemHeight), style);
+	pItem->Construct(Dimension(itemWidth, 2*defaultItemHeight-25), style);
 
 
 
 	Label* pLabel = new Label();
-	pLabel->Construct(Rectangle(0, 0, itemWidth, defaultItemHeight), myCaption);
+	pLabel->Construct(Rectangle(0, 0, itemWidth, defaultItemHeight-10), myCaption);
 	pLabel->SetTextConfig(30.0f, LABEL_TEXT_STYLE_NORMAL);
 	pLabel->SetTextHorizontalAlignment(ALIGNMENT_LEFT);
 
@@ -179,7 +182,7 @@ TableViewItem* TizenTextOptionView::createTableViewItem(int itemWidth, int defau
 
 	// Creates an instance of TextBox
 	TextBox* __pTextBox = new TextBox();
-	__pTextBox->Construct(Rectangle(0, defaultItemHeight, itemWidth, defaultItemHeight), TEXT_BOX_BORDER_ROUNDED);
+	__pTextBox->Construct(Rectangle(10, defaultItemHeight-30, itemWidth-20, defaultItemHeight-10), TEXT_BOX_BORDER_ROUNDED);
 
 	    // Sets properties on the text box
 	__pTextBox->SetTextSize(30);
