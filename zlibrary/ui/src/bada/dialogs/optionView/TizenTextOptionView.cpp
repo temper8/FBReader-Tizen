@@ -171,7 +171,7 @@ TableViewItem* TizenTextOptionView::createTableViewItem(int itemWidth, int defau
 	TableViewItem* pItem = new TableViewItem();
 	pItem->Construct(Dimension(itemWidth, 2*defaultItemHeight-25), style);
 
-
+	pItem->SetFocusable(false);
 
 	Label* pLabel = new Label();
 	pLabel->Construct(Rectangle(0, 0, itemWidth, defaultItemHeight-10), myCaption);
@@ -194,6 +194,7 @@ TableViewItem* TizenTextOptionView::createTableViewItem(int itemWidth, int defau
 
 
 	pItem->AddControl(__pTextBox);
-
+	pItem->SetIndividualSelectionEnabled(pLabel, true);
+	pItem->SetIndividualSelectionEnabled(__pTextBox, true);
 	return pItem;
 }

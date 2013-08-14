@@ -61,37 +61,47 @@ TableViewItem* TizenPictureView::createTableViewItem(int itemWidth, int defaultI
 	TableViewAnnexStyle style = TABLE_VIEW_ANNEX_STYLE_NORMAL;
 	TableViewItem* pItem = new TableViewItem();
 	pItem->Construct(Dimension(itemWidth, 3*defaultItemHeight), style);
-
-	//String text;
+	//pItem->SetEnabled(false);
+	String text;
 	//text.Format(30, L"t=%s", myCaption.c_str());
+	Label* pLabel0 = new Label();
+	pLabel0->Construct(Rectangle(30, 0, itemWidth, 3*defaultItemHeight), text);
+	pItem->AddControl(pLabel0);
 
 	Label* pLabel = new Label();
-	pLabel->Construct(Rectangle(10, 0, itemWidth / 3, 3*defaultItemHeight), myCaption);
+	pLabel->Construct(Rectangle(30, 0, 200, 300), text);
 
     Bitmap *pBmp = null;
 	if (!myImage.isNull()) {
 			shared_ptr<ZLImage> cover = myImage;
-			if (cover.isNull()) {	AppLog("cover.isNull()");}
-			else
-				{
+			if (!cover.isNull())	{
 					shared_ptr<ZLImageData> coverData = ZLImageManager::Instance().imageData(*cover);
 					if (!coverData.isNull()) {
 						ZLImageData &image = *coverData;
 						Bitmap *tmpBmp = 	((ZLbadaImageData&)image).pBitmap;
 						pBmp = makeCover(tmpBmp);
-						}
-					else
-					 {	AppLog("coverData.isNull()");}}
-	    }
-
+					}
+			}
+	}
 	if (pBmp!=null) {
-			//pItem->SetElement(ID_LIST_BITMAP, *pBmp, pBmp);
 			pLabel->SetBackgroundBitmap(*pBmp);
 			delete pBmp;
 	}
 
-
 	pItem->AddControl(pLabel);
+
+	Button* pButton1 = new Button();
+	pButton1->Construct(Rectangle(300, 20, 350, 80),L"Read");
+	pItem->AddControl(pButton1);
+
+	Button* pButton2 = new Button();
+	pButton2->Construct(Rectangle(300, 120, 350, 80),L"Download");
+	pItem->AddControl(pButton2);
+
+	pItem->SetIndividualSelectionEnabled(pLabel0, true);
+	pItem->SetIndividualSelectionEnabled(pLabel, true);
+	pItem->SetIndividualSelectionEnabled(pButton1, true);
+	pItem->SetIndividualSelectionEnabled(pButton2, true);
 
 	return pItem;
 }
