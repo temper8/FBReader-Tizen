@@ -36,6 +36,7 @@ TableViewItem* TizenSpinOptionView::createTableViewItem(int itemWidth, int defau
 
 	Label* pLabel = new Label();
 	pLabel->Construct(Rectangle(0, 0, itemWidth, defaultItemHeight), myCaption);
+    pLabel->SetTextHorizontalAlignment(ALIGNMENT_LEFT);
 	pItem->AddControl(pLabel);
 
 	Slider* __pSlider = new (std::nothrow) Slider();
@@ -45,16 +46,16 @@ TableViewItem* TizenSpinOptionView::createTableViewItem(int itemWidth, int defau
 	Label*	pLabelMax = new (std::nothrow) Label();
 	pLabelMax->Construct(FloatRectangle(650.0f, 80.0f, 45.0f, 45.0f), L"123");
 
-	__pSlider->Construct(FloatRectangle(55.0f, 0.0f, itemWidth-110.0f, 150.0f), BACKGROUND_STYLE_NONE, true, 0, 15);
+	__pSlider->Construct(Rectangle(0, 50, itemWidth-110, 150), BACKGROUND_STYLE_NONE, true, 0, 15);
 	__pSlider->SetValue(5);
-
+	__pSlider->SetName(L"slasdfsd");
 	pItem->AddControl(__pSlider);
-	pItem->AddControl(pLabelMin);
-	pItem->AddControl(pLabelMax);
+//	pItem->AddControl(pLabelMin);
+//	pItem->AddControl(pLabelMax);
 
 	pItem->SetIndividualSelectionEnabled(__pSlider, true);
-	pItem->SetIndividualSelectionEnabled(pLabelMin, true);
-	pItem->SetIndividualSelectionEnabled(pLabelMax, true);
+//	pItem->SetIndividualSelectionEnabled(pLabelMin, true);
+//	pItem->SetIndividualSelectionEnabled(pLabelMax, true);
 
 
 	return pItem;
