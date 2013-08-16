@@ -23,6 +23,11 @@ void TizenComboOptionView::_createItem() {
 	 //= ((ZLComboOptionEntry&)*myOption).initialValue();
 }
 
+void TizenComboOptionView::OnStateChanged(TableViewItemStatus status){
+	AppLog("OnStateChanged  status %d ", status);
+}
+
+
 void TizenComboOptionView::_onAccept() const {
 
 }
@@ -42,9 +47,9 @@ TableViewItem* TizenComboOptionView::createTableViewItem(int itemWidth, int defa
 	pItem->AddControl(pLabel);
 
 	Label*	pLabelValue = new (std::nothrow) Label();
-	pLabelValue->Construct(Rectangle(0, 100, itemWidth, defaultItemHeight), comboValue);
+	pLabelValue->Construct(Rectangle(0, 80, itemWidth, defaultItemHeight), comboValue);
 	pLabelValue->SetTextColor(Tizen::Graphics::Color::GetColor(COLOR_ID_BLUE) );
-
+	pLabelValue->SetTextHorizontalAlignment(ALIGNMENT_LEFT);
 	pItem->AddControl(pLabelValue);
 //	pItem->AddControl(pLabelMin);
 //	pItem->AddControl(pLabelMax);

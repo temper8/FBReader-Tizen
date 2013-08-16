@@ -91,6 +91,10 @@ void
 TizenDialogForm::OnGroupedTableViewItemStateChanged(GroupedTableView& tableView, int groupIndex, int itemIndex, TableViewItem* pItem, TableViewItemStatus status)
 {
     // ....
+	AppLog("StateChanged groupIndex %d, itemIndex %d, status %d ", groupIndex, itemIndex, status);
+    shared_ptr<ZLDialogContent>  myTab =  myTabs[groupIndex];
+    ZLTizenOptionView* v = (ZLTizenOptionView*)myTab->getView(itemIndex);
+    v->OnStateChanged(status);
 }
 
 void

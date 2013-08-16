@@ -31,7 +31,7 @@ public :
 	Tizen::Base::String myCaption;
 	ZLTizenDialogContent *myTab;
 	virtual Tizen::Ui::Controls::TableViewItem* createTableViewItem(int itemWidth, int defaultItemHeight) = 0;
-
+	virtual void OnStateChanged(Tizen::Ui::Controls::TableViewItemStatus status) {};
 	//virtual void OnActionPerformed(int actionId) = 0;
 };
 

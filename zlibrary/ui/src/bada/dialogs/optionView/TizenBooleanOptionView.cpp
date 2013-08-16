@@ -20,6 +20,10 @@ void TizenBooleanOptionView::_createItem() {
 	 myCaption.Format(40, L"%s", ZLOptionView::name().c_str());
 }
 
+void TizenBooleanOptionView::OnStateChanged(Tizen::Ui::Controls::TableViewItemStatus status){
+	AppLog("OnStateChanged  status %d ", status);
+}
+
 void TizenBooleanOptionView::_onAccept() const {
 
 }
