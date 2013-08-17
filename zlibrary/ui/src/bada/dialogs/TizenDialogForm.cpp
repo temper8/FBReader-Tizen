@@ -24,6 +24,38 @@ TizenDialogForm::~TizenDialogForm() {
 	// TODO Auto-generated destructor stub
 }
 
+void TizenDialogForm::OnUserEventReceivedN(RequestId requestId, Tizen::Base::Collection::IList* pArgs)
+{
+	Frame *pFrame = Application::GetInstance()->GetAppFrame()->GetFrame();
+	AppLog("DialogForm::OnUserEventReceivedN");
+	Form* prevForm = pFrame->GetCurrentForm();
+	switch(requestId)
+	{
+	case 0:
+		{
+
+			pFrame->SetCurrentForm(*this);
+
+			//pFrame->RequestRedraw();
+			Draw();
+			Show();
+			if (prevForm != null)
+			{
+				AppLog("prevForm != null");
+				pFrame->RemoveControl(*prevForm);
+				AppLog("RemoveControl(*prevForm);");
+					AppLog("deleteTreeDialog");
+			}
+
+		}
+		break;
+	case 1: break;
+	default:
+		break;
+	}
+
+}
+
 bool TizenDialogForm::Initialize(const char *title, bool __showApplyButton)
 {
 	showApplyButton = __showApplyButton;

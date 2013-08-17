@@ -6,7 +6,7 @@
  */
 
 #include "TizenComboOptionView.h"
-
+#include "TizenComboOptionForm.h"
 
 using namespace Tizen::App;
 using namespace Tizen::Base;
@@ -25,6 +25,18 @@ void TizenComboOptionView::_createItem() {
 
 void TizenComboOptionView::OnStateChanged(TableViewItemStatus status){
 	AppLog("OnStateChanged  status %d ", status);
+	if (status  == TABLE_VIEW_ITEM_STATUS_MORE ) {
+		Frame *pFrame = Application::GetInstance()->GetAppFrame()->GetFrame();
+		TizenComboOptionForm* pComboForm = new TizenComboOptionForm;
+
+		AppLog("pDialogForm->Initialize()");
+		pComboForm->Initialize();
+		pComboForm->pPreviousForm =pFrame->GetCurrentForm();
+		pFrame->AddControl(*pComboForm);
+		pFrame->SetCurrentForm(*pComboForm);
+		AppLog("r = pFrame->SetCurrentForm(*pDialogForm);");
+		pComboForm->Invalidate(false);
+	}
 }
 
 
