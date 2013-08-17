@@ -70,13 +70,11 @@ void TizenComboOptionForm::OnListViewItemSwept(ListView &listView, int index, Sw
 }
 
 // IListViewItemProvider implementation
-ListItemBase* TizenComboOptionForm::CreateItem(int index, int itemWidth)
-{
-    // Creates an instance of CustomItem
+ListItemBase* TizenComboOptionForm::CreateItem(int index, int itemWidth) {
+
 	SimpleItem * pItem = new SimpleItem();
     pItem->Construct(Dimension(itemWidth,112), LIST_ANNEX_STYLE_RADIO);
     pItem->SetElement("testtt");
-
 
     return pItem;
 }
