@@ -11,6 +11,7 @@ using namespace Tizen::App;
 using namespace Tizen::Base;
 using namespace Tizen::Ui;
 using namespace Tizen::Ui::Controls;
+using namespace Tizen::Graphics;
 
 TizenComboOptionForm::TizenComboOptionForm() {
 	// TODO Auto-generated constructor stub
@@ -33,12 +34,62 @@ void TizenComboOptionForm::Initialize(){
 //	pFooter->AddActionEventListener(*this);
 
 	SetFormBackEventListener(this);
+
+    // Creates an instance of ListView
+    pListView = new ListView();
+    pListView->Construct(Rectangle(0, 0, GetClientAreaBounds().width, GetClientAreaBounds().height), true, false);
+    pListView->SetItemProvider(*this);
+    pListView->AddListViewItemEventListener(*this);
+
+    // Adds the list view to the form
+    AddControl(pListView);
+
+
+
 }
 
-void TizenComboOptionForm::OnFormBackRequested(Tizen::Ui::Controls::Form& source){
+void TizenComboOptionForm::OnFormBackRequested(Tizen::Ui::Controls::Form& source) {
 	AppLog("Close button is clicked!");
 //	__badaOptionsDialog->accept();
 //	Frame *pFrame = Application::GetInstance()->GetAppFrame()->GetFrame();
 
 	pPreviousForm->SendUserEvent(0, null);
 }
+
+// IListViewItemEventListener implementation
+void TizenComboOptionForm::OnListViewItemStateChanged(ListView &listView, int index, int elementId, ListItemStatus status) {
+
+}
+
+void TizenComboOptionForm::OnListViewContextItemStateChanged(ListView &listView, int index, int elementId, ListContextItemStatus state) {
+
+}
+
+void TizenComboOptionForm::OnListViewItemSwept(ListView &listView, int index, SweepDirection direction) {
+    // ....
+}
+
+// IListViewItemProvider implementation
+ListItemBase* TizenComboOptionForm::CreateItem(int index, int itemWidth)
+{
+    // Creates an instance of CustomItem
+	SimpleItem * pItem = new SimpleItem();
+    pItem->Construct(Dimension(itemWidth,112), LIST_ANNEX_STYLE_RADIO);
+    pItem->SetElement("testtt");
+
+
+    return pItem;
+}
+
+bool TizenComboOptionForm::DeleteItem(int index, ListItemBase* pItem, int itemWidth) {
+    delete pItem;
+    pItem = null;
+    return true;
+}
+
+int TizenComboOptionForm::GetItemCount(void)
+{
+    return 15;
+}
+
+
