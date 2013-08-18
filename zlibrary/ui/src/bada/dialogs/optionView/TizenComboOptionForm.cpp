@@ -88,12 +88,20 @@ void TizenComboOptionForm::OnListViewItemSwept(ListView &listView, int index, Sw
 
 // IListViewItemProvider implementation
 ListItemBase* TizenComboOptionForm::CreateItem(int index, int itemWidth) {
+<<<<<<< HEAD
 	const std::vector<std::string> &values = myComboOption.values();
 	SimpleItem * pItem = new SimpleItem();
     pItem->Construct(Dimension(itemWidth,112), LIST_ANNEX_STYLE_RADIO);
     String text((values[index]).c_str());
     pItem->SetElement(text);
     pItem->SetDescriptionText("descr");
+=======
+
+	SimpleItem * pItem = new SimpleItem();
+    pItem->Construct(Dimension(itemWidth,112), LIST_ANNEX_STYLE_RADIO);
+    pItem->SetElement("testtt");
+
+>>>>>>> aff39370b1f8c7ca3cdf2772ed70186fa7fca218
     return pItem;
 }
 
