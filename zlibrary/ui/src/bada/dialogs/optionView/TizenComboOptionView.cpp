@@ -27,10 +27,10 @@ void TizenComboOptionView::OnStateChanged(TableViewItemStatus status){
 	AppLog("OnStateChanged  status %d ", status);
 	if (status  == TABLE_VIEW_ITEM_STATUS_MORE ) {
 		Frame *pFrame = Application::GetInstance()->GetAppFrame()->GetFrame();
-		TizenComboOptionForm* pComboForm = new TizenComboOptionForm;
+		TizenComboOptionForm* pComboForm = new TizenComboOptionForm(ZLOptionView::name(), (ZLComboOptionEntry&)*myOption);
 
 		AppLog("pDialogForm->Initialize()");
-		pComboForm->Initialize();
+		pComboForm->Initialize();//(ZLComboOptionEntry&)*__parentComboOptionView->option(););
 		pComboForm->pPreviousForm =pFrame->GetCurrentForm();
 		pFrame->AddControl(*pComboForm);
 		pFrame->SetCurrentForm(*pComboForm);
