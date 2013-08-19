@@ -16,10 +16,18 @@ using namespace Tizen::Graphics;
 
 void TizenSpinOptionView::_createItem() {
 	 myCaption.Format(40, L"%s", ZLOptionView::name().c_str());
+	 minValue = ((ZLSpinOptionEntry&)*myOption).minValue();
+	 maxValue = ((ZLSpinOptionEntry&)*myOption).maxValue();
 }
 
 void TizenSpinOptionView::_onAccept() const {
 
+}
+
+// IAdjustmentEventListener implementation
+void TizenSpinOptionView::OnAdjustmentValueChanged(const Control& source, int adjustment)
+{
+	((ZLSpinOptionEntry&)*myOption).onAccept(adjustment);
 }
 
 
@@ -30,9 +38,10 @@ TableViewItem* TizenSpinOptionView::createTableViewItem(int itemWidth, int defau
 
 	Slider* pSlider = new (std::nothrow) Slider();
 
-	pSlider->Construct(Rectangle(5, 00, itemWidth-10, 150), BACKGROUND_STYLE_NONE, true, 0, 15);
-	pSlider->SetValue(5);
+	pSlider->Construct(Rectangle(5, 00, itemWidth-10, 150), BACKGROUND_STYLE_NONE, true, minValue, maxValue);
+	pSlider->SetValue(((ZLSpinOptionEntry&)*myOption).initialValue());
 	pSlider->SetTitleText(myCaption);
+	pSlider->AddAdjustmentEventListener(*this);
 
 	pItem->AddControl(pSlider);
 
