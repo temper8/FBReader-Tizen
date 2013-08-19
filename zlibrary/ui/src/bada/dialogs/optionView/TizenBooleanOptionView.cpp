@@ -18,32 +18,31 @@ void TizenBooleanOptionView::_createItem() {
 }
 
 void TizenBooleanOptionView::OnStateChanged(Tizen::Ui::Controls::TableViewItemStatus status){
-	AppLog("OnStateChanged  status %d ", status);
-//	switch(){
-//	case TABLE_VIEW_ITEM_STATUS_CHECKED : break;
-//	case TABLE_VIEW_ITEM_STATUS_UNCHECKED : break;
-
-//	}
+	//AppLog("OnStateChanged  status %d ", status);
+	switch(status){
+	case TABLE_VIEW_ITEM_STATUS_CHECKED :
+		((ZLBooleanOptionEntry&)*myOption).onAccept(true);
+		//((ZLBooleanOptionEntry&)*myOption).onStateChanged(true);
+		break;
+	case TABLE_VIEW_ITEM_STATUS_UNCHECKED :
+		((ZLBooleanOptionEntry&)*myOption).onAccept(false);
+		//((ZLBooleanOptionEntry&)*myOption).onStateChanged(false);
+		break;
+	default:
+		break;
+	}
 }
 
-void TizenBooleanOptionView::_onAccept() const {
-
-}
+void TizenBooleanOptionView::_onAccept() const {}
 
 bool TizenBooleanOptionView::boolOptionState(){
-
-return ((ZLBooleanOptionEntry&)*myOption).initialState();
-
+	return ((ZLBooleanOptionEntry&)*myOption).initialState();
 }
 
 TableViewItem* TizenBooleanOptionView::createTableViewItem(int itemWidth, int defaultItemHeight) {
 	TableViewAnnexStyle style = TABLE_VIEW_ANNEX_STYLE_ONOFF_SLIDING;
 	TableViewItem* pItem = new TableViewItem();
 	pItem->Construct(Dimension(itemWidth, defaultItemHeight), style);
-
-	//
-	//String text;// = L"TizenBooleanOptionView";
-	//text.Format(30, L"%s", myCaption.c_str());
 
 	Label* pLabel = new Label();
 	pLabel->Construct(Rectangle(0, 0, itemWidth, defaultItemHeight), myCaption);
