@@ -15,31 +15,57 @@ using namespace Tizen::Ui::Controls;
 using namespace Tizen::Graphics;
 
 void TizenComboOptionView::_createItem() {
-//	std::string myText = ((ZLStaticTextOptionEntry&)*myOption).initialValue();
-//	const char *text = myText.c_str();
-//	 myCaption = ZLOptionView::name()+ ": 123";
 	 myCaption.Format(30, L"%s", ZLOptionView::name().c_str());
 	 comboValue.Format(30, L"%s", ((ZLComboOptionEntry&)*myOption).initialValue().c_str());
-	 //= ((ZLComboOptionEntry&)*myOption).initialValue();
 }
 
 void TizenComboOptionView::OnStateChanged(TableViewItemStatus status){
 	AppLog("OnStateChanged  status %d ", status);
 	if (status  == TABLE_VIEW_ITEM_STATUS_MORE ) {
 		Frame *pFrame = Application::GetInstance()->GetAppFrame()->GetFrame();
-		TizenComboOptionForm* pComboForm = new TizenComboOptionForm(ZLOptionView::name(), (ZLComboOptionEntry&)*myOption);
+		TizenComboOptionForm* pComboForm = new TizenComboOptionForm();
 
-		AppLog("pDialogForm->Initialize()");
-		pComboForm->Initialize();//(ZLComboOptionEntry&)*__parentComboOptionView->option(););
+		pComboForm->Initialize(this);
 		pComboForm->pPreviousForm =pFrame->GetCurrentForm();
 		pFrame->AddControl(*pComboForm);
 		pFrame->SetCurrentForm(*pComboForm);
-		AppLog("r = pFrame->SetCurrentForm(*pDialogForm);");
 		pComboForm->Invalidate(false);
 	}
 }
 
+int TizenComboOptionView::getValuesCount(){
+	return ((ZLComboOptionEntry&)*myOption).values().size();
+}
 
+const char* TizenComboOptionView::getName(){
+	return ZLOptionView::name().c_str();
+}
+
+const char* TizenComboOptionView::getValue(int index){
+	const std::vector<std::string> &values = ((ZLComboOptionEntry&)*myOption).values();
+	return values[index].c_str();
+}
+
+void TizenComboOptionView::setIndexSelected(int index){
+	const std::vector<std::string> &values = ((ZLComboOptionEntry&)*myOption).values();
+	std::string v = values[index];
+	((ZLComboOptionEntry&)*myOption).onAccept(v.c_str());
+	comboValue.Format(30, L"%s", v.c_str());
+}
+
+int TizenComboOptionView::getIndexSelected(){
+	const std::vector<std::string> &values = ((ZLComboOptionEntry&)*myOption).values();
+	const std::string &initial = ((ZLComboOptionEntry&)*myOption).initialValue();
+	int selectedIndex = -1;
+	int index = 0;
+
+	for (std::vector<std::string>::const_iterator it = values.begin(); it != values.end(); ++it, ++index) {
+		if (*it == initial) {
+			selectedIndex = index;
+		}
+	}
+	return selectedIndex;
+}
 void TizenComboOptionView::_onAccept() const {
 
 }
@@ -49,9 +75,6 @@ TableViewItem* TizenComboOptionView::createTableViewItem(int itemWidth, int defa
 	TableViewAnnexStyle style = TABLE_VIEW_ANNEX_STYLE_DETAILED;
 	TableViewItem* pItem = new TableViewItem();
 	pItem->Construct(Dimension(itemWidth, 2*defaultItemHeight), style);
-
-	//String text;
-	//text.Format(30, L"t=%s", myCaption.c_str());
 
 	Label* pLabel = new Label();
 	pLabel->Construct(Rectangle(0, 0, itemWidth, defaultItemHeight), myCaption);
@@ -63,12 +86,8 @@ TableViewItem* TizenComboOptionView::createTableViewItem(int itemWidth, int defa
 	pLabelValue->SetTextColor(Tizen::Graphics::Color::GetColor(COLOR_ID_BLUE) );
 	pLabelValue->SetTextHorizontalAlignment(ALIGNMENT_LEFT);
 	pItem->AddControl(pLabelValue);
-//	pItem->AddControl(pLabelMin);
-//	pItem->AddControl(pLabelMax);
 
-//	pItem->SetIndividualSelectionEnabled(__pSlider, true);
-//	pItem->SetIndividualSelectionEnabled(pLabelMin, true);
-//	pItem->SetIndividualSelectionEnabled(pLabelMax, true);
+//	pItem->SetIndividualSelectionEnabled(pLabelValue, true);
 
 
 	return pItem;

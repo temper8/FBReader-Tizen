@@ -14,6 +14,8 @@
 
 #include <ZLOptionEntry.h>
 
+class TizenComboOptionView;
+
 class TizenComboOptionForm :
 	public Tizen::Ui::Controls::Form,
 	public Tizen::Ui::Controls::IFormBackEventListener,
@@ -21,15 +23,17 @@ class TizenComboOptionForm :
 	public Tizen::Ui::Controls::IListViewItemProvider
 {
 public:
-	TizenComboOptionForm(const std::string &name, ZLComboOptionEntry& comboOption);
+	//TizenComboOptionForm(const std::string &name, ZLComboOptionEntry& comboOption);
+	//TizenComboOptionForm(TizenComboOptionView* view);
+	TizenComboOptionForm();
 	virtual ~TizenComboOptionForm();
 
 	Tizen::Ui::Controls::Form*	pPreviousForm;
     Tizen::Ui::Controls::ListView* pListView;
 
-    int selectedIndex;
 
-    void Initialize();
+
+    void Initialize(TizenComboOptionView* view);
     virtual result OnInitializing(void);
 	virtual void OnFormBackRequested(Tizen::Ui::Controls::Form& source);
 
@@ -44,8 +48,10 @@ public:
     virtual bool DeleteItem(int index, Tizen::Ui::Controls::ListItemBase* pItem, int itemWidth);
     virtual int GetItemCount(void);
 private:
-    const ZLComboOptionEntry& myComboOption;
-    const std::string &myName;
+    int selectedIndex;
+    TizenComboOptionView* myView;
+  //  const ZLComboOptionEntry& myComboOption;
+  //  const std::string &myName;
 
 };
 

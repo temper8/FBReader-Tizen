@@ -17,6 +17,13 @@ public:
 	virtual Tizen::Ui::Controls::TableViewItem* createTableViewItem(int itemWidth, int defaultItemHeight);
 	virtual void OnStateChanged(Tizen::Ui::Controls::TableViewItemStatus status);
 
+	int getIndexSelected();
+	void setIndexSelected(int index);
+	int getValuesCount();
+   // int selectedIndex;
+	const char* getName();
+	const char* getValue(int index);
+
 protected:
 	Tizen::Base::String comboValue;
 	void _createItem();

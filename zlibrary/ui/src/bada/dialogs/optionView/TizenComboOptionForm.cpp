@@ -6,6 +6,7 @@
  */
 
 #include "TizenComboOptionForm.h"
+#include "TizenComboOptionView.h"
 
 using namespace Tizen::App;
 using namespace Tizen::Base;
@@ -13,29 +14,23 @@ using namespace Tizen::Ui;
 using namespace Tizen::Ui::Controls;
 using namespace Tizen::Graphics;
 
-TizenComboOptionForm::TizenComboOptionForm(const std::string &name, ZLComboOptionEntry& comboOption): myName(name), myComboOption(comboOption) {
-	// TODO Auto-generated constructor stub
-	const std::vector<std::string> &values = myComboOption.values();
-	const std::string &initial = myComboOption.initialValue();
-	selectedIndex = -1;
-	int index = 0;
+//TizenComboOptionForm::TizenComboOptionForm(const std::string &name, ZLComboOptionEntry& comboOption): myName(name), myComboOption(comboOption) {
+TizenComboOptionForm::TizenComboOptionForm(): myView(NULL) {
+// TODO Auto-generated constructor stub
+	//myView->
 
-	for (std::vector<std::string>::const_iterator it = values.begin(); it != values.end(); ++it, ++index) {
-		if (*it == initial) {
-			selectedIndex = index;
-		}
-	}
 }
 
 TizenComboOptionForm::~TizenComboOptionForm() {
 	// TODO Auto-generated destructor stub
 }
 
-void TizenComboOptionForm::Initialize(){
+void TizenComboOptionForm::Initialize(TizenComboOptionView* view){
 	Form::Construct(FORM_STYLE_NORMAL|FORM_STYLE_HEADER |FORM_STYLE_FOOTER );
-
+	myView = view;
+	selectedIndex = myView->getIndexSelected();
 	Header* pHeader = GetHeader();
-    pHeader->SetTitleText(String(myName.c_str()));
+    pHeader->SetTitleText(String(myView->getName()));
 
 	Footer* pFooter = GetFooter();
 	pFooter->SetBackButton();
@@ -67,6 +62,7 @@ void TizenComboOptionForm::OnFormBackRequested(Tizen::Ui::Controls::Form& source
 //	__badaOptionsDialog->accept();
 //	Frame *pFrame = Application::GetInstance()->GetAppFrame()->GetFrame();
 
+	myView->setIndexSelected(selectedIndex);
 	pPreviousForm->SendUserEvent(0, null);
 }
 
@@ -88,10 +84,10 @@ void TizenComboOptionForm::OnListViewItemSwept(ListView &listView, int index, Sw
 
 // IListViewItemProvider implementation
 ListItemBase* TizenComboOptionForm::CreateItem(int index, int itemWidth) {
-	const std::vector<std::string> &values = myComboOption.values();
+
 	SimpleItem * pItem = new SimpleItem();
     pItem->Construct(Dimension(itemWidth,112), LIST_ANNEX_STYLE_RADIO);
-    String text((values[index]).c_str());
+    String text(myView->getValue(index));
     pItem->SetElement(text);
     pItem->SetDescriptionText("descr");
     return pItem;
@@ -105,7 +101,7 @@ bool TizenComboOptionForm::DeleteItem(int index, ListItemBase* pItem, int itemWi
 
 int TizenComboOptionForm::GetItemCount(void)
 {
-    return myComboOption.values().size();
+    return myView->getValuesCount();
 }
 
 

@@ -35,7 +35,7 @@ void TizenDialogForm::OnUserEventReceivedN(RequestId requestId, Tizen::Base::Col
 		{
 
 			pFrame->SetCurrentForm(*this);
-
+			__pTableView->UpdateTableView();
 			//pFrame->RequestRedraw();
 			Draw();
 			Show();

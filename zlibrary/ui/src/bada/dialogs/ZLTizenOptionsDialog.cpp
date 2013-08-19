@@ -40,9 +40,6 @@ ZLTizenOptionsDialog::~ZLTizenOptionsDialog() {
 ZLDialogContent &ZLTizenOptionsDialog::createTab(const ZLResourceKey &key){
   AppLog("ZLbadaOptionsDialog::createTab = %s",key.Name.c_str());
  ZLTizenDialogContent *tab = new ZLTizenDialogContent(myDialogForm, tabResource(key));
-  //myDialogForm->AddTab(key.Name.c_str());
-  //ZLQtDialogContent *tab = new ZLQtDialogContent(new QWidget(myTabWidget), tabResource(key));
-  //myTabWidget->addTab(tab->widget(), ::qtString(tab->displayName()));
  //TODO проследить за уничторежнием TABов... чувствую тут проблема возможна
   myDialogForm->myTabs.push_back(tab);
 //  myTabs.push_back(tab);
