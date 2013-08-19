@@ -84,10 +84,21 @@ bool TizenDialogForm::Initialize(const char *title, bool __showApplyButton)
     // Adds the TableView to the form
     AddControl(__pTableView);
 
-
 	return true;
 }
+void TizenDialogForm::Update(){
 
+	__pTableView->UpdateTableView();
+
+	int groupIndex=0;
+	for (std::vector<shared_ptr<ZLDialogContent> >::const_iterator it = myTabs.begin(); it != myTabs.end(); ++it, groupIndex++)
+	   	for (int i=0; i<(*it)->getViewsCount(); i++) {
+	   		ZLTizenOptionView* v =  (ZLTizenOptionView*)(*it)->getView(i);
+	   		if (v->isBoolOption()) {
+	   			__pTableView->SetItemChecked(groupIndex, i, v->boolOptionState());
+	   		}
+    	}
+}
 
 void TizenDialogForm::SetPreviousForm(Tizen::Ui::Controls::Form* preForm)
 {

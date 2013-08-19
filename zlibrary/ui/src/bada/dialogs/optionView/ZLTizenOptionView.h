@@ -30,6 +30,8 @@ public :
 	//std::string myCaption;
 	Tizen::Base::String myCaption;
 	ZLTizenDialogContent *myTab;
+	virtual bool isBoolOption() { return false; }
+	virtual bool boolOptionState() { return false; }
 	virtual Tizen::Ui::Controls::TableViewItem* createTableViewItem(int itemWidth, int defaultItemHeight) = 0;
 	virtual void OnStateChanged(Tizen::Ui::Controls::TableViewItemStatus status) {};
 	//virtual void OnActionPerformed(int actionId) = 0;

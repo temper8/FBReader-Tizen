@@ -23,12 +23,11 @@ ZLTizenOptionsDialog::ZLTizenOptionsDialog(Form   *PreviousForm, const ZLResourc
 
 	//myDialogForm->showApplyButton = true;
 	//myDialogForm->__badaOptionsDialog = this;
-	myDialogForm->Initialize(caption().c_str(),showApplyButton);
+	myDialogForm->Initialize(caption().c_str(),true);
 
 	myDialogForm->SetPreviousForm(pFrame->GetCurrentForm());
 	r = pFrame->AddControl(*myDialogForm);
 	r = pFrame->SetCurrentForm(*myDialogForm);
-	AppLog("pFrame->SetCurrentForm(*myDialogForm);");
 
 }
 
@@ -38,25 +37,20 @@ ZLTizenOptionsDialog::~ZLTizenOptionsDialog() {
 }
 
 ZLDialogContent &ZLTizenOptionsDialog::createTab(const ZLResourceKey &key){
-  AppLog("ZLbadaOptionsDialog::createTab = %s",key.Name.c_str());
- ZLTizenDialogContent *tab = new ZLTizenDialogContent(myDialogForm, tabResource(key));
- //TODO проследить за уничторежнием TABов... чувствую тут проблема возможна
-  myDialogForm->myTabs.push_back(tab);
-//  myTabs.push_back(tab);
-  return *tab;
+	AppLog("ZLbadaOptionsDialog::createTab = %s",key.Name.c_str());
+	ZLTizenDialogContent *tab = new ZLTizenDialogContent(myDialogForm, tabResource(key));
+	//TODO проследить за уничторежнием TABов... чувствую тут проблема возможна
+	myDialogForm->myTabs.push_back(tab);
+	return *tab;
 }
 
 bool ZLTizenOptionsDialog::run(){
-  AppLog("ZLbadaOptionsDialog::run()");
-	result r = E_SUCCESS;
-	//AppLog("CreateDalogForm %s",name);
 
-	Frame *pFrame = Application::GetInstance()->GetAppFrame()->GetFrame();
-	r = pFrame->Draw();
-	AppLog("pFrame->Draw();");
-	r = pFrame->Show();
-	AppLog("pFrame->Show()");
-  return true;
+	AppLog("ZLTizenOptionsDialog::run()");
+	myDialogForm->Update();
+	myDialogForm->Invalidate(false);
+
+	return true;
 }
 
 const std::string &ZLTizenOptionsDialog::selectedTabKey() const {

@@ -29,6 +29,7 @@ public:
 
 public:
 	bool Initialize(const char *title, bool showApplyButton);
+	void Update();
 	void SetPreviousForm(Tizen::Ui::Controls::Form* preForm);
 
 	virtual void OnFormBackRequested(Tizen::Ui::Controls::Form& source);
