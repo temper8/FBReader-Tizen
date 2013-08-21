@@ -79,6 +79,10 @@ TableViewItem* TizenComboOptionView::createTableViewItem(int itemWidth, int defa
 	Label* pLabel = new Label();
 	pLabel->Construct(Rectangle(0, 0, itemWidth, defaultItemHeight), myCaption);
     pLabel->SetTextHorizontalAlignment(ALIGNMENT_LEFT);
+	pLabel->SetTextConfig(35.0f, LABEL_TEXT_STYLE_NORMAL);
+	//pLabel->SetTextColor(Color::GetColor(COLOR_ID_GREY));
+	pLabel->SetTextColor(Color(105, 105, 105));
+
 	pItem->AddControl(pLabel);
 
 	Label*	pLabelValue = new (std::nothrow) Label();

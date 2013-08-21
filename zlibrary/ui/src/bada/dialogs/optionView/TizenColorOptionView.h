@@ -30,13 +30,12 @@ protected:
 	static const int ID_BUTTON_OK = 200;
 	static const int ID_BUTTON_CANCEL = 201;
 
-	Tizen::Ui::Controls::Slider* sliderR;
-	Tizen::Ui::Controls::Slider* sliderG;
-	Tizen::Ui::Controls::Slider* sliderB;
-	Tizen::Ui::Controls::Panel*  panelColor;
+	Tizen::Ui::Controls::Slider* redSlider;
+	Tizen::Ui::Controls::Slider* greenSlider;
+	Tizen::Ui::Controls::Slider* blueSlider;
+	Tizen::Ui::Controls::Panel*  colorPanel;
 	Tizen::Ui::Controls::Popup*  pPopup;
 	void CreateColorPopup(void);
-	ZLColor tmpColor;
 	ZLColor myColor;
 	void _createItem();
 	void _onAccept() const;
