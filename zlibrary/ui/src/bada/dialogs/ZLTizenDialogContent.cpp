@@ -14,6 +14,7 @@
 #include "optionView/TizenPictureView.h"
 #include "optionView/TizenSpinOptionView.h"
 #include "optionView/TizenComboOptionView.h"
+#include "optionView/TizenColorOptionView.h"
 
 ZLTizenDialogContent::ZLTizenDialogContent(TizenDialogForm *form, const ZLResource &resource) : ZLDialogContent(resource), myForm(form) {
 	// TODO Auto-generated constructor stub
@@ -77,6 +78,10 @@ void ZLTizenDialogContent::createViewByEntry(const std::string &name, const std:
 			AppLog("ZLOptionEntry::COMBO:");
 			view = new TizenComboOptionView(name, tooltip, (ZLComboOptionEntry*)option, this, myRowCounter, fromColumn, toColumn);
 			break;
+		case ZLOptionEntry::COLOR:
+			AppLog("ZLOptionEntry::COLOR:");
+			view = new TizenColorOptionView(name, tooltip, (ZLColorOptionEntry*)option, this, myRowCounter, fromColumn, toColumn);
+			break;
 	/*	case ZLOptionEntry::BOOLEAN3:
 			AppLog("ZLOptionEntry::BOOLEAN3:");
 			view = new Boolean3OptionView(name, tooltip, (ZLBoolean3OptionEntry*)option, this, myRowCounter, fromColumn, toColumn);
@@ -95,10 +100,7 @@ void ZLTizenDialogContent::createViewByEntry(const std::string &name, const std:
 			break;
 
 
-		case ZLOptionEntry::COLOR:
-			AppLog("ZLOptionEntry::COLOR:");
-			view = new ColorOptionView(name, tooltip, (ZLColorOptionEntry*)option, this, myRowCounter, fromColumn, toColumn);
-			break;
+
 		case ZLOptionEntry::KEY:
 			AppLog("ZLOptionEntry::KEY:");
 			//view = new KeyOptionView(name, tooltip, (ZLKeyOptionEntry*)option, this, myRowCounter, fromColumn, toColumn);
