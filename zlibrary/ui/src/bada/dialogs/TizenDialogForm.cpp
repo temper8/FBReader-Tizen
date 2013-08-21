@@ -49,7 +49,10 @@ void TizenDialogForm::OnUserEventReceivedN(RequestId requestId, Tizen::Base::Col
 
 		}
 		break;
-	case 1: break;
+	case 1:
+		__pTableView->UpdateTableView();
+		break;
+
 	default:
 		break;
 	}

@@ -7,7 +7,7 @@
 
 #include "TizenColorOptionView.h"
 
-
+#include <FApp.h>
 #include <FIo.h>
 
 using namespace Tizen::App;
@@ -30,26 +30,26 @@ void TizenColorOptionView::OnAdjustmentValueChanged(const Tizen::Ui::Control& so
 
 
 void TizenColorOptionView::CreateColorPopup(void){
-	  int PopupHeight = 460;
-	  int sliderWidth = 310;
-	  int sliderHeight = 90;
+	  int PopupHeight = 560;
+	  int sliderWidth = 350;
+	  int sliderHeight = 100;
 	  int dx = 150;
 
-	  __pPopup = new Popup();
-	  __pPopup->Construct(true, Dimension(465,PopupHeight));
-	  __pPopup->SetTitleText(L"Select color");
+	  pPopup = new Popup();
+	  pPopup->Construct(true, Dimension(540,PopupHeight));
+	  pPopup->SetTitleText(L"Select color");
 
-		Button* pCreateButton = new Button();
+	Button* pCreateButton = new Button();
 		pCreateButton->Construct(Rectangle(20, PopupHeight - 180, 200, 70), L"OK");
-		__pPopup->AddControl(*pCreateButton);
-		//pCreateButton->SetActionId(ID_BUTTON_CREATE);
+		pPopup->AddControl(*pCreateButton);
+		pCreateButton->SetActionId(ID_BUTTON_OK);
 		pCreateButton->AddActionEventListener(*this);
 
 
 		Button* pCancelButton = new Button();
 		pCancelButton->Construct(Rectangle(230, PopupHeight - 180, 200, 70), L"Cancel");
-		__pPopup->AddControl(*pCancelButton);
-		//pCancelButton->SetActionId(ID_BUTTON_CANCEL);
+		pPopup->AddControl(*pCancelButton);
+		pCancelButton->SetActionId(ID_BUTTON_CANCEL);
 		pCancelButton->AddActionEventListener(*this);
 
 		panelColor = new Panel();
@@ -57,7 +57,7 @@ void TizenColorOptionView::CreateColorPopup(void){
 		panelColor->SetBackgroundColor(Tizen::Graphics::Color(tmpColor.Red,tmpColor.Green, tmpColor.Blue));
 		//panelColor->SetCompositeEnabled(false);
 	    //Adds a Panel to the Form
-		__pPopup->AddControl(*panelColor);
+		pPopup->AddControl(*panelColor);
 
 
 
@@ -67,58 +67,45 @@ void TizenColorOptionView::CreateColorPopup(void){
 		sliderR->Construct(Rectangle(dx, 05, sliderWidth, sliderHeight), BACKGROUND_STYLE_NONE, false, 0, 255);
 		sliderR->SetValue(tmpColor.Red);
 		sliderR->AddAdjustmentEventListener(*this);
-		__pPopup->AddControl(*sliderR);
+		pPopup->AddControl(*sliderR);
 
 		sliderG = new Slider();
 		sliderG->Construct(Rectangle(dx, 05+sliderHeight, sliderWidth, sliderHeight), BACKGROUND_STYLE_NONE, false, 0, 255);
 		sliderG->SetValue(tmpColor.Green);
 		sliderG->AddAdjustmentEventListener(*this);
-		__pPopup->AddControl(*sliderG);
+		pPopup->AddControl(*sliderG);
 
 		sliderB = new Slider();
 		sliderB->Construct(Rectangle(dx, 05+2*sliderHeight, sliderWidth, sliderHeight), BACKGROUND_STYLE_NONE, false, 0, 255);
 		sliderB->SetValue(tmpColor.Blue);
 		sliderB->AddAdjustmentEventListener(*this);
-		__pPopup->AddControl(*sliderB);
+		pPopup->AddControl(*sliderB);
 
 
-	    __pPopup->SetShowState(true);
-	    __pPopup->Show();
+	    pPopup->SetShowState(true);
+	    pPopup->Show();
 
 
 }
 
 void TizenColorOptionView::OnStateChanged(Tizen::Ui::Controls::TableViewItemStatus status){
 	CreateColorPopup();
-	/*   __pPopup = new Popup();
-	    __pPopup->Construct(true, Dimension(600,800));
-	    __pPopup->SetTitleText(L"Popup Sample");
-	    // Creates an instance of Button to close the popup.
-	     Button* pCloseButton = new Button();
-	     pCloseButton->Construct(Rectangle(10, 10, 250, 80), L"Close Popup");
-	   //  pCloseButton->SetActionId(ID_BUTTON_CLOSE_POPUP);
-	     pCloseButton->AddActionEventListener(*this);
-
-	     // Adds the button to the popup
-	     __pPopup->AddControl(pCloseButton);
-
-	     // Creates an instance of Button to open the popup.
-	  //   Button* pOpenButton = new Button();
-	  //   pOpenButton->Construct(Rectangle(10, 10, 250, 60), L"Open Popup");
-	   //  pOpenButton->SetActionId(ID_BUTTON_OPEN_POPUP);
-	   //  pOpenButton->AddActionEventListener(*this);
-
-	     // Adds the button to the form
-	    // AddControl(pOpenButton);
-
-	     __pPopup->SetShowState(true);
-	     __pPopup->Show();
-	     */
 }
 
 void TizenColorOptionView::OnActionPerformed(const Control& source, int actionId)
 {
-	__pPopup->SetShowState(false);
+	switch(actionId){
+		case ID_BUTTON_OK :
+			_onAccept();
+			pPopup->SetShowState(false);
+			myForm->SendUserEvent( 1,NULL);
+
+			break;
+		case ID_BUTTON_CANCEL :
+			pPopup->SetShowState(false);
+			break;
+	}
+
 }
 
 void TizenColorOptionView::_createItem() {
@@ -126,10 +113,18 @@ void TizenColorOptionView::_createItem() {
 
 }
 
-void TizenColorOptionView::_onAccept() const { }
+void TizenColorOptionView::_onAccept() const {
+	//myColor = tmpColor;
+	((ZLColorOptionEntry&)*myOption).onAccept(tmpColor);
+}
 
 
 TableViewItem* TizenColorOptionView::createTableViewItem(int itemWidth, int defaultItemHeight) {
+
+
+	Frame *pFrame = Application::GetInstance()->GetAppFrame()->GetFrame();
+	AppLog("DialogForm::OnUserEventReceivedN");
+	myForm = pFrame->GetCurrentForm();
 
 	TableViewAnnexStyle style = TABLE_VIEW_ANNEX_STYLE_NORMAL;
 	TableViewItem* pItem = new TableViewItem();

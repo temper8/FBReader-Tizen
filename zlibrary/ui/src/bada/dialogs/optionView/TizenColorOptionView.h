@@ -24,11 +24,17 @@ public:
 	virtual Tizen::Ui::Controls::TableViewItem* createTableViewItem(int itemWidth, int defaultItemHeight);
 
 protected:
+
+	Tizen::Ui::Controls::Form* myForm;
+
+	static const int ID_BUTTON_OK = 200;
+	static const int ID_BUTTON_CANCEL = 201;
+
 	Tizen::Ui::Controls::Slider* sliderR;
 	Tizen::Ui::Controls::Slider* sliderG;
 	Tizen::Ui::Controls::Slider* sliderB;
 	Tizen::Ui::Controls::Panel*  panelColor;
-	Tizen::Ui::Controls::Popup* __pPopup;
+	Tizen::Ui::Controls::Popup*  pPopup;
 	void CreateColorPopup(void);
 	ZLColor tmpColor;
 	ZLColor myColor;
