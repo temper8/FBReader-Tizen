@@ -7,6 +7,7 @@
 
 #include "TizenPictureView.h"
 #include "../../image/ZLbadaImageManager.h"
+#include "../TizenDialogForm.h"
 
 using namespace Tizen::App;
 using namespace Tizen::Base;
@@ -45,17 +46,59 @@ Bitmap* TizenPictureView::makeCover(Bitmap* srcBmp){
 }
 
 void TizenPictureView::_createItem() {
-//	std::string myText = ((ZLStaticTextOptionEntry&)*myOption).initialValue();
-//	const char *text = myText.c_str();
-//	 myCaption = ZLOptionView::name()+ ": 123";
 	 myCaption.Format(30, L"TizenPictureView %s", ZLOptionView::name().c_str());
 	 myImage = ((ZLPictureOptionEntry&)*myOption).image();
+
 }
 
 void TizenPictureView::_onAccept() const {
 
 }
 
+void TizenPictureView::OnActionPerformed(const Control& source, int actionId)
+{
+	int i = 300 - actionId;
+	shared_ptr<ZLRunnableWithKey> action = myActions[i];
+
+	if (!action.isNull()) {
+			//std::string text = myAction->text(ZLResource::resource("networkView")["bookNode"]);
+			std::string text = action->key().Name;
+			AppLog("OnActionPerformed= %s", text.c_str());
+			action->run();
+			Frame *pFrame = Application::GetInstance()->GetAppFrame()->GetFrame();
+			TizenDialogForm* myForm = (TizenDialogForm*)pFrame->GetCurrentForm();
+			myForm->pPreviousForm->SendUserEvent(2, null);
+			//if (text=="readDemo") 	return true;
+			//if (text=="read") 	return true;
+		}
+
+
+
+}
+
+void TizenPictureView::createActionButtons(TableViewItem* pItem){
+	std::string s0 = "Button0";
+	std::string s1 = "Button1";
+
+	int actionsCount = myActions.size();
+	AppLog("actionsCount %d", actionsCount);
+
+	actionsCount = myActions.size();
+	AppLog("after init actionsCount %d", actionsCount);
+	actionsCount =0;
+	for (int i =1; i<myActions.size();i++){
+		shared_ptr<ZLRunnableWithKey> a = myActions[i];
+		if (a->makesSense()&&(actionsCount<4)) { AppLog("makesSense true %d",actionsCount);
+			std::string text = a->text(ZLResource::resource("networkView")["bookNode"]);
+			Button* pButton = new Button();
+			pButton->Construct(Rectangle(300, 20+100*actionsCount, 350, 80),String(text.c_str()));
+			pButton->SetActionId(300 + actionsCount);
+			pButton->AddActionEventListener(*this);
+			pItem->AddControl(pButton);
+		}
+		else AppLog("makesSense false");
+	}
+}
 
 TableViewItem* TizenPictureView::createTableViewItem(int itemWidth, int defaultItemHeight) {
 	TableViewAnnexStyle style = TABLE_VIEW_ANNEX_STYLE_NORMAL;
@@ -90,18 +133,12 @@ TableViewItem* TizenPictureView::createTableViewItem(int itemWidth, int defaultI
 
 	pItem->AddControl(pLabel);
 
-	Button* pButton1 = new Button();
-	pButton1->Construct(Rectangle(300, 20, 350, 80),L"Read");
-	pItem->AddControl(pButton1);
-
-	Button* pButton2 = new Button();
-	pButton2->Construct(Rectangle(300, 120, 350, 80),L"Download");
-	pItem->AddControl(pButton2);
+	createActionButtons(pItem);
 
 	pItem->SetIndividualSelectionEnabled(pLabel0, true);
 	pItem->SetIndividualSelectionEnabled(pLabel, true);
-	pItem->SetIndividualSelectionEnabled(pButton1, true);
-	pItem->SetIndividualSelectionEnabled(pButton2, true);
+//	pItem->SetIndividualSelectionEnabled(pButton1, true);
+//	pItem->SetIndividualSelectionEnabled(pButton2, true);
 
 	return pItem;
 }
