@@ -64,7 +64,7 @@ bool TreeViewForm::Initialize(ZLTreeDialog* treeDialog)
 
 	const char *title = myTreeDialog->myResource["title"].value().c_str();
 
-	Form::Construct(FORM_STYLE_NORMAL|FORM_STYLE_HEADER |FORM_STYLE_FOOTER );
+	Form::Construct(FORM_STYLE_NORMAL|FORM_STYLE_HEADER );
 
 	Header* pHeader = GetHeader();
     pHeader->SetTitleText(String(title));
@@ -75,9 +75,9 @@ bool TreeViewForm::Initialize(ZLTreeDialog* treeDialog)
 	}
 	else exitFlag= false;
 
-	Footer* pFooter = GetFooter();
-	pFooter->SetStyle(FOOTER_STYLE_BUTTON_TEXT);
-	pFooter->SetBackButton();
+//	Footer* pFooter = GetFooter();
+//	pFooter->SetStyle(FOOTER_STYLE_BUTTON_TEXT);
+//	pFooter->SetBackButton();
 
 
 	SetFormBackEventListener(this);
@@ -86,7 +86,6 @@ bool TreeViewForm::Initialize(ZLTreeDialog* treeDialog)
 
 	return true;
 }
-
 
 
 result TreeViewForm::OnInitializing(void)

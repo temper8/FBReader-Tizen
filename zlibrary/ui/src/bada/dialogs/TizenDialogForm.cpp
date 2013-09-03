@@ -64,14 +64,14 @@ bool TizenDialogForm::Initialize(const char *title, bool __showApplyButton)
 	showApplyButton = __showApplyButton;
 	AppLog("DialogForm::Initialize \n");
 	// Construct an XML form FORM_STYLE_INDICATOR|
-	Form::Construct(FORM_STYLE_NORMAL|FORM_STYLE_HEADER |FORM_STYLE_FOOTER );
+	Form::Construct(FORM_STYLE_NORMAL|FORM_STYLE_HEADER  );
 
 	Header* pHeader = GetHeader();
     pHeader->SetTitleText(String(title));
 
-	Footer* pFooter = GetFooter();
+//	Footer* pFooter = GetFooter();
 //	pFooter->SetStyle(FOOTER_STYLE_BUTTON_TEXT);
-	pFooter->SetBackButton();
+//	pFooter->SetBackButton();
 //	pFooter->AddActionEventListener(*this);
 
 	SetFormBackEventListener(this);

@@ -18,7 +18,8 @@ class badaForm :
 	public Tizen::Ui::IActionEventListener,
 	public Tizen::Ui::IOrientationEventListener,
 	public Tizen::Ui::IKeyEventListener,
-	public Tizen::Base::Runtime::ITimerEventListener  {
+	public Tizen::Base::Runtime::ITimerEventListener,
+	public Tizen::Ui::Controls::IFormMenuEventListener {
 
 // Construction
 	public:
@@ -72,9 +73,15 @@ protected:
 	Tizen::Base::Runtime::Timer* myTimer;
 	int dx;
 	int vx;
+
 	void PrevPage();
 	void NextPage();
+
 	void OnTimerExpired(Tizen::Base::Runtime::Timer& timer);
+
+	void InitHeader();
+	static const int ID_HEADER_LEFTBUTTON = 304;
+	static const int ID_HEADER_RIGHTBUTTON = 305;
 
 public:
 	int ScreenHeight;
@@ -108,6 +115,7 @@ public:
 	virtual void  OnKeyPressed (const Tizen::Ui::Control &source, Tizen::Ui::KeyCode keyCode);
 	virtual void  OnKeyReleased (const Tizen::Ui::Control &source, Tizen::Ui::KeyCode keyCode);
 
+	virtual void OnFormMenuRequested (Tizen::Ui::Controls::Form &source);
 
 };
 

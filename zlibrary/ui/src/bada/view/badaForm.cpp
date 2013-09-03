@@ -15,6 +15,10 @@
 #include "ZLTextArea.h"
 #include "../library/ZLBadaLibraryImplementation.h"
 
+#include <FMedia.h>
+
+
+
 using namespace Tizen::App;
 using namespace Tizen::Base;
 using namespace Tizen::Base::Collection;
@@ -22,6 +26,7 @@ using namespace Tizen::Ui;
 using namespace Tizen::Ui::Controls;
 using namespace Tizen::System;
 using namespace Tizen::Base::Runtime;
+using namespace Tizen::Media;
 
 #define ID_BACK_TO_READING	2600
 
@@ -125,7 +130,7 @@ void badaForm::OnKeyLongPressed (const Tizen::Ui::Control &source, Tizen::Ui::Ke
 }
 
 void badaForm::OnKeyPressed (const Tizen::Ui::Control &source, Tizen::Ui::KeyCode keyCode){
-	AppLog("OnKeyPressed");
+	AppLog("OnKeyPressed %d",keyCode);
 	if (!FBReader::Instance().EnableTapScrollingByVolumeKeysOption.value()) return;
 
 	switch (keyCode)
@@ -139,14 +144,37 @@ void badaForm::OnKeyPressed (const Tizen::Ui::Control &source, Tizen::Ui::KeyCod
 	 		     PrevPage();
 	 		    //FBReader::Instance().doAction(ActionCode::TAP_SCROLL_BACKWARD);
 	 	 	 	break;
+
 	 	 };
-	if (apiVersion == 2) this->ConsumeInputEvent();
+	//if (apiVersion == 2) this->ConsumeInputEvent();
 }
 
 void badaForm::OnKeyReleased (const Tizen::Ui::Control &source, Tizen::Ui::KeyCode keyCode){
 	AppLog("OnKeyReleased");
-	if (apiVersion == 2) this->ConsumeInputEvent();
+	switch (keyCode)
+		{
 
+	 	 case 171:// KEY_CONTEXT_MENU :
+	 		     AppLog("KEY_CONTEXT_MENU");
+
+	 			if (__pOptionMenu != null){
+	 					__pOptionMenu->SetShowState(true);
+	 					__pOptionMenu->Show();
+	 				}
+
+	 		    //FBReader::Instance().doAction(ActionCode::TAP_SCROLL_BACKWARD);
+	 	 	 	break;
+	 	 };
+	//if (apiVersion == 2) this->ConsumeInputEvent();
+
+}
+
+void badaForm::OnFormMenuRequested (Tizen::Ui::Controls::Form &source){
+	AppLog("OnFormMenuRequested");
+	if (__pOptionMenu != null){
+			__pOptionMenu->SetShowState(true);
+			__pOptionMenu->Show();
+		}
 }
 
 void badaForm::OnTimerExpired(Timer& timer){
@@ -492,6 +520,8 @@ badaForm::~badaForm(void)
 bool badaForm::Initialize(){
 	AppLog("badaForm::Initialize()");
 	Construct(FORM_STYLE_NORMAL);
+	//Construct(FORM_STYLE_HEADER);
+	//InitHeader();
 	SetBackgroundColor(Tizen::Graphics::Color::GetColor(COLOR_ID_BLACK));
 	formRect = GetClientAreaBounds();
 	return true;
@@ -500,6 +530,10 @@ bool badaForm::Initialize(){
 bool badaForm::Initialize(ZLbadaViewWidget* Holder)
 {
 	myHolder = Holder;
+
+
+
+
 	AppLog("badaForm::Initialize2()");
 
 	// Create an OptionMenu
@@ -513,6 +547,7 @@ bool badaForm::Initialize(ZLbadaViewWidget* Holder)
 
 	formRect = GetClientAreaBounds();
 
+	this->SetFormMenuEventListener(this);
 
 	if (capturedCanvas) delete capturedCanvas;
 	capturedCanvas = new Canvas();
@@ -521,6 +556,54 @@ bool badaForm::Initialize(ZLbadaViewWidget* Holder)
 	GetSystemInfomation();
 
 	return true;
+}
+
+
+
+void badaForm::InitHeader() {
+
+
+    Image img;
+    Bitmap* pBitmap1 = null;
+    Bitmap* pBitmap2 = null;
+    Bitmap* pBitmap3 = null;
+    String filePath = Tizen::App::App::GetInstance()->GetAppRootPath() + L"res/icons/menu/ic_menu_library.png";
+    img.Construct();
+    pBitmap1 = img.DecodeN(filePath, BITMAP_PIXEL_FORMAT_R8G8B8A8);
+    filePath = Tizen::App::App::GetInstance()->GetAppRootPath() + L"res/icons/menu/ic_menu_networklibrary.png";
+    pBitmap2 = img.DecodeN(filePath, BITMAP_PIXEL_FORMAT_RGB565);
+    filePath = Tizen::App::App::GetInstance()->GetAppRootPath() + L"res/icons/menu/ic_menu_toc.png";
+    pBitmap3 = img.DecodeN(filePath, BITMAP_PIXEL_FORMAT_ARGB8888);
+
+
+	Header* pHeader = GetHeader();
+	//pHeader->AddActionEventListener(*this);
+
+
+	//pHeader->RemoveAllButtons();
+	//pHeader->RemoveAllItems();
+
+	ButtonItem  buttonLeftItem;
+	buttonLeftItem.Construct(BUTTON_ITEM_STYLE_ICON, ID_HEADER_LEFTBUTTON);
+
+    if (pBitmap1 != null) buttonLeftItem.SetIcon(BUTTON_ITEM_STATUS_NORMAL, pBitmap1);
+	//buttonLeftItem.SetText(L"Left");
+
+	ButtonItem  buttonRightItem;
+	buttonRightItem.Construct(BUTTON_ITEM_STYLE_ICON, ID_HEADER_RIGHTBUTTON);
+	 if (pBitmap2 != null)  buttonRightItem.SetIcon(BUTTON_ITEM_STATUS_NORMAL, pBitmap2);
+	ButtonItem  button3;
+	button3.Construct(BUTTON_ITEM_STYLE_ICON, ID_HEADER_RIGHTBUTTON);
+	if (pBitmap3 != null)  button3.SetIcon(BUTTON_ITEM_STATUS_NORMAL, pBitmap3);
+	//buttonRightItem.SetText(L"Right");
+
+	pHeader->SetStyle(HEADER_STYLE_TITLE);
+	pHeader->SetTitleText(L"TITLE");
+	pHeader->SetButton(BUTTON_POSITION_LEFT, buttonLeftItem);
+	pHeader->SetButton(BUTTON_POSITION_RIGHT, button3);
+//	pHeader->SetButton(BUTTON_POSITION_RIGHT, buttonRightItem);
+
+
 }
 
 result badaForm::OnInitializing(void)
@@ -571,7 +654,6 @@ void badaForm::OnActionPerformed(const Tizen::Ui::Control& source, int actionId)
     	fbreader.showBookTextView();
     	RemoveOptionkeyActionListener(*this);
     	SetFormStyle(FORM_STYLE_NORMAL);
-    	//RequestRedraw();
     	Invalidate(false);
     	return;
     }
@@ -587,7 +669,6 @@ void badaForm::OnActionPerformed(const Tizen::Ui::Control& source, int actionId)
     else
     {
     	myHolder->doAction(ActionIdList[indx]);
-    	//RequestRedraw(true);
     	Invalidate(false);
     }
 }
