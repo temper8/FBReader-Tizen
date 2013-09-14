@@ -23,6 +23,7 @@
 #include "SQLiteDataBase.h"
 #include "SQLiteStatement.h"
 
+
 SQLiteConnection::SQLiteConnection(const std::string &name)
 	: DBConnection() 
 	, myName(name) 
@@ -43,7 +44,8 @@ bool SQLiteConnection::open() {
 	myDatabase = new Database();
 	if (!myDatabase) return false;
 	AppLog("myDatabase name = %s",myName.c_str());
-	result r = myDatabase->Construct(myName.c_str(), true);
+	if (myDatabase->Exists(myName.c_str())) AppLog("myDatabase Exists"); else AppLog("myDatabase not Exists");
+	result r = myDatabase->Construct(myName.c_str(),"a+");// true);
 	//result r = myDatabase->Construct("/Home/books.db", true);
 	if (!IsFailed(r)) return true;
 	dumpError();

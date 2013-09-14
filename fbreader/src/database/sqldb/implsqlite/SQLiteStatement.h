@@ -35,6 +35,7 @@ private:
 	SQLiteStatement(Database *db, const char *zSql, const char **pzTail);
 	//~SQLiteStatement();
 	std::vector<char*> myCharBuffer;
+	String SQLstring;
 public:
 	~SQLiteStatement();
 	DbStatement* pStmt;

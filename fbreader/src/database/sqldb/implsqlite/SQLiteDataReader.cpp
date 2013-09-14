@@ -48,17 +48,21 @@ bool SQLiteDataReader::next() {
 	const std::vector<SQLiteStatement *> &statements = myCommand.statements();
 	while (true) {
 		int res = statements[myCurrentStatement]->step();
+		//AppLog("next r=%d",res);
 		switch (res) {
-		case SQLITE_OK:
+		case SQLITE_OK: //AppLog("SQLITE_OK");
 			break;
-		case SQLITE_ROW:
+		case SQLITE_ROW://AppLog("SQLITE_ROW");
 			return true;
-		case SQLITE_DONE:
+		case SQLITE_DONE://AppLog("SQLITE_DONE %d" , myCurrentStatement);
+						//AppLog("statements.size() %d" , statements.size());
 			if (++myCurrentStatement >= statements.size()) {
+				//AppLog("return false");
 				return false;
 			}
 			break;
 		default:
+			//AppLog("default");
 			myCommand.dumpError();
 			return false;
 		}

@@ -21,6 +21,11 @@
 #include "SQLiteStatement.h"
 #include "SQLiteDataBase.h"
 #include <FTextAsciiEncoding.h>
+#include <FBase.h>
+
+
+
+
 using namespace Tizen::Text;
 using namespace std;
 
@@ -86,8 +91,15 @@ SQLiteStatement::SQLiteStatement(Database *db, const char *zSql, const char **pz
 	*pzTail = &zSql[i];
 	sql.Trim();
 	if (sql != "") {
-		pStmt = pDb->CreateStatementN(sql);
-	} else {
+		AppLog( "sql !=0");
+		 ByteBuffer* bb;
+		 bb = Tizen::Base::Utility::StringUtil::StringToUtf8N(sql);
+		 AppLog( "Stmt Create %s",(char *)bb->GetPointer());
+		 SQLstring = sql;
+		 pStmt = pDb->CreateStatementN(sql);
+		 AppLog( "Stmt Create r= %d ", GetLastResult());
+
+	} else {AppLog( "sql ==0");
 		pStmt = 0;
 	}
 }
@@ -152,6 +164,7 @@ int SQLiteStatement::column_type(int iCol){
 	if (pEnum) {
 		switch (pEnum->GetColumnType(iCol)) {
 			case DB_COLUMNTYPE_INT: return SQLITE_INTEGER;
+			case DB_COLUMNTYPE_INT64: AppLog("COLUMNTYPE_INT64");return 0;
 			case DB_COLUMNTYPE_DOUBLE: return SQLITE_FLOAT;
 			case DB_COLUMNTYPE_TEXT: return SQLITE_TEXT;
 			case DB_COLUMNTYPE_NULL: return SQLITE_NULL;
@@ -186,9 +199,10 @@ int SQLiteStatement::bind_null(int num){
 	}
 }
 int SQLiteStatement::bind_int(int num, int val){
+	AppLog("Stmt bind_int %d", val);
 	switch (pStmt->BindInt(num - 1, val)) {
-		case E_SUCCESS: return SQLITE_OK;
-		default: return SQLITE_ERROR;
+		case E_SUCCESS: AppLog("Stmt OK"); return SQLITE_OK;
+		default: AppLog("Stmt ERROR"); return SQLITE_ERROR;
 	}
 }
 int SQLiteStatement::bind_double(int num, double val){
@@ -198,29 +212,45 @@ int SQLiteStatement::bind_double(int num, double val){
 	}
 }
 int SQLiteStatement::bind_text(int num, const char* val){
+	AppLog("Stmt bind_text %s", val);
 	switch (pStmt->BindString(num - 1, val)) {
-		case E_SUCCESS: return SQLITE_OK;
-		default: return SQLITE_ERROR;
+		case E_SUCCESS: AppLog("Stmt OK");  return SQLITE_OK;
+		default: AppLog("Stmt ERROR"); return SQLITE_ERROR;
 	}
 }
 int SQLiteStatement::step(){
 	AppLog("step");
 	int res = E_INVALID_STATE ;
 	if (!pEnum) {
+		AppLog("Stmt sql %s", GetCString(SQLstring));
 		pEnum = pDb->ExecuteStatementN(*pStmt);
+		AppLog("Stmt Exe res %d", GetLastResult());
 		if (pEnum) {
 			res = pEnum->MoveNext();
+			AppLog("Stmt MoveNext %d", res);
 		} else {
 			res = GetLastResult();
+			AppLog("Stmt Exe res2 %d", res);
 			if (res == E_SUCCESS) return SQLITE_DONE;
+			if (res == E_OUT_OF_RANGE) return SQLITE_DONE;
+
 		}
 	} else {
 		res = pEnum->MoveNext();
+		AppLog("step res MoveNext  %d", res);
 	}
-//	AppLog("res %d", res);
+	AppLog("Stmt switch res %d", res);
 	switch (res) {
 		case E_SUCCESS: return SQLITE_ROW;
-		case E_OUT_OF_RANGE: return SQLITE_DONE;
+		case E_OUT_OF_RANGE: AppLog("Stmt E_OUT_OF_RANGE"); return SQLITE_DONE;
+
+		case E_INVALID_STATE: 	AppLog("E_INVALID_STATE"); 	return SQLITE_DONE;
+		//case -1610610827: AppLog("1610610927"); return SQLITE_ROW;
+		case E_OBJECT_LOCKED: 	AppLog("E_OBJECT_LOCKED"); 	return SQLITE_DONE;
+		case E_INVALID_FORMAT: 	AppLog("E_INVALID_FORMAT"); return SQLITE_DONE;
+		case E_IO: 				AppLog("E_IO"); 			return SQLITE_DONE;
+		case E_SYSTEM: 			AppLog("E_SYSTEM"); 		return SQLITE_DONE;
+
 		default: return SQLITE_ERROR;
 	}
 }
@@ -241,19 +271,19 @@ int SQLiteStatement::finalize(){
 	return SQLITE_OK;
 }
 int SQLiteStatement::prepare(Database *db, const char *zSql, SQLiteStatement** ppStmt, const char **pzTail) {
-//	AppLog("SQLiteStatement::prepare");
+	AppLog("SQLiteStatement::prepare");
 	if (zSql[0]==0) {
 		*ppStmt = 0;
-	} else {//AppLog("new SQLiteStatement");
+	} else {AppLog("new SQLiteStatement");
 		*ppStmt = new SQLiteStatement(db, zSql, pzTail);
 		if (*ppStmt == 0) AppLog("ppStmt == 0");
-		//AppLog("new SQLiteStatement 2");
+		AppLog("new SQLiteStatement 2");
 		if ((*ppStmt)->pStmt==0) {
 			AppLog("delete ppStmt");
 			delete *ppStmt;
 			*ppStmt = 0;
 		}
-		//AppLog("new SQLiteStatement 3");
+		AppLog("new SQLiteStatement 3");
 	}
 	return SQLITE_OK;
 }
