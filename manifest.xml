@@ -1,21 +1,24 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <Manifest xmlns="http://schemas.tizen.org/2012/12/manifest">
-    <Id>r2prVhfii7</Id>
+    <Id>B0pqm4nwDZ</Id>
     <Version>0.0.4</Version>
     <Type>C++App</Type>
     <Author>Alex</Author>
     <Requirements>
-        <Feature Name="http://tizen.org/feature/platform.core.cpu.arch.x86">true</Feature>
+        <Feature Name="http://tizen.org/feature/platform.core.cpu.arch.armv7">true</Feature>
         <Feature Name="http://tizen.org/feature/platform.core.fpu.arch.vfpv3">true</Feature>
     </Requirements>
     <Apps>
-        <ApiVersion>2.1</ApiVersion>
-        <Privileges/>
+        <ApiVersion>2.2</ApiVersion>
+        <Privileges>
+            <Privilege>http://tizen.org/privilege/power</Privilege>
+            <Privilege>http://tizen.org/privilege/notification</Privilege>
+        </Privileges>
         <UiApp HwAcceleration="On" LaunchingHistoryVisible="True" Main="True" MenuIconVisible="True" Name="FBReader">
             <UiScalability BaseScreenSize="Normal" CoordinateSystem="Logical" LogicalCoordinate="720"/>
             <UiTheme SystemTheme="White"/>
             <DisplayNames>
-                <DisplayName Locale="eng-GB">FBReader2</DisplayName>
+                <DisplayName Locale="eng-GB">FBReader</DisplayName>
             </DisplayNames>
             <Icons>
                 <Icon Section="MainMenu" Type="Xhigh">FBReader-type1.png</Icon>
