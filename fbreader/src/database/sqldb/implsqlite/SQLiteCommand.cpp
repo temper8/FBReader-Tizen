@@ -29,7 +29,6 @@
 #include "SQLiteDataReader.h"
 #include "SQLiteDataBase.h"
 
-
 std::string SQLiteCommand::packCommand(const std::string &command) {
 	static const char _spaces[] = " \t\n";
 	std::string stripped = command;
@@ -61,7 +60,7 @@ SQLiteCommand::~SQLiteCommand() {
 
 
 bool SQLiteCommand::execute() {
-	ZLLogger::Instance().println("sqlite", "execute: " + commandString());
+	ZLLogger::Instance().println("sqlite", "Stmt execute: " + commandString());
 
 	SQLiteConnection &con = (SQLiteConnection &) connection();
 	if (!con.isOpened()) {
@@ -71,17 +70,16 @@ bool SQLiteCommand::execute() {
 	if (!prepareStatements(con)) {
 		return false;
 	}
-	AppLog("after prepareStatements");
-	// без этого вылетает на tizen
-	if (myStatements.size() == 0 ) {
-		return false;
-	}
+	AppLog("myStatements size %d",myStatements.size());
+
 	std::vector<SQLiteStatement *>::iterator it = myStatements.begin();
 	std::vector<SQLiteStatement *>::iterator end = myStatements.end();
 	while (true) {
 		int res = (*it)->step();
+		AppLog("1");
 		switch (res) {
 		case SQLITE_DONE:
+			AppLog("SQLITE_DONE");
 			if (++it == end) {
 				resetStatements();
 				return true;
@@ -89,9 +87,11 @@ bool SQLiteCommand::execute() {
 			break;
 		case SQLITE_OK:
 		case SQLITE_ROW:
+			AppLog("SQLITE_ROW");
 			break;
 		default:
 			dumpError();
+			AppLog("dumpError");
 			finalizeStatements();
 			return false;
 		}
@@ -99,8 +99,7 @@ bool SQLiteCommand::execute() {
 }
 
 shared_ptr<DBValue> SQLiteCommand::executeScalar() {
-	ZLLogger::Instance().println("sqlite", "executeScalar: " + commandString());
-//	AppLog("myStatements size %d",myStatements.size());
+	ZLLogger::Instance().println("sqlite", "Stmt executeScalar: " + commandString());
 	SQLiteConnection &con = (SQLiteConnection &) connection();
 	if (!con.isOpened()) {
 		myStatements.clear();
@@ -109,20 +108,16 @@ shared_ptr<DBValue> SQLiteCommand::executeScalar() {
 	if (!prepareStatements(con)) {
 		return 0;
 	}
-//	AppLog("after prepareStatements");
-//	AppLog("myStatements size %d",myStatements.size());
-	// без этого вылетает на tizen
-	if (myStatements.size() == 0 ) {
-		return 0;
-	}
+	AppLog("Stmt myStatements size %d",myStatements.size());
+
+    int i = 0 ;
 	std::vector<SQLiteStatement *>::iterator it = myStatements.begin();
-	AppLog("1");
 	std::vector<SQLiteStatement *>::iterator end = myStatements.end();
-	AppLog("2");
+	//AppLog("Stmt start");
 	while (true) {
-		AppLog("3");
+		//AppLog("Stmt step %d",i++);
 		int res = (*it)->step();
-		AppLog("res", res);
+		//AppLog("Stmt res %d", res);
 		switch (res) {
 		case SQLITE_DONE:
 			if (++it == end) {
@@ -143,11 +138,11 @@ shared_ptr<DBValue> SQLiteCommand::executeScalar() {
 			return 0;
 		}
 	}
-	AppLog("end");
+//	AppLog("end");
 }
 
 shared_ptr<DBDataReader> SQLiteCommand::executeReader() {
-	ZLLogger::Instance().println("sqlite", "executeReader: " + commandString());
+	ZLLogger::Instance().println("sqlite", "Stmt executeReader: " + commandString());
 
 	SQLiteConnection &con = (SQLiteConnection &) connection();
 	if (!con.isOpened()) {
@@ -159,10 +154,9 @@ shared_ptr<DBDataReader> SQLiteCommand::executeReader() {
 	}
 //	AppLog("after prepareStatements");
 	// без этого вылетает на tizen
-	if (myStatements.size() == 0 ) {
-		AppLog("not myStatements");
-		return 0;
-	}
+//	if (myStatements.size() == 0 ) {	AppLog("not myStatements");	return 0;	}
+
+
 	myLocked = true;
 	return new SQLiteDataReader(*this);
 }
@@ -175,31 +169,37 @@ bool SQLiteCommand::prepareStatements(SQLiteConnection &conn) {
 	}
 
 	if (myStatements.size() != 0) {
+		/*  повторное использование статементов приводит к падению на tizen !!!!!!!!!!
 
 		const size_t size = myStatements.size();
+		AppLog("Stmt size = %d", size);
 		int res = SQLITE_OK;
 		for (size_t i = 0; i < size && res == SQLITE_OK; ++i) {
 			res = myStatements[i]->reset();
 		}
 		if (res == SQLITE_OK) {
+			AppLog("Stmt res == SQLITE_OK");
 			bindParameters();
 			return true;
 		}
+		*/
+		//AppLog("Stmt finalizeStatements");
 		finalizeStatements();
-
 	}
+
+
 	const std::string sql = commandString();
 	const int length = -1;
 	const char *tail = sql.c_str();
 
-//	AppLog("tail = %s", tail);
+	//AppLog("Stmt tail = %s", tail);
 	while (true) {
 		SQLiteStatement* statement;
 		int res = SQLiteStatement::prepare(db, tail, &statement, &tail);
-	//	AppLog("while (true) 0");
+		//AppLog("Stmt prepare");
 		//int res = SQLiteStatement::prepare(db, tail, statement, &tail);
 		if (res != SQLITE_OK) {
-		//	AppLog("while  != SQLITE_OK");
+			//AppLog("while  != SQLITE_OK");
 			dumpError();
 			finalizeStatements();
 			return false;
@@ -210,7 +210,7 @@ bool SQLiteCommand::prepareStatements(SQLiteConnection &conn) {
 		//	AppLog("statement == 0");
 			break;
 		}
-	//	AppLog("while (true) 1");
+		//AppLog("prepare push_back");
 		myStatements.push_back(statement);
 		//AppLog("while (true) 2");
 		conn.addStatement(statement);
@@ -356,10 +356,10 @@ bool SQLiteCommand::bindParameter(SQLiteStatement *statement, int number, shared
 
 
 void SQLiteCommand::finalizeStatements() {
-//	AppLog("finalizeStatements start");
+	AppLog("finalizeStatements start");
 	SQLiteConnection &con = (SQLiteConnection &) connection();
 	const size_t size = myStatements.size();
-//	AppLog("finalizeStatements size = %d",size);
+	AppLog("finalizeStatements size = %d",size);
 	for (size_t i = 0; i < size; ++i) {
 		SQLiteStatement *statement = myStatements[i];
 		con.removeStatement(statement);
@@ -380,7 +380,9 @@ void SQLiteCommand::dumpError() const {
 	static const size_t cmdlimit = 114;
 	((SQLiteConnection &) connection()).dumpError(); 
 	const std::string &cmd = commandString();
+	AppLog("SQLITE Error %s", cmd.c_str() );
 	if (cmd.length() > cmdlimit) {
+
 		std::cerr << "SQLITE IMPLEMENTATION ERROR: in command \"" << cmd.substr(0, cmdlimit - 3) << "...\"" << std::endl;
 	} else {
 		std::cerr << "SQLITE IMPLEMENTATION ERROR: in command \"" << cmd << "\"" << std::endl;
