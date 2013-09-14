@@ -23,14 +23,26 @@
 #include "../DBRunnables.h"
 #include "../../sqldb/implsqlite/SQLiteFactory.h"
 
+#include <FBase.h>
+
 static const std::string FIND_FILE_ID =
 	"SELECT file_id FROM Files" \
-	" WHERE name = @name AND NVL(parent_id, 0) = @parent_id;";
+	" WHERE name = @name AND coalesce(parent_id, 0) = @parent_id;";
 
 static const std::string ADD_FILE =
 	"INSERT INTO Files (name, parent_id, size)" \
 	" VALUES(@name, nullif(@parent_id, 0), nullif(@size, 0));" \
 	" SELECT last_insert_rowid() AS file_id;";
+
+/*
+static const std::string FIND_FILE_ID =
+	"SELECT file_id FROM Files WHERE name = @name AND parent_id = @parent_id; ";
+//" WHERE name = @name AND COALESCE(parent_id, 0) = @parent_id;";
+static const std::string ADD_FILE =
+	"INSERT INTO Files (name, parent_id, size)" \
+	" VALUES(@name, @parent_id, @size);" \
+	" SELECT last_insert_rowid() AS file_id;";
+*/
 
 FindFileIdRunnable::FindFileIdRunnable(DBConnection &connection) {
 	myFindFileId      = SQLiteFactory::createCommand(FIND_FILE_ID, connection, "@name", DBValue::DBTEXT, "@parent_id", DBValue::DBINT);
@@ -41,6 +53,8 @@ bool FindFileIdRunnable::run() {
 	const std::string resolvedPath = ZLFile(myFileName).resolvedPath();
 	const std::string physPath = ZLFile(resolvedPath).physicalFilePath();
 	const std::string dirName  = physPath.substr(0, physPath.rfind(ZLibrary::FileNameDelimiter));
+
+	AppLog("Stmt FF resPath %s", resolvedPath.c_str());
 
 	DBTextValue &findName = (DBTextValue &) *myFindFileId->parameter("@name").value();
 	DBIntValue &findParent = (DBIntValue &) *myFindFileId->parameter("@parent_id").value();
@@ -53,6 +67,7 @@ bool FindFileIdRunnable::run() {
 	findName = dirName;
 	findParent = 0;
 	while (true) {
+		AppLog("Stmt myFindFileId");
 		shared_ptr<DBValue> physId = myFindFileId->executeScalar();
 		if (physId.isNull() || physId->type() != DBValue::DBINT || ((DBIntValue &) *physId).value() == 0) {
 			if (!myAdd) {
@@ -60,6 +75,7 @@ bool FindFileIdRunnable::run() {
 			}
 			addName = findName.value();
 			addParent = findParent.value();
+			AppLog("Stmt myAddFile");
 			physId = myAddFile->executeScalar();
 			if (physId.isNull() || physId->type() != DBValue::DBINT || ((DBIntValue &) *physId).value() == 0) {
 				return false;

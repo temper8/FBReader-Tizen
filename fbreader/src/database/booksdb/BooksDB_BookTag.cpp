@@ -40,9 +40,13 @@ static const std::string DELETE_BOOKTAG =
 	"DELETE FROM BookTag WHERE book_id = @book_id AND tag_id = @tag_id";
 static const std::string FIND_TAG_ID =
 	"SELECT tag_id FROM Tags" \
-	" WHERE name = @name AND NVL(parent_id, 0) = @parent_id";
+	" WHERE name = @name AND COALESCE(parent_id, 0) = @parent_id";
+//	" WHERE name = @name AND NVL(parent_id, 0) = @parent_id";
+//	" WHERE name = @name AND IFNULL(parent_id, 0) = @parent_id";
+
+
 static const std::string ADD_TAG =
-	"INSERT INTO Tags (name, parent_id) VALUES (@name, nullif(@parent_id, 0));" \
+	"INSERT INTO Tags (name, parent_id) VALUES (@name, NULLIF(@parent_id, 0));" \
 	" SELECT last_insert_rowid() AS tag_id";
 
 void BooksDB::loadTags(Book &book) {

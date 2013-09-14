@@ -225,8 +225,8 @@ const std::string BooksDBQuery::LOAD_BOOK = \
 const std::string BooksDBQuery::ADD_BOOK = \
 	"INSERT INTO Books (encoding, language, title, file_id) " \
 	"	VALUES ( " \
-	"		nullif(@encoding,\"auto\"), " \
-	"		nullif(@language,\"other\"), " \
+	"		NULLIF(@encoding,\"auto\"), " \
+	"		NULLIF(@language,\"other\"), " \
 	"		@title, " \
 	"		@file_id " \
 	"	); " \
@@ -235,8 +235,8 @@ const std::string BooksDBQuery::ADD_BOOK = \
 
 const std::string BooksDBQuery::UPDATE_BOOK = \
 	"UPDATE Books SET " \
-	"	encoding = nullif(@encoding,\"auto\"), " \
-	"	language = nullif(@language,\"other\"), " \
+	"	encoding = NULLIF(@encoding,\"auto\"), " \
+	"	language = NULLIF(@language,\"other\"), " \
 	"	title = @title " \
 	"WHERE " \
 	"	book_id = @book_id; ";
@@ -260,7 +260,7 @@ const std::string BooksDBQuery::SET_BOOKSERIES = \
 	"INSERT OR REPLACE INTO BookSeries (book_id, series_id, book_index) VALUES (" \
 	"	@book_id, " \
 	"	@series_id, " \
-	"	nullif(@book_index, 0) " \
+	"	NULLIF(@book_index, 0) " \
 	"); ";
 
 const std::string BooksDBQuery::DELETE_BOOKSERIES = \
@@ -280,7 +280,7 @@ const std::string BooksDBQuery::SET_FILE_SIZE = "UPDATE Files SET size = @size W
 
 const std::string BooksDBQuery::SET_ENCODING = "UPDATE Books SET encoding = @encoding WHERE book_id = @book_id; ";
 
-const std::string BooksDBQuery::LOAD_FILE_ENTRIES = "SELECT name FROM Files WHERE NVL(parent_id, 0) = @file_id; ";
+const std::string BooksDBQuery::LOAD_FILE_ENTRIES = "SELECT name FROM Files WHERE COALESCE(parent_id, 0) = @file_id; ";
 
 const std::string BooksDBQuery::INVALIDATE_BOOKS = "UPDATE Books SET title = \"\" WHERE file_id = @file_id; ";
 
@@ -289,7 +289,7 @@ const std::string BooksDBQuery::DELETE_FILE = "DELETE FROM Files WHERE file_id =
 
 const std::string BooksDBQuery::DELETE_FILE_ENTRIES = "DELETE FROM Files WHERE parent_id = @file_id; ";
 
-const std::string BooksDBQuery::LOAD_FILE_ENTRY_IDS = "SELECT file_id FROM Files WHERE NVL(parent_id, 0) = @file_id; ";
+const std::string BooksDBQuery::LOAD_FILE_ENTRY_IDS = "SELECT file_id FROM Files WHERE COALESCE(parent_id, 0) = @file_id; ";
 
 const std::string BooksDBQuery::FIND_BOOK_ID = "SELECT book_id FROM Books WHERE file_id = @file_id; ";
 
