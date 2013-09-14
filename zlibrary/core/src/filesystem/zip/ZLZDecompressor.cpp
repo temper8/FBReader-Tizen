@@ -28,9 +28,10 @@ const size_t IN_BUFFER_SIZE = 2048*2;
 const size_t OUT_BUFFER_SIZE = 32768*2;
 
 ZLZDecompressor::ZLZDecompressor(size_t size) : myAvailableSize(size) {
-//	AppLog("ZLZDecompressor::ZLZDecompressor size=%d",size);
+	AppLog("ZLZDecompressor size=%d",size);
 	myZStream = new z_stream;
 	memset(myZStream, 0, sizeof(z_stream));
+	AppLog("ZLZDecompressor myZStream size=%d",sizeof(z_stream));
 	inflateInit2(myZStream, -MAX_WBITS);
 //	AppLog("ZLZDecompressor::inflateInit2");
 	myInBuffer = new char[IN_BUFFER_SIZE];
@@ -46,13 +47,17 @@ ZLZDecompressor::ZLZDecompressor(size_t size) : myAvailableSize(size) {
 }
 
 ZLZDecompressor::~ZLZDecompressor() {
+	AppLog("ZLZDecompressor delete");
 	delete[] myInBuffer;
+	AppLog("ZLZDecompressor delete myInBuffer");
 	delete[] myOutBuffer;
+	AppLog("ZLZDecompressor delete myOutBuffer");
 	//inflateEnd
     inflateEnd(myZStream);
+	AppLog("ZLZDecompressor delete inflateEnd");
 
 	delete myZStream;
-
+	AppLog("ZLZDecompressor delete myZStream");
 /*	delete[] myInBuffer2;
 	delete[] myOutBuffer2;
 	//inflateEnd

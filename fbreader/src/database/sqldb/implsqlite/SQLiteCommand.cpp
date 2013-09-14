@@ -152,11 +152,6 @@ shared_ptr<DBDataReader> SQLiteCommand::executeReader() {
 	if (!prepareStatements(con)) {
 		return 0;
 	}
-//	AppLog("after prepareStatements");
-	// без этого вылетает на tizen
-//	if (myStatements.size() == 0 ) {	AppLog("not myStatements");	return 0;	}
-
-
 	myLocked = true;
 	return new SQLiteDataReader(*this);
 }

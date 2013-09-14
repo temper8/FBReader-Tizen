@@ -27,7 +27,7 @@ const int ZLZipHeader::SignatureLocalFile = 0x04034B50;
 const int ZLZipHeader::SignatureData = 0x08074B50;
 
 bool ZLZipHeader::readFrom(ZLInputStream &stream) {
-//	AppLog("ZLZipHeader::readFrom 1");
+	AppLog("ZLZipHeader::readFrom 1");
 	size_t startOffset = stream.offset();
 	Signature = readLong(stream);
 	switch (Signature) {
@@ -69,7 +69,7 @@ void ZLZipHeader::skipEntry(ZLInputStream &stream, ZLZipHeader &header) {
 		case SignatureLocalFile:
 			if (header.Flags & 0x08) {
 				stream.seek(header.ExtraLength, false);
-				//AppLog("decompressor %d", (size_t)-1);
+				AppLog("ZLZDecompressor decompressor %d", (size_t)-1);
 				ZLZDecompressor decompressor((size_t)-1);
 				size_t size;
 				do {
