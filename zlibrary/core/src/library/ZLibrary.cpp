@@ -144,15 +144,12 @@ void ZLibrary::initApplication(const std::string &name) {
 	ourApplicationDirectory = BaseDirectory + FileNameDelimiter + ourApplicationName;
 
 	Tizen::Base::ByteBuffer* bb;
-	//Tizen::Base::String tizenStr = Tizen::App::App::GetInstance()->GetAppRootPath();
-	//tizenStr = tizenStr + "data/" +  name.c_str();
-	//Tizen::Base::String tizenStr = Tizen::App::App::GetInstance()->GetAppDataPath();//GetAppSharedPath();
-	Tizen::Base::String tizenStr = Tizen::App::App::GetInstance()->GetAppDataPath();//GetAppSharedPath();
+	Tizen::Base::String tizenStr = Tizen::App::App::GetInstance()->GetAppDataPath();
 	tizenStr = tizenStr + name.c_str();
 	bb = Tizen::Base::Utility::StringUtil::StringToUtf8N(tizenStr);
 	AppLog( "WrDir %s",(char *)bb->GetPointer());
-	//ourApplicationWritableDirectory = std::string((char *)bb->GetPointer());
-	ourApplicationWritableDirectory =	"/mnt/mmc/FBReaderWrite" + FileNameDelimiter + name;
+	ourApplicationWritableDirectory = std::string((char *)bb->GetPointer());
+	//ourApplicationWritableDirectory =	"/mnt/mmc/FBReaderWrite" + FileNameDelimiter + name;
 
 	ourDefaultFilesPathPrefix = ourApplicationDirectory + FileNameDelimiter + "default" + FileNameDelimiter;
 	AppLog("ZLibrary ourApplicationWritableDirectory =%s",ourApplicationWritableDirectory.c_str());
