@@ -48,6 +48,7 @@ void ZLbadaViewWidget::repaint() {
 	//context.restoreFont();
 	view()->paint();
 	//mybadaForm->RequestRedraw(true);
+	mybadaForm->Invalidate(false);
 	AppLog("ZLbadaViewWidget::repaint()");
 
 }
