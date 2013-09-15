@@ -61,6 +61,7 @@ bool badaApp::OnAppInitializing(AppRegistry& appRegistry)
 
 	// Draw and Show the form
 	AppLog("Draw and Show the form");
+
 	pbadaForm->Invalidate(true);
 	//pbadaForm->Draw();
 	//pbadaForm->Show();
@@ -113,6 +114,7 @@ badaApp::OnScreenOn (void)
 {
 	// TODO:
 	// Get the released resources or resume the operations that were paused or stopped in OnScreenOff().
+	AppLog("OnScreenOn");
 }
 
 void
@@ -122,4 +124,5 @@ badaApp::OnScreenOff (void)
 	//  Unless there is a strong reason to do otherwise, release resources (such as 3D, media, and sensors) to allow the device to enter the sleep mode to save the battery.
 	// Invoking a lengthy asynchronous method within this listener method can be risky, because it is not guaranteed to invoke a callback before the device enters the sleep mode.
 	// Similarly, do not perform lengthy operations in this listener method. Any operation must be a quick one.
+	AppLog("OnScreenOff");
 }
