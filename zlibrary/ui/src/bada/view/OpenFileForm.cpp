@@ -25,7 +25,7 @@ using namespace Tizen::Media;
 #define ID_ACT_DELETE	1601
 #define ID_ACT_CLOSE	1602
 
-OpenFileForm::OpenFileForm() {
+OpenFileForm::OpenFileForm():__pLstContentInfo(0) {
 	// TODO Auto-generated constructor stub
 
 }
@@ -38,18 +38,27 @@ bool OpenFileForm::Initialize()
 {
 	AppLog("OpenFileForm::Initialize \n");
 	// Construct an XML form FORM_STYLE_INDICATOR|
-	Construct(FORM_STYLE_NORMAL|FORM_STYLE_TITLE|FORM_STYLE_SOFTKEY_1);
-	SetTitleText(L"Add Book");
+//	Construct(FORM_STYLE_NORMAL|FORM_STYLE_TITLE|FORM_STYLE_SOFTKEY_1);
+//	SetTitleText(L"Add Book");
+	Form::Construct(FORM_STYLE_NORMAL|FORM_STYLE_HEADER );
+
+	Header* pHeader = GetHeader();
+    pHeader->SetTitleText(L"Add Book");
+
+	SetFormBackEventListener(this);
 
 //	AddSoftkeyActionListener(SOFTKEY_0, *this);
-	AddSoftkeyActionListener(SOFTKEY_1, *this);
+//	AddSoftkeyActionListener(SOFTKEY_1, *this);
 //	SetSoftkeyActionId(SOFTKEY_0, ID_ACT_UPDATE);
-	SetSoftkeyActionId(SOFTKEY_1, ID_ACT_CLOSE);
+//	SetSoftkeyActionId(SOFTKEY_1, ID_ACT_CLOSE);
 
 	return true;
 }
 
-
+void OpenFileForm::OnFormBackRequested(Tizen::Ui::Controls::Form& source){
+	AppLog("Back is clicked!");
+	pPreviousForm->SendUserEvent(0, null);
+}
 
 result OpenFileForm::OnInitializing(void)
 {
@@ -72,34 +81,30 @@ result OpenFileForm::OnInitializing(void)
 	}
 */
     // Creates List
-    List* pList = new List();
-    __pLstSearchList = pList;
-    pList->Construct(Rectangle(0, 0, formArea.width, formArea.height-20), LIST_STYLE_NORMAL, LIST_ITEM_SINGLE_TEXT, 100, 0, 480, 0);
-//pList->AddItemEventListener(*this);
-    pList->AddItemEventListener(*this);
 
-    // Creates a String
-  //  String itemText1(L"Text1");
-  //  String itemText2(L"Text2");
-  //  String itemText3(L"Text4");
-  //  String itemText4(L"Text5");
-    // Adds an item to the List
-  //  pList->AddItem(&itemText1, null, null, null, 500);
-  //  pList->AddItem(&itemText2, null, null, null, 501);
-  //  pList->AddItem(&itemText3, null, null, null, 502);
-  //  pList->AddItem(&itemText4, null, null, null, 503);
+    __pLstSearchList = new ListView();
+  //  __pLstSearchList->Construct(Rectangle(0, 0, formArea.width, formArea.height-20), LIST_STYLE_NORMAL, LIST_ITEM_SINGLE_TEXT, 100, 0, 480, 0);
+    __pLstSearchList->Construct(Rectangle(0, 0, GetClientAreaBounds().width, GetClientAreaBounds().height), true, false);
+    __pLstSearchList->SetItemProvider(*this);
+    __pLstSearchList->AddListViewItemEventListener(*this);
+  //  __pListView->AddListViewItemEventListener(*this);
+
+
+//pList->AddItemEventListener(*this);
+ //   __pLstSearchList->AddItemEventListener(*this);
+
 
     // Adds a List to the Form
-    AddControl(*pList);
+    AddControl(*__pLstSearchList);
 
 
-	__pProgressPopup = new Popup();
-	__pProgressPopup->Construct(true, Dimension(formArea.width-50, 250));
-	__pProgressPopup->SetTitleText(L"Searching");
+//	__pProgressPopup = new Popup();
+//	__pProgressPopup->Construct(true, Dimension(formArea.width-50, 250));
+//	__pProgressPopup->SetTitleText(L"Searching");
 
 	// Creates Bitmap.
 	//AppResource *pAppResource = Application::GetInstance()->GetAppResource();
-	Image *pImage = new Image();
+/*	Image *pImage = new Image();
     r = pImage->Construct();
 	//Bitmap *pBitmap1 = pAppResource->GetBitmapN("/blue/progressing00_big.png");
 	Tizen::Base::String aniPath = Tizen::App::App::GetInstance()->GetAppRootPath() +"/res/icons/ani/" ;
@@ -138,13 +143,27 @@ result OpenFileForm::OnInitializing(void)
 	__pAnimation = new Animation();
 	__pAnimation->Construct(Rectangle(popupFormArea.width/2-60, 20, 120, 120), *__pAnimationFrameList);
 	__pAnimation->AddAnimationEventListener(*this);
-	__pProgressPopup->AddControl(*__pAnimation);
-
+//	__pProgressPopup->AddControl(*__pAnimation);
+*/
 	return r;
 }
 
-void OpenFileForm::OnItemStateChanged (const Tizen::Ui::Control &source, int index, int itemId, Tizen::Ui::ItemStatus status)
-{
+//void OpenFileForm::OnItemStateChanged (const Tizen::Ui::Control &source, int index, int itemId, Tizen::Ui::ItemStatus status)
+//{}
+void OpenFileForm::OnListViewItemSwept(Tizen::Ui::Controls::ListView &listView, int index, Tizen::Ui::Controls::SweepDirection direction){
+	AppLog("OnListViewItemSwept");
+}
+
+void OpenFileForm::OnListViewItemLongPressed(Tizen::Ui::Controls::ListView &listView, int index, int elementId, bool& invokeListViewItemCallback){
+	AppLog("OnListViewItemLongPressed");
+}
+void OpenFileForm::OnListViewContextItemStateChanged(Tizen::Ui::Controls::ListView &listView, int index, int elementId, Tizen::Ui::Controls::ListContextItemStatus state){
+	AppLog("OnListViewContextItemStateChanged");
+}
+
+void OpenFileForm::OnListViewItemStateChanged(Tizen::Ui::Controls::ListView &listView, int index, int elementId, Tizen::Ui::Controls::ListItemStatus status){
+
+
 	String tmpContentPath;
 	ByteBuffer* bb;
 	AppLog("index %d",index);
@@ -164,26 +183,9 @@ void OpenFileForm::OnItemStateChanged (const Tizen::Ui::Control &source, int ind
 			AppLog("tmpContentPath %s",(char*)bb->GetPointer());
 			//selectedFile =  std::string((const char*)bb->GetPointer()) ;
 			FBReader::Instance().openFile(ZLFile(std::string((const char*)bb->GetPointer())));
-			//pMessageBox->Construct(L"Открыть файл?", tmpContentPath , MSGBOX_STYLE_OKCANCEL ,3000);
+
 		}
-
-
-
 	pPreviousForm->SendUserEvent(2, null);
-
-    switch (itemId)
-    {
-        case 500:
-            // Todo:
-        	AppLog("500 \n");
-            break;
-        case 501:
-            // Todo:
-        	AppLog("501 \n");
-            break;
-        default:
-            break;
-    }
 }
 
 
@@ -241,9 +243,16 @@ void OpenFileForm::OnUserEventReceivedN(RequestId requestId, IList* pArgs)
 
 	switch(requestId)
 	{
-		case ID_SEARCH_DONE:
+	case ID_SEARCH_START:
+		//ShowProgressPopup(true);
+		//StartSearch();
+		UpdateContent();
+			SendUserEvent(OpenFileForm::ID_SEARCH_DONE, null);
+		break;
+	case ID_SEARCH_DONE:
 			{
-				ShowProgressPopup(false);
+
+				//ShowProgressPopup(false);
 
 			/*	bool ret = (static_cast<Boolean*>(pArgs->GetAt(0)))->ToBool();
 			//	pArgs->RemoveAll(true);
@@ -271,7 +280,7 @@ void    OpenFileForm::StartSearch(){
 		delete __pThread;
 		__pThread = null;
 	}
-	ShowProgressPopup(true);
+	//ShowProgressPopup(true);
 
 	__pThread = new Thread();
 	__pThread->Construct(*this);
@@ -316,7 +325,7 @@ void OpenFileForm::UpdateContent(){
 	result r = E_SUCCESS;
 
 	_ClearContentInfoList();		// Clear content info list
-	__pLstSearchList->RemoveAllItems();  // Clear ui list
+//	__pLstSearchList->RemoveAllItems();  // Clear ui list
 
 	ch.Append("/");
 
@@ -327,7 +336,7 @@ void OpenFileForm::UpdateContent(){
 
 	bb = Tizen::Base::Utility::StringUtil::StringToUtf8N(strQuery);
 	AppLog("strQuery %s",(char*)bb->GetPointer());
-	__pLstContentInfo = contentSearch.SearchN(1, 100, totalPage, totalCount, strQuery, sortColumn, SORT_ORDER_NONE);
+	__pLstContentInfo = contentSearch.SearchN(1, 200, totalPage, totalCount, strQuery, sortColumn, SORT_ORDER_NONE);
 	TryCatch(__pLstContentInfo != null, popStr = "Search failed.", "ContentSearch.SearchN() is failed by %s", GetErrorMessage(GetLastResult()));
 
 	nItemCount = __pLstContentInfo->GetCount();
@@ -336,31 +345,8 @@ void OpenFileForm::UpdateContent(){
 		goto CATCH;
 	}
 
-	for( int i=0; i<nItemCount; i++ )
-	{
-		ContentSearchResult* pInfo = (ContentSearchResult*)__pLstContentInfo->GetAt(i);
-		TryCatch(pInfo != null, popStr = "Fail to convert to ContentSearchResult", "Fail to convert %i th node.", i);
 
-		tmpContentPath = ((ContentInfo*)pInfo->GetContentInfo())->GetContentPath();
-		bb = Tizen::Base::Utility::StringUtil::StringToUtf8N(tmpContentPath);
-		AppLog("tmpContentPath %s",(char*)bb->GetPointer());
-		while(nIndex != -1){
-			tmpContentPath.IndexOf(ch, nStartIndex, nIndex);
-			if(nIndex != -1) nStartIndex = nIndex+1;
-		}
-		tmpContentPath.SubString(nStartIndex, strName);
-		nStartIndex = 0;
-		nIndex = 0;
-
-		r = __pLstSearchList->AddItem(&strName, null, null, null );
-		TryCatch(E_SUCCESS == r, popStr = "Search fail - Construct fail." , "Construct() is failed by %s.", GetErrorMessage(r));
-	}
-
-	__pLstSearchList->Draw();
-	__pLstSearchList->Show();
-
-	//delete __pCommonPopup;
-
+	__pLstSearchList->UpdateList();
 	return;
 
 CATCH:
@@ -390,13 +376,16 @@ void OpenFileForm::ShowProgressPopup(const bool show)
 	if(show == true)
 	{
 		// Changes to the desired show state.
+		__pProgressPopup = new Popup();
+		__pProgressPopup->Construct(true, Dimension(GetClientAreaBounds().width-50, 250));
+		__pProgressPopup->SetTitleText(L"Searching");
 		__pProgressPopup->SetShowState(true);
 		__pProgressPopup->Show();
-		 __pAnimation->Play();
+		// __pAnimation->Play();
 	}
 	else
 	{
-		__pAnimation->Stop();
+		//__pAnimation->Stop();
 		__pProgressPopup->SetShowState(false);
 		Draw();
 		Show();
@@ -407,3 +396,53 @@ void OpenFileForm::OnAnimationStopped(const Control& source)
 	if(__pAnimation)
 		__pAnimation->Play();
 }
+
+
+// IListViewItemProvider implementation
+ListItemBase* OpenFileForm::CreateItem(int index, int itemWidth)
+{
+	if (!__pLstContentInfo) return NULL;
+
+    // Creates an instance of CustomItem
+    SimpleItem* pItem = new SimpleItem();
+    String ch= L"/";
+	String ItemName = "";
+
+	ContentSearchResult* pInfo = (ContentSearchResult*)__pLstContentInfo->GetAt(index);
+//	TryCatch(pInfo != null, popStr = "Fail to convert to ContentSearchResult", "Fail to convert %i th node.", i);
+
+	String tmpContentPath = ((ContentInfo*)pInfo->GetContentInfo())->GetContentPath();
+	ByteBuffer* bb = Tizen::Base::Utility::StringUtil::StringToUtf8N(tmpContentPath);
+	AppLog("tmpContentPath %s",(char*)bb->GetPointer());
+	int nStartIndex = 0;
+	int nIndex = 0;
+
+	while(nIndex != -1){
+		tmpContentPath.IndexOf(ch, nStartIndex, nIndex);
+		if(nIndex != -1) nStartIndex = nIndex+1;
+	}
+
+	tmpContentPath.SubString(nStartIndex, ItemName);
+
+    pItem->Construct(Dimension(itemWidth,100), LIST_ANNEX_STYLE_NORMAL);
+    pItem->SetElement(ItemName);
+
+ //   pItem->SetContextItem(__pItemContext);
+
+    return pItem;
+}
+
+bool OpenFileForm::DeleteItem(int index, ListItemBase* pItem, int itemWidth)
+{
+    delete pItem;
+    pItem = null;
+    return true;
+}
+
+int
+OpenFileForm::GetItemCount(void)
+{
+	if (__pLstContentInfo) return __pLstContentInfo->GetCount();
+	else return 0;
+}
+

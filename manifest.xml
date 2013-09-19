@@ -11,8 +11,10 @@
     <Apps>
         <ApiVersion>2.2</ApiVersion>
         <Privileges>
-            <Privilege>http://tizen.org/privilege/power</Privilege>
+            <Privilege>http://tizen.org/privilege/content.read</Privilege>
             <Privilege>http://tizen.org/privilege/notification</Privilege>
+            <Privilege>http://tizen.org/privilege/power</Privilege>
+            <Privilege>http://tizen.org/privilege/content.write</Privilege>
         </Privileges>
         <UiApp HwAcceleration="On" LaunchingHistoryVisible="True" Main="True" MenuIconVisible="True" Name="FBReader">
             <UiScalability BaseScreenSize="Normal" CoordinateSystem="Logical" LogicalCoordinate="720"/>

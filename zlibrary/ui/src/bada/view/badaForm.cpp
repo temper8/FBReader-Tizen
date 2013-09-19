@@ -146,7 +146,8 @@ void badaForm::OnKeyPressed (const Tizen::Ui::Control &source, Tizen::Ui::KeyCod
 	 	 	 	break;
 
 	 	 };
-	//if (apiVersion == 2) this->ConsumeInputEvent();
+	//if (apiVersion == 2)
+	this->ConsumeInputEvent();
 }
 
 void badaForm::OnKeyReleased (const Tizen::Ui::Control &source, Tizen::Ui::KeyCode keyCode){
@@ -165,7 +166,8 @@ void badaForm::OnKeyReleased (const Tizen::Ui::Control &source, Tizen::Ui::KeyCo
 	 		    //FBReader::Instance().doAction(ActionCode::TAP_SCROLL_BACKWARD);
 	 	 	 	break;
 	 	 };
-	//if (apiVersion == 2) this->ConsumeInputEvent();
+	//if (apiVersion == 2)
+	this->ConsumeInputEvent();
 
 }
 
@@ -522,7 +524,7 @@ bool badaForm::Initialize(){
 	Construct(FORM_STYLE_NORMAL);
 	//Construct(FORM_STYLE_HEADER);
 	//InitHeader();
-	SetBackgroundColor(Tizen::Graphics::Color::GetColor(COLOR_ID_BLACK));
+	SetBackgroundColor(Tizen::Graphics::Color::GetColor(COLOR_ID_BLUE ));
 	formRect = GetClientAreaBounds();
 	return true;
 }
@@ -531,16 +533,13 @@ bool badaForm::Initialize(ZLbadaViewWidget* Holder)
 {
 	myHolder = Holder;
 
-
-
-
 	AppLog("badaForm::Initialize2()");
 
 	// Create an OptionMenu
 	__pOptionMenu = new OptionMenu();
 	__pOptionMenu->Construct();
 	__pOptionMenu->AddActionEventListener(*this);
-	__pOptionMenu->AddKeyEventListener(*this);
+//	__pOptionMenu->AddKeyEventListener(*this);
 	 this->AddTouchEventListener(*this);
 	 this->AddOrientationEventListener(*this);
 	 this->AddKeyEventListener(*this);
@@ -552,6 +551,8 @@ bool badaForm::Initialize(ZLbadaViewWidget* Holder)
 	if (capturedCanvas) delete capturedCanvas;
 	capturedCanvas = new Canvas();
 	capturedCanvas->Construct(formRect);
+
+	//Draw();
 
 	GetSystemInfomation();
 
@@ -710,17 +711,12 @@ void badaForm::goOpenFileForm()
 			AppLog("LoadContentInfo");
 			//_detailForm->LoadContentInfo((ContentSearchResult*)__pLstContentInfo->GetAt(index));
 
-			r = pFrame->Draw();
-			if(IsFailed(r)){
-				AppLog("pFrame->Draw() is failed by %s.", GetErrorMessage(r));
-				return;
-			}
-			r = pFrame->Show();
-			if(IsFailed(r)){
-				AppLog("pFrame->Show() is failed by %s.", GetErrorMessage(r));
-				return;
-			}
-			pOpenFileForm->StartSearch();
+			//r = pFrame->Draw();
+			//r = pFrame->Show();
+
+			pOpenFileForm->Invalidate(true);
+			//pOpenFileForm->StartSearch();
+			pOpenFileForm->SendUserEvent(301,null);
 		}
 }
 
