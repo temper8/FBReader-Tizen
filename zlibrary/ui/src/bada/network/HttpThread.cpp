@@ -189,16 +189,17 @@ void HttpThread::OnTransactionReadyToRead(HttpSession& httpSession, HttpTransact
 	if(pHttpResponse == null) return;
 	AppLog("####### pHttpResponse != null #######");
 	AppLog("####### HttpStatusCode %d",pHttpResponse->GetStatusCode());
-	if (pHttpResponse->GetStatusCode() == E_SUCCESS)
+	//if (pHttpResponse->GetStatusCode() == E_SUCCESS)HTTP_STATUS_OK
+	if (pHttpResponse->GetStatusCode() == HTTP_STATUS_OK)
 	{
 		AppLog("####### GetHttpStatusCode() == HTTP_STATUS_OK #######");
 		HttpHeader* pHttpHeader = pHttpResponse->GetHeader();
 		if(pHttpHeader != null)
 		{
 			String* tempHeaderString = pHttpHeader->GetRawHeaderN();
-			//AppLog("tempHeaderString %s",tempHeaderString->GetPointer());
+			//AppLog("####### tempHeaderString %s",tempHeaderString->GetPointer());
 			ByteBuffer* pBuffer = pHttpResponse->ReadBodyN();
-			AppLog("pBuffer->GetLimit() %d",pBuffer->GetLimit());
+			AppLog("####### pBuffer->GetLimit() %d",pBuffer->GetLimit());
 			//pBuffer->SetByte(pBuffer->GetLimit()-1 ,'\0');
 			const byte* pArray = pBuffer->GetPointer();
 			myRequest->handleContent(pArray, (size_t)availableBodyLen);
