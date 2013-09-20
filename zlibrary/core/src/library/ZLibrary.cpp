@@ -37,7 +37,7 @@ using namespace Tizen::Text;
 #include "../options/ZLConfig.h"
 
 #include "../../../../FBreader/src/database/booksdb/BooksDB.h"
-//#include "../network/ZLNetworkManager.h"
+#include "../network/ZLNetworkManager.h"
 
 bool ZLibrary::ourLocaleIsInitialized = false;
 std::string ZLibrary::ourLanguage;
@@ -101,7 +101,7 @@ void ZLibrary::parseArguments(int &argc, char **&argv) {
 
 void ZLibrary::shutdown() {
 	AppLog("ZLibrary::shutdown()");
-//	ZLNetworkManager::deleteInstance();
+	ZLNetworkManager::deleteInstance();
 	ZLImageManager::deleteInstance();
 	AppLog("ZLImageManager::deleteInstance()");
 	ZLCommunicationManager::deleteInstance();

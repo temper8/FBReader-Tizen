@@ -196,7 +196,8 @@ FBReader::FBReader(const std::string &bookToOpen) :	ZLApplication("FBReader"),
 	AppLog("new OpenFileHandler()");
 	ZLCommunicationManager::Instance().registerHandler("openFile", myOpenFileHandler);
 	AppLog("Instance().registerHandler openFile");
-//	ZLNetworkManager::Instance().setUserAgent(std::string("FBReader/") + VERSION);
+
+	ZLNetworkManager::Instance().setUserAgent(std::string("FBReader/") + "0.0.4");
 	AppLog("ZLNetworkManager::Instance()");
 }
 
@@ -249,10 +250,10 @@ void FBReader::initWindow() {
 
 	refreshWindow();
 
-//	ZLTimeManager::Instance().addTask(new TimeUpdater(), 5000);
+	//ZLTimeManager::Instance().addTask(new TimeUpdater(), 5000);
 
 	if (ConfigAutoSavingOption.value()) {
- //	ZLOption::startAutoSave(ConfigAutoSaveTimeoutOption.value());
+ 	//ZLOption::startAutoSave(ConfigAutoSaveTimeoutOption.value());
 	}
 
 }
