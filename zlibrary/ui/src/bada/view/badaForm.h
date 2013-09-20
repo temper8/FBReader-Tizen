@@ -17,8 +17,10 @@ class badaForm :
 	public Tizen::Ui::ITouchEventListener,
 	public Tizen::Ui::IActionEventListener,
 	public Tizen::Ui::IOrientationEventListener,
-	public Tizen::Ui::IKeyEventListener,
+	//public Tizen::Ui::IKeyEventListener,
+	public Tizen::Ui::IPropagatedKeyEventListener,
 	public Tizen::Base::Runtime::ITimerEventListener,
+	public Tizen::Ui::Controls::IFormBackEventListener,
 	public Tizen::Ui::Controls::IFormMenuEventListener {
 
 // Construction
@@ -83,6 +85,20 @@ protected:
 	static const int ID_HEADER_LEFTBUTTON = 304;
 	static const int ID_HEADER_RIGHTBUTTON = 305;
 
+//	virtual void  OnKeyLongPressed (const Tizen::Ui::Control &source, Tizen::Ui::KeyCode keyCode);
+//	virtual void  OnKeyPressed (const Tizen::Ui::Control &source, Tizen::Ui::KeyCode keyCode);
+//	virtual void  OnKeyReleased (const Tizen::Ui::Control &source, Tizen::Ui::KeyCode keyCode);
+
+	virtual bool OnKeyPressed(Tizen::Ui::Control& source, const Tizen::Ui::KeyEventInfo& keyEventInfo);
+	virtual bool OnKeyReleased(Tizen::Ui::Control& source, const Tizen::Ui::KeyEventInfo& keyEventInfo);
+
+	virtual bool OnPreviewKeyPressed(Tizen::Ui::Control& source, const Tizen::Ui::KeyEventInfo& keyEventInfo);
+	virtual bool OnPreviewKeyReleased(Tizen::Ui::Control& source, const Tizen::Ui::KeyEventInfo& keyEventInfo);
+	virtual bool TranslateKeyEventInfo(Tizen::Ui::Control& source, Tizen::Ui::KeyEventInfo& keyEventInfo) { return false; }
+
+	virtual void OnFormBackRequested(Tizen::Ui::Controls::Form& source);
+	virtual void OnFormMenuRequested (Tizen::Ui::Controls::Form &source);
+
 public:
 	int ScreenHeight;
 	int ScreenWidth;
@@ -111,11 +127,9 @@ public:
 	virtual void  OnTouchReleased (const Tizen::Ui::Control &source, const Tizen::Graphics::Point &currentPosition, const Tizen::Ui::TouchEventInfo &touchInfo);
 	void OnUserEventReceivedN(RequestId requestId, Tizen::Base::Collection::IList* pArgs);
 
-	virtual void  OnKeyLongPressed (const Tizen::Ui::Control &source, Tizen::Ui::KeyCode keyCode);
-	virtual void  OnKeyPressed (const Tizen::Ui::Control &source, Tizen::Ui::KeyCode keyCode);
-	virtual void  OnKeyReleased (const Tizen::Ui::Control &source, Tizen::Ui::KeyCode keyCode);
 
-	virtual void OnFormMenuRequested (Tizen::Ui::Controls::Form &source);
+
+
 
 };
 

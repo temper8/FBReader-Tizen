@@ -38,6 +38,56 @@ badaForm &badaForm::Instance() {
 }
 
 
+badaForm::badaForm(void): needRepaintHolder(false),myDrawMode(DRAW_CURRENT_PAGE),applicationWindowsNotInited(true), myHolder(null), MenuItemCount(0), /*showNewPage(true), touchMove(0),*/ myTimer(0){
+	ourInstance = this;
+}
+
+badaForm::~badaForm(void)
+{
+}
+
+bool badaForm::Initialize(){
+	AppLog("badaForm::Initialize()");
+	Construct(FORM_STYLE_NORMAL);
+	//Construct(FORM_STYLE_HEADER);
+	//InitHeader();
+	SetBackgroundColor(Tizen::Graphics::Color::GetColor(COLOR_ID_BLUE ));
+	formRect = GetClientAreaBounds();
+	return true;
+}
+
+bool badaForm::Initialize(ZLbadaViewWidget* Holder)
+{
+	myHolder = Holder;
+
+	AppLog("badaForm::Initialize2()");
+
+	// Create an OptionMenu
+	__pOptionMenu = new OptionMenu();
+	__pOptionMenu->Construct();
+	__pOptionMenu->AddActionEventListener(*this);
+//	__pOptionMenu->AddKeyEventListener(*this);
+	 this->AddTouchEventListener(*this);
+	 this->AddOrientationEventListener(*this);
+	 this->SetPropagatedKeyEventListener (this);
+
+	formRect = GetClientAreaBounds();
+
+	SetFormMenuEventListener(this);
+	SetFormBackEventListener(this);
+	if (capturedCanvas) delete capturedCanvas;
+	capturedCanvas = new Canvas();
+	capturedCanvas->Construct(formRect);
+
+	GetSystemInfomation();
+
+	return true;
+}
+
+
+
+
+
 result badaForm::OnDraw(void)
 {
 	AppLog("badaForm::OnDraw(void) %d", myDrawMode);
@@ -123,36 +173,47 @@ result badaForm::GetSystemInfomation(void)
 //virtual bool onStylusMove(int x, int y);
 //virtual bool onStylusMovePressed(int x, int y);
 //virtual bool onFingerTap(int x, int y);
-
+/*
 void badaForm::OnKeyLongPressed (const Tizen::Ui::Control &source, Tizen::Ui::KeyCode keyCode){
 	AppLog("OnKeyLongPressed");
 	if (apiVersion == 2) this->ConsumeInputEvent();
 }
+*/
+bool badaForm::OnPreviewKeyPressed(Tizen::Ui::Control& source, const Tizen::Ui::KeyEventInfo& keyEventInfo) {
+	AppLog("OnPreviewKeyPressed %d",keyEventInfo.GetKeyCode());
+	return false;
+};
+bool badaForm::OnPreviewKeyReleased(Tizen::Ui::Control& source, const Tizen::Ui::KeyEventInfo& keyEventInfo) {
+	AppLog("OnPreviewKeyReleased %d",keyEventInfo.GetKeyCode());
+	return false;
+};
 
-void badaForm::OnKeyPressed (const Tizen::Ui::Control &source, Tizen::Ui::KeyCode keyCode){
-	AppLog("OnKeyPressed %d",keyCode);
-	if (!FBReader::Instance().EnableTapScrollingByVolumeKeysOption.value()) return;
-
-	switch (keyCode)
+bool badaForm::OnKeyPressed(Tizen::Ui::Control& source, const Tizen::Ui::KeyEventInfo& keyEventInfo) {
+	AppLog("OnKeyPressed %d",keyEventInfo.GetKeyCode());
+	if (!FBReader::Instance().EnableTapScrollingByVolumeKeysOption.value()) return false;
+	bool used = false;
+	switch (keyEventInfo.GetKeyCode())
 		{
-	 	 case KEY_SIDE_UP :
-	 		    NextPage();
-	 	 	 	//FBReader::Instance().doAction(ActionCode::TAP_SCROLL_FORWARD);
-	 	 	 	break;
+ 	 	 case KEY_SIDE_UP :
+ 		    NextPage();
+ 	 	 	//FBReader::Instance().doAction(ActionCode::TAP_SCROLL_FORWARD);
+ 		     used = true;
+ 	 	 	break;
 
-	 	 case KEY_SIDE_DOWN :
-	 		     PrevPage();
-	 		    //FBReader::Instance().doAction(ActionCode::TAP_SCROLL_BACKWARD);
-	 	 	 	break;
+ 	 	 case KEY_SIDE_DOWN :
+ 		     PrevPage();
+ 		    //FBReader::Instance().doAction(ActionCode::TAP_SCROLL_BACKWARD);
+ 		    used = true;
+ 	 	 	break;
 
-	 	 };
-	//if (apiVersion == 2)
-	this->ConsumeInputEvent();
+ 	 };
+	return used;
 }
 
-void badaForm::OnKeyReleased (const Tizen::Ui::Control &source, Tizen::Ui::KeyCode keyCode){
-	AppLog("OnKeyReleased");
-	switch (keyCode)
+bool badaForm::OnKeyReleased(Tizen::Ui::Control& source, const Tizen::Ui::KeyEventInfo& keyEventInfo){
+	AppLog("OnKeyReleased %d",keyEventInfo.GetKeyCode());
+	bool used = false;
+	switch (keyEventInfo.GetKeyCode())
 		{
 
 	 	 case 171:// KEY_CONTEXT_MENU :
@@ -162,15 +223,47 @@ void badaForm::OnKeyReleased (const Tizen::Ui::Control &source, Tizen::Ui::KeyCo
 	 					__pOptionMenu->SetShowState(true);
 	 					__pOptionMenu->Show();
 	 				}
-
+	 			used = true;
 	 		    //FBReader::Instance().doAction(ActionCode::TAP_SCROLL_BACKWARD);
 	 	 	 	break;
 	 	 };
-	//if (apiVersion == 2)
-	this->ConsumeInputEvent();
 
+	return used;
 }
 
+void badaForm::OnFormBackRequested(Tizen::Ui::Controls::Form& source){
+	AppLog("Back is clicked!");
+
+	MessageBox messageBox;
+
+	messageBox.Construct(L"MessageBox Title", L"Exit?", MSGBOX_STYLE_YESNO, 3000);
+
+	int modalResult = 0;
+
+	// Calls ShowAndWait() : Draws and Shows itself and processes events
+	messageBox.ShowAndWait(modalResult);
+
+	switch (modalResult)
+	    {
+	    case MSGBOX_RESULT_YES:
+	        {
+	        	//FBReader &fbreader = FBReader::Instance();
+	        	//fbreader.doAction(ActionCode::QUIT);
+	        	//FBReader::Instance().quit();
+	        	Application* a = Tizen::App::Application::GetInstance();
+	        	a->Terminate();
+	        }
+	        break;
+	    case MSGBOX_RESULT_NO:
+	    	        {
+	    	            // ....
+	    	        }
+	    	        break;
+	    default:
+	        break;
+	    }
+
+}
 void badaForm::OnFormMenuRequested (Tizen::Ui::Controls::Form &source){
 	AppLog("OnFormMenuRequested");
 	if (__pOptionMenu != null){
@@ -511,56 +604,6 @@ void badaForm::OnOrientationChanged( const Tizen::Ui::Control&  source,  Tizen::
 	Draw();
 }
 
-badaForm::badaForm(void): needRepaintHolder(false),myDrawMode(DRAW_CURRENT_PAGE),applicationWindowsNotInited(true), myHolder(null), MenuItemCount(0), /*showNewPage(true), touchMove(0),*/ myTimer(0){
-	ourInstance = this;
-}
-
-badaForm::~badaForm(void)
-{
-}
-
-bool badaForm::Initialize(){
-	AppLog("badaForm::Initialize()");
-	Construct(FORM_STYLE_NORMAL);
-	//Construct(FORM_STYLE_HEADER);
-	//InitHeader();
-	SetBackgroundColor(Tizen::Graphics::Color::GetColor(COLOR_ID_BLUE ));
-	formRect = GetClientAreaBounds();
-	return true;
-}
-
-bool badaForm::Initialize(ZLbadaViewWidget* Holder)
-{
-	myHolder = Holder;
-
-	AppLog("badaForm::Initialize2()");
-
-	// Create an OptionMenu
-	__pOptionMenu = new OptionMenu();
-	__pOptionMenu->Construct();
-	__pOptionMenu->AddActionEventListener(*this);
-//	__pOptionMenu->AddKeyEventListener(*this);
-	 this->AddTouchEventListener(*this);
-	 this->AddOrientationEventListener(*this);
-	 this->AddKeyEventListener(*this);
-
-	formRect = GetClientAreaBounds();
-
-	this->SetFormMenuEventListener(this);
-
-	if (capturedCanvas) delete capturedCanvas;
-	capturedCanvas = new Canvas();
-	capturedCanvas->Construct(formRect);
-
-	//Draw();
-
-	GetSystemInfomation();
-
-	return true;
-}
-
-
-
 void badaForm::InitHeader() {
 
 
@@ -694,26 +737,18 @@ void badaForm::goOpenFileForm()
 {
 	result r = E_SUCCESS;
 	AppLog("go detail form");
-		Frame *pFrame = Application::GetInstance()->GetAppFrame()->GetFrame();
-		OpenFileForm* pOpenFileForm = new OpenFileForm;
-		//pOpenFileForm->SetPreviousForm(this);
-		pOpenFileForm->SetPreviousForm(pFrame->GetCurrentForm());
-		if(pOpenFileForm->Initialize()){
+
+	Frame *pFrame = Application::GetInstance()->GetAppFrame()->GetFrame();
+	OpenFileForm* pOpenFileForm = new OpenFileForm;
+	pOpenFileForm->SetPreviousForm(pFrame->GetCurrentForm());
+	if(pOpenFileForm->Initialize()){
 			r = pFrame->AddControl(*pOpenFileForm);
 			if(IsFailed(r)){AppLog("Initialize() is failed by %s.", GetErrorMessage(r));return;}
 
 			r = pFrame->SetCurrentForm(*pOpenFileForm);
-			if(IsFailed(r)){
-				AppLog("pFrame->SetCurrentForm() is failed by %s.", GetErrorMessage(r));
-				return;
-			}
+			if(IsFailed(r)){return;	}
 
 			AppLog("LoadContentInfo");
-			//_detailForm->LoadContentInfo((ContentSearchResult*)__pLstContentInfo->GetAt(index));
-
-			//r = pFrame->Draw();
-			//r = pFrame->Show();
-
 			pOpenFileForm->Invalidate(true);
 			//pOpenFileForm->StartSearch();
 			pOpenFileForm->SendUserEvent(301,null);
