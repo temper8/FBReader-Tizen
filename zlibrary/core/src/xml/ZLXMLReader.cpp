@@ -64,7 +64,7 @@ void ZLXMLReaderHandler::shutdown() {
 }
 
 bool ZLXMLReaderHandler::handleBuffer(const char *data, size_t len) {
-	AppLog(" ZLXMLReader::handleBuffer %d", len);
+	AppLog(" ZLXMLReader::handleBuffer   %d", len);
 	return myReader.readFromBuffer(data, len);
 	//myReader.myInternalReader->parseBuffer(data, len);
 /*	size_t length, start = 0, BUFFER_SIZE = 512;
@@ -100,15 +100,15 @@ const std::map<std::string,std::string> &ZLXMLReader::namespaces() const {
 	return *myNamespaces.back();
 }
 
-ZLXMLReader::ZLXMLReader(const char *encoding) {
+ZLXMLReader::ZLXMLReader(const char *encoding): myParserBuffer(0) {
 	AppLog("create ZLXMLReader");
 	myInternalReader = new ZLXMLReaderInternal(*this, encoding);
-	myParserBuffer = new char[BUFFER_SIZE];
+
 }
 
 ZLXMLReader::~ZLXMLReader() {
 	AppLog("delete ZLXMLReader");
-	delete[] myParserBuffer;
+	if 	(myParserBuffer !=0 ) delete[] myParserBuffer;
 	delete myInternalReader;
 }
 
@@ -125,7 +125,7 @@ bool ZLXMLReader::readDocument(shared_ptr<ZLInputStream> stream) {
 	AppLog(" ZLXMLReader::readDocument 1");
 	bool useWindows1252 = false;
 	char *encoding = 0;
-
+	if 	(myParserBuffer ==0 ) myParserBuffer = new char[BUFFER_SIZE];
 	stream->read(myParserBuffer, 4);
 //	AppLog(" ZLXMLReader::readDocument 2");
 	//std::string stringBuffer(myParserBuffer, 256);
@@ -161,6 +161,7 @@ bool ZLXMLReader::readDocument(shared_ptr<ZLInputStream> stream) {
 	if (encoding != 0) {AppLog("init encoding %s",encoding);}
 	*/
 	AppLog("initialize(encoding);");
+
 	initialize(encoding);
 	size_t length;
 	AppLog("before do");
