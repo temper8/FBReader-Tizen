@@ -406,7 +406,7 @@ bool ZLXMLReaderInternal::parseBuffer(const char *buffer, size_t len) {
 	AppLog("0ctxt->encoding = %s", ctxt->encoding);
 	int r = xmlParseChunk(ctxt, buffer, len, 0);
 	AppLog("xmlParseChunk r=%d len = %d", r, len);
-	TryReturn(r, E_FAILURE, "xmlParseChunk failed.");
+	//TryReturn(r, E_FAILURE, "xmlParseChunk failed.");
 
 //	AppLog("ctxt->encoding = %s", ctxt->encoding);
 //	CATCH:
@@ -422,6 +422,7 @@ void ZLXMLReaderInternal::createPushParserCtxt(const char *buffer){
 			AppLog("xmlCreatePushParserCtxt контекст создать не удалось");
 	     return;
 	 }
+	AppLog("1ctxt->encoding = %s", ctxt->encoding);
 }
 void ZLXMLReaderInternal::freePushParserCtxt(const char *buffer){
 	AppLog("freePushParserCtxt");

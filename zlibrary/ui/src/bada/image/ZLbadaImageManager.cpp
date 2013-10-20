@@ -57,7 +57,7 @@ void ZLbadaImageData::init(unsigned int width, unsigned int height) {
 		delete pBitmap;
 	}
 	//pImage = new QImage(width, height, QImage::Format_RGB32);
-	AppLog("new Bitmap %d %d",width,height );
+//	AppLog("new Bitmap %d %d",width,height );
 	// pBitmap = new Bitmap();
      // Construct Bitmap without buffer scaling.
    //  pBitmap->Construct(Dimension(width, height), BITMAP_PIXEL_FORMAT_ARGB8888);
@@ -100,7 +100,7 @@ bool ZLbadaImageManager::convertImageDirect(const std::string &stringData, ZLIma
 	Image Image;
 
 	r = Image.Construct();
-	AppLog("convertImageDirect" );
+//	AppLog("convertImageDirect" );
 	//IMG_FORMAT_NONE  No image format type
 	//IMG_FORMAT_JPG  The JPEG image format type
 	//IMG_FORMAT_PNG  The PNG image format type
@@ -114,7 +114,7 @@ bool ZLbadaImageManager::convertImageDirect(const std::string &stringData, ZLIma
 	pBuffer = new ByteBuffer();
 	pBuffer->Construct(stringData.length());
     pBuffer->SetArray((const unsigned char*)stringData.data(),0, stringData.length());
-    AppLog("SetArray %d",  stringData.length());
+//    AppLog("SetArray %d",  stringData.length());
     ImageFormat iformat;
     if (strncmp(stringData.data()+1, "PNG", 3) == 0) {
     	AppLog("iformat = IMG_FORMAT_PNG" );
@@ -131,10 +131,10 @@ bool ZLbadaImageManager::convertImageDirect(const std::string &stringData, ZLIma
     }
     Bitmap* tmpBitmap = Image.DecodeN(*pBuffer,iformat, BITMAP_PIXEL_FORMAT_ARGB8888);
     //((ZLbadaImageData&)data).pBitmap = Image.DecodeN(*pBuffer,iformat, BITMAP_PIXEL_FORMAT_ARGB8888);
-	AppLog("DecodeN" );
+	//AppLog("DecodeN" );
  //   ((ZLbadaImageData&)data).pBitmap = Image.DecodeN(*pBuffer,iformat, BITMAP_PIXEL_FORMAT_RGB565);
     r = GetLastResult();
-	AppLog("GetLastResult =%d", r);
+	//AppLog("GetLastResult =%d", r);
 	if (!IsFailed(r)) {
 		((ZLbadaImageData&)data).init(0, 0);
 		((ZLbadaImageData&)data).pBitmap = tmpBitmap;

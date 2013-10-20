@@ -286,7 +286,7 @@ void OPDSXMLParser::startElementHandler(const char *tag, const char **attributes
 }
 
 void OPDSXMLParser::endElementHandler(const char *tag) {
-	AppLog("endElementHandler tag=%s",tag);
+	//AppLog("endElementHandler tag=%s",tag);
 	std::string tagPrefix;
 	std::string tagName = tag;
 	const int index = tagName.find(':');
@@ -294,12 +294,12 @@ void OPDSXMLParser::endElementHandler(const char *tag) {
 		tagPrefix = tagName.substr(0, index);
 		tagName.erase(0, index + 1);
 	}
-	AppLog("myAtomNamespaceId =%s",myAtomNamespaceId.c_str());
-	AppLog("tagPrefix =%s",tagPrefix.c_str());
+//	AppLog("myAtomNamespaceId =%s",myAtomNamespaceId.c_str());
+//	AppLog("tagPrefix =%s",tagPrefix.c_str());
 //	AppLog("tagName =%s",tagName.c_str());
 
 	ZLStringUtil::stripWhiteSpaces(myBuffer);
-	AppLog("myBuffer =%s",myBuffer.c_str());
+//	AppLog("myBuffer =%s",myBuffer.c_str());
 	switch (myState) {
 		case START:
 			break;

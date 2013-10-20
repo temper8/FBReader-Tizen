@@ -102,6 +102,7 @@ public:
 
 //private:
 public:
+
 	bool myInterrupted;
 	ZLXMLReaderInternal *myInternalReader;
 	char *myParserBuffer;

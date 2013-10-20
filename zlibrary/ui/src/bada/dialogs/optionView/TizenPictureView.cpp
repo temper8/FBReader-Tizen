@@ -88,7 +88,8 @@ void TizenPictureView::createActionButtons(TableViewItem* pItem){
 	actionsCount =0;
 	for (int i =1; i<myActions.size();i++){
 		shared_ptr<ZLRunnableWithKey> a = myActions[i];
-		if (a->makesSense()&&(actionsCount<4)) { AppLog("makesSense true %d",actionsCount);
+		//if (a->makesSense()&&(actionsCount<4)) { AppLog("makesSense true %d",actionsCount);
+		if (actionsCount<4) { AppLog("makesSense true %d",actionsCount);
 			std::string text = a->text(ZLResource::resource("networkView")["bookNode"]);
 			Button* pButton = new Button();
 			pButton->Construct(Rectangle(300, 20+100*actionsCount, 350, 80),String(text.c_str()));

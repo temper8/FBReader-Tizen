@@ -31,12 +31,13 @@
 static const std::string CONTENT_ENCODING = "content-encoding:";
 
 ZLNetworkXMLParserRequest::ZLNetworkXMLParserRequest(const std::string &url, const ZLNetworkSSLCertificate &sslCertificate, shared_ptr<ZLXMLReader> reader) :
-	ZLNetworkGetRequest(url, sslCertificate),
+	ZLNetworkGetRequest(url, sslCertificate), myInputStream(0),
 	myReader(reader) {
 	AppLog("ZLNetworkXMLParserRequest");
 }
 
 ZLNetworkXMLParserRequest::~ZLNetworkXMLParserRequest() {
+	AppLog("~ZLNetworkXMLParserRequest");
 	if (!myInputStream.isNull() && myInputStream->initialized() && !myInputStream->eof()) {
 		myInputStream->setEof();
 		myReader->readDocument(myInputStream);

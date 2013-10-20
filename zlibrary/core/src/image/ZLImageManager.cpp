@@ -306,9 +306,9 @@ shared_ptr<ZLImageData> ZLImageManager::imageData(const ZLImage &image) const {
 			AppLog("stringData.isNull() || stringData->empty()");
 			return 0;
 		}
-		AppLog("stringData.length() = %d", stringData->length());
+	//	AppLog("stringData.length() = %d", stringData->length());
 		data = createData();
-		AppLog("createData()");
+	//	AppLog("createData()");
 		//if (singleImage.mimeType() == "image/palm") {
 		if (*singleImage.mimeType() == *ZLMimeType::IMAGE_PALM) {
 			if (!convertFromPalmImageFormat(*stringData, *data)) {
@@ -327,6 +327,6 @@ shared_ptr<ZLImageData> ZLImageManager::imageData(const ZLImage &image) const {
 			return 0;
 		}
 	}
-	AppLog("Удачно выходим из ZLImageManager::imageData");
+//	AppLog("Удачно выходим из ZLImageManager::imageData");
 	return data;
 }
