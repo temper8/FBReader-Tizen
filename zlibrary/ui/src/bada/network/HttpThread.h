@@ -31,7 +31,7 @@ private:
 
 };
 
-class HttpThread :	public Tizen::Base::Runtime::Thread,
+class HttpThread :	public Tizen::Base::Runtime::EventDrivenThread ,
 					public Tizen::Net::Http::IHttpTransactionEventListener,
 					public Tizen::Base::Runtime::ITimerEventListener
 {
@@ -47,6 +47,9 @@ public:
 	// Called before the Run() method is called.
 	// Can decide whether it can be run or not by returning true or false.
 	// If this method returns false, the thread is terminated immediately.
+
+	bool startRequest();
+	void finishRequest();
 	bool OnStart(void);
 	// Called after the Run() method is called.
 	void OnStop(void);
@@ -70,7 +73,10 @@ private:
 	void OnTransactionCompleted(Tizen::Net::Http::HttpSession& httpSession, Tizen::Net::Http::HttpTransaction& httpTransaction);
 	void OnTransactionCertVerificationRequiredN(Tizen::Net::Http::HttpSession& httpSession, Tizen::Net::Http::HttpTransaction& httpTransaction, Tizen::Base::String* pCert);
 	void OnTimerExpired(Tizen::Base::Runtime::Timer& timer);
-	Tizen::Base::Runtime::Timer*		__pTimer;
+//	Tizen::Base::Runtime::Timer*		__pTimer;
+
+	//to debag
+	Tizen::Base::String fileName;
 };
 
 

@@ -68,7 +68,18 @@ void ZLbadaTreeDialog::setShowIcons(bool value){
 
 Object* ZLbadaTreeDialog::Run(void){
 	AppLog("__pThread Run");
-	loadCovers();
+	myForm->requestUpdateHeader();
+	 myCurrentNode->requestChildren(0);
+	 AppLog("enter node 2");
+	 myForm->requestUpdateContent();
+	// myForm->SendUserEvent(999,null);
+	 AppLog("UpdateContent finish enter");
+	 if (showIcons){
+		// loadCovers();
+	 }
+	 myForm->GetHeader()->StopWaitingAnimation(HEADER_ANIMATION_POSITION_TITLE);
+	 myForm->Invalidate(true);
+//	 myForm->RequestRedraw(true);
 	AppLog("__pThread Run end");
 	return null;
 }
@@ -99,11 +110,12 @@ bool ZLbadaTreeDialog::back() {
 		return false;
 	}
 	myCurrentNode = myCurrentNode->parent();
-	myForm->UpdateContent();
+	myForm->updateHeader();
+	myForm->updateContent();
 	 AppLog("UpdateContent finish back");
 	 if (showIcons){
 		 __pThread = new Thread();
-		 __pThread->Construct(*this);
+		 __pThread->Construct(*this,THREAD_PRIORITY_LOW);
 		 //pHeader->PlayWaitingAnimation(HEADER_ANIMATION_POSITION_TITLE);
 		 //__pListView->SetTextOfEmptyList(L"Loading...");
 		 __terminateThread = false;
@@ -138,16 +150,18 @@ bool ZLbadaTreeDialog::enter(ZLTreeNode* node) {
 	 AppLog("__pThread kill????");
 	 myCurrentNode = node;
 	 AppLog("enter node 1");
-	 myCurrentNode->requestChildren(0);
+//	 myCurrentNode->requestChildren(0);
 	 AppLog("enter node 2");
-	 myForm->UpdateContent();
+//	 myForm->UpdateContent();
 
 	 AppLog("UpdateContent finish enter");
-	 if (showIcons){
+	// if (showIcons)
+	 {
 		// loadCovers();
 		 __pThread = new Thread();
-		 __pThread->Construct(*this);
+		 __pThread->Construct(*this,THREAD_PRIORITY_LOW);
 		__terminateThread = false;
+		myForm->GetHeader()->PlayWaitingAnimation(HEADER_ANIMATION_POSITION_TITLE  );
 		__pThread->Start();
 	 }
 	/* result r;
@@ -190,12 +204,15 @@ void ZLbadaTreeDialog::run() {
 	*/
 	 //myCurrentNode = node;
 	// myCurrentNode->requestChildren(myWaitWidgetListener);
-	 myForm->UpdateContent();
+
+//	myForm->updateHeader();
+//	myForm->updateContent();
 
 	 AppLog("UpdateContent finish run");
-	 if (showIcons){
+//	 if (showIcons)
+	 {
 			__pThread = new Thread();
-			__pThread->Construct(*this);
+			__pThread->Construct(*this,THREAD_PRIORITY_LOW);
 				//pHeader->PlayWaitingAnimation(HEADER_ANIMATION_POSITION_TITLE);
 				//__pListView->SetTextOfEmptyList(L"Loading...");
 			__terminateThread = false;
@@ -225,6 +242,7 @@ void ZLbadaTreeDialog::onNodeBeginInsert(ZLTreeNode *parent, size_t index) {
 void ZLbadaTreeDialog::onNodeEndInsert() {
 	AppLog("ZLbadaTreeDialog::onNodeEndInsert");
     //    myModel->onNodeEndInsert();
+	// myForm->requestUpdateContent();
 }
 
 void ZLbadaTreeDialog::onNodeBeginRemove(ZLTreeNode *parent, size_t index) {

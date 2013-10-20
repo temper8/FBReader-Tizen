@@ -41,31 +41,26 @@ bool badaApp::OnAppInitializing(AppRegistry& appRegistry)
 
 	PowerManager::SetScreenEventListener(*this);
 
-
 	ZLbadaLibraryImplementation::SetBada2App(this);
 	AppLog("B2App::OnAppInitializing");
 	ZLbadaLibraryImplementation::createApplicationWindow();
+
  // Create a form
 	AppLog("Create a form");
 	badaForm *pbadaForm = new badaForm();
 	pbadaForm->Initialize();
 
 	// Add the form to the frame
-	AppLog("Add the form to the frame");
-	//Frame *pFrame = GetAppFrame()->GetFrame();
+
 	pAppFrame->AddControl(*pbadaForm);
 	pAppFrame->SetBackgroundColor(Tizen::Graphics::Color::GetColor(COLOR_ID_BLUE));
 	// Set the current form
-	AppLog("Set the current form");
+
 	pAppFrame->SetCurrentForm(*pbadaForm);
 
 	// Draw and Show the form
-	AppLog("Draw and Show the form");
-
 	pbadaForm->Invalidate(true);
-	//pbadaForm->Draw();
-	//pbadaForm->Show();
-//	pbadaForm->RequestRedraw(true);
+
 	return true;
 }
 

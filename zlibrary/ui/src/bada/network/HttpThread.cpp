@@ -7,6 +7,8 @@
 
 #include "HttpThread.h"
 
+#include <FIo.h>
+
 
 using namespace Tizen::Base;
 using namespace Tizen::Base::Runtime;
@@ -39,6 +41,8 @@ void  HttpMonitor::DelRef(void)
   {
   __pMutex->Acquire ();
 
+  AppLog("HttpMonitor::DelRef %d",count);
+
   count--;
 
   __pMutex->Release();
@@ -49,92 +53,96 @@ HttpThread::HttpThread(HttpMonitor* pMonitor, ZLNetworkRequest &request):myMonit
 }
 
 HttpThread::~HttpThread(){
-
+	AppLog("~HttpThread");
 }
 result HttpThread::Construct()
 {
 	result r = E_SUCCESS;
-	r = Thread::Construct(THREAD_TYPE_EVENT_DRIVEN);
-	//r = Thread::Construct(THREAD_TYPE_WORKER);
+	//r = Thread::Construct(THREAD_TYPE_EVENT_DRIVEN);
+	r = EventDrivenThread::Construct();
 	myMonitor->AddRef();
 	return r;
 }
 
-bool HttpThread::OnStart(void){
-	AppLog("HttpThread::OnStart()");
-	__pTimer = new Timer;
+bool HttpThread::startRequest(){
+	//	__pTimer = new Timer;
 
-	__pTimer->Construct(*this);
-	__pTimer->Start(TIMER_TIMEOUT);
-	AppLog(" new Timer;");
+	//	__pTimer->Construct(*this);
+	//	__pTimer->Start(TIMER_TIMEOUT);
+	AppLog(" initRequest");
+
 	result r = E_SUCCESS;
 	HttpTransaction* pTransaction = null;
 	HttpRequest* pRequest = null;
 
 	String hostAddr(myRequest->url().c_str());
 
-	if(__pSession == null)
-	{
+	fileName = hostAddr;
+	fileName.Replace("/","_");
+	fileName.Replace(":","_");
+
+	if(__pSession == null)	{
 		__pSession = new HttpSession();
-		if(__pSession == null)
-			goto CATCH;
+		if(__pSession == null)	goto CATCH;
 
 		r = __pSession->Construct(NET_HTTP_SESSION_MODE_NORMAL, null, hostAddr, null);
-		if (IsFailed(r))
-			goto CATCH;
+		if (IsFailed(r))  goto CATCH;
 	}
 	AppLog("new HttpSession");
 
 	pTransaction = __pSession->OpenTransactionN();
-	if (null == pTransaction)
-	{
+	if (null == pTransaction)	{
 		r = GetLastResult();
 		goto CATCH;
 	}
 	AppLog("OpenTransactionN");
 
 	r = pTransaction->AddHttpTransactionListener(*this);
-	if (IsFailed(r))
-		goto CATCH;
+	if (IsFailed(r)) goto CATCH;
 
 	pRequest = const_cast<HttpRequest*>(pTransaction->GetRequest());
-	if(pRequest == null)
-	{
+	if(pRequest == null)	{
 		r = GetLastResult();
 		goto CATCH;
 	}
-
 	r = pRequest->SetUri(myRequest->url().c_str());
 	if(IsFailed(r))
 		goto CATCH;
 
 	r = pRequest->SetMethod(NET_HTTP_METHOD_GET);
-	if(IsFailed(r))
-		goto CATCH;
+	if(IsFailed(r))	goto CATCH;
+
 	AppLog("Before Submit");
 	r = pTransaction->Submit();
 	AppLog("After Submit r=%s",GetErrorMessage(r));
-	if(IsFailed(r))
-		goto CATCH;
+
+	if(IsFailed(r))	goto CATCH;
 	AppLog("return true;");
 	return true;
-	//return r;
 
-CATCH:
-	if(pTransaction != null)
-	{
-		delete pTransaction;
-		pTransaction = null;
-	}
-	AppLog("HttpClient::TestHttpGet() failed. (%s)", GetErrorMessage(r));
-	//return r;
-	AppLog("return false;");
-	return false;
+	CATCH:
+		if(pTransaction != null){
+			delete pTransaction;
+			pTransaction = null;
+		}
+		AppLog("HttpClient::TestHttpGet() failed. (%s)", GetErrorMessage(r));
+		//return r;
+		AppLog("return false;");
+		return false;
 
 }
 
-void HttpThread::OnStop(void){
-	AppLog("HttpThread::OnStop()");
+bool HttpThread::OnStart(void){
+	AppLog("HttpThread::OnStart()");
+
+	return startRequest();
+}
+
+void HttpThread::finishRequest(){
+	AppLog("finishRequest");
+	myMonitor->DelRef();
+	if(myMonitor != null) 	myMonitor->Notify();
+	AppLog("finishRequest after Notify");
 
 	if(__pSession != null)
 		{
@@ -142,16 +150,20 @@ void HttpThread::OnStop(void){
 		__pSession = null;
 		}
 
-	AppLog("delete __pTimer");
-	if (__pTimer)
+	AppLog("finishRequest end");
+}
+
+void HttpThread::OnStop(void){
+	AppLog("HttpThread::OnStop()");
+	finishRequest();
+
+/*	if (__pTimer)
 		{
 		__pTimer->Cancel();
 		delete __pTimer;
 		__pTimer = null;
-		}
-	myMonitor->DelRef();
-	if(myMonitor != null) 	myMonitor->Notify();
-	AppLog("HttpThread::OnStop() end");
+		}*/
+
 }
 
 void HttpThread::OnUserEventReceivedN (RequestId requestId, Tizen::Base::Collection::IList *pArgs)
@@ -163,7 +175,7 @@ void HttpThread::OnTimerExpired(Timer& timer)
 {
 	AppLog("####### OnTimerExpired! #######");
 	Thread::Stop();
-	if (__pTimer)
+//	if (__pTimer)
 	{
 		//__pTimer->Start(TIMER_TIMEOUT);
 	}
@@ -206,12 +218,15 @@ void HttpThread::OnTransactionReadyToRead(HttpSession& httpSession, HttpTransact
 			//String text(L"Read Body Length: ");
 			//text.Append(availableBodyLen);
 
+		//	Tizen::Io::File file;
+		//	file.Construct("/mnt/mmc/FBReaderWrite/" + fileName, "w");
+		//	file.Write(*pBuffer);
 
 			delete tempHeaderString;
 			delete pBuffer;
 		}
 	}
-	Thread::Stop();
+//	Thread::Stop();
 }
 
 void HttpThread::OnTransactionAborted(HttpSession& httpSession, HttpTransaction& httpTransaction, result r)
@@ -219,6 +234,8 @@ void HttpThread::OnTransactionAborted(HttpSession& httpSession, HttpTransaction&
 	AppLog("####### OnTransactionAborted! (%s)#######", GetErrorMessage(r));
 
 	delete &httpTransaction;
+	Quit();
+	//finishRequest();
 }
 
 void HttpThread::OnTransactionReadyToWrite(HttpSession& httpSession, HttpTransaction& httpTransaction, int recommendedChunkSize)
@@ -238,8 +255,12 @@ void HttpThread::OnTransactionCompleted(HttpSession& httpSession, HttpTransactio
 	AppLog("####### OnTransactionCompleted! #######");
 
 	delete &httpTransaction;
+	Quit();
+	//finishRequest();
 
-	Thread::Stop();
+
+//    OnStop();
+//	Thread::Stop();
 }
 
 void HttpThread::OnTransactionCertVerificationRequiredN(HttpSession& httpSession, HttpTransaction& httpTransaction, Tizen::Base::String* pCert)

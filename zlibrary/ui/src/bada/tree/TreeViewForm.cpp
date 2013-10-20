@@ -150,9 +150,12 @@ Tizen::Ui::Controls::ListItemBase* TreeViewForm::CreateItem (int index, int item
 
 			if (showIcons)  {
 				shared_ptr<ZLImage> cover;
-				if (TitledNode->imageIsUploaded()) 	cover = TitledNode->image();
+
+				if (TitledNode->imageIsUploaded())
+					cover = TitledNode->image();
 				else
 					 cover = TitledNode->extractCoverImage();
+
 				if (!cover.isNull()) 	{
 						shared_ptr<ZLImageData> coverData = ZLImageManager::Instance().imageData(*cover);
 						if (!coverData.isNull()) {
@@ -218,10 +221,6 @@ void TreeViewForm::OnFormBackRequested(Tizen::Ui::Controls::Form& source){
 
 void TreeViewForm::OnListViewContextItemStateChanged(Tizen::Ui::Controls::ListView &listView, int index, int elementId, Tizen::Ui::Controls::ListContextItemStatus state){
 	AppLog("OnListViewContextItemStateChanged");
-
-
-
-
 }
 
 void TreeViewForm::OnListViewItemStateChanged(Tizen::Ui::Controls::ListView &listView, int index, int elementId, Tizen::Ui::Controls::ListItemStatus status){
@@ -320,7 +319,8 @@ void TreeViewForm::OnActionPerformed(const Tizen::Ui::Control& source, int actio
 	case ID_ACT_UPDATE:
 		{
 			AppLog("UpdateContent");
-			UpdateContent();
+			updateHeader();
+			updateContent();
 			break;
 		}
 	/*case ID_ACT_DELETE:
@@ -402,22 +402,40 @@ void TreeViewForm::OnItemStateChanged (const Tizen::Ui::Control &source, int ind
 }
 
 
-void TreeViewForm::UpdateContent(){
+void TreeViewForm::requestUpdateHeader(){
+
+		SendUserEvent(998,null);
+
+}
+
+void TreeViewForm::updateHeader(){
+	Header* pHeader = GetHeader();
+		if (ZLTreeTitledNode *myNode = zlobject_cast<ZLTreeTitledNode*>(myTreeDialog->myCurrentNode)) {
+				String name = String(myNode->title().c_str());
+				pHeader->SetTitleText(name);
+			}
+	   else {
+				const char *title = myTreeDialog->myResource["title"].value().c_str();
+				pHeader->SetTitleText(String(title));
+	   }
+	ItemCount = 0;
+
+	__pListView->UpdateList();
+
+    RequestRedraw(true);
+}
+
+void	TreeViewForm::requestUpdateContent(){
+	SendUserEvent(999,null);
+}
+
+void TreeViewForm::updateContent(){
 	AppLog("TreeViewForm::UpdateContent()");
 	String popStr;
 	String strSub;
-	String strName;
+
 	result r = E_SUCCESS;
 
-	Header* pHeader = GetHeader();
-	if (ZLTreeTitledNode *myNode = zlobject_cast<ZLTreeTitledNode*>(myTreeDialog->myCurrentNode)) {
-			strName = String(myNode->title().c_str());
-			pHeader->SetTitleText(strName);
-		}
-   else {
-			const char *title = myTreeDialog->myResource["title"].value().c_str();
-			pHeader->SetTitleText(String(title));
-   }
 
 	//AppLog("children().size() = %d ",myTreeDialog->myCurrentNode->children().size());
 
@@ -426,7 +444,8 @@ void TreeViewForm::UpdateContent(){
 	__pListView->UpdateList();
 
 	AppLog("before ReDraw");
-    RequestRedraw(true);
+	__pListView->Draw();
+	//__pListView->RequestRedraw(true);
 	return;
 }
 
@@ -487,13 +506,26 @@ void TreeViewForm::OnTouchReleased(const Control &source, const Point &currentPo
 
 void TreeViewForm::OnUserEventReceivedN(RequestId requestId, Tizen::Base::Collection::IList* pArgs)
 {
+
+	AppLog("TreeViewForm::OnUserEventReceivedN requestId = %d", requestId);
+
+	if (requestId == 998) {
+		updateHeader();
+		return;
+	}
+
+	if (requestId == 999) {
+		updateContent();
+		return;
+	}
+
 	if (requestId>999) {
 		__pListView->RefreshList(requestId-1000,LIST_REFRESH_TYPE_ITEM_MODIFY);
 		return;
 	}
 
 	Frame *pFrame = Application::GetInstance()->GetAppFrame()->GetFrame();
-	AppLog("TreeViewForm::OnUserEventReceivedN requestId = %d", requestId);
+
 	Form* prevForm = pFrame->GetCurrentForm();
 	switch(requestId)
 	{

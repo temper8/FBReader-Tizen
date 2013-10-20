@@ -53,6 +53,7 @@ public:
 	static const ZLTypeId TYPE_ID;
 
 	shared_ptr<ZLImage> extractCoverImage() const;
+	virtual bool imageIsUploaded() const;
 
 protected:
 
@@ -247,6 +248,8 @@ public:
 	const NetworkBookItem &book() const;
 
 	shared_ptr<ZLImage> extractCoverImage() const;
+
+	virtual bool imageIsUploaded() const;
 
 public:
 	const ZLResource &resource() const;

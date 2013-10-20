@@ -108,9 +108,12 @@ public:
 
 
 	void	LoadContentInfo(Tizen::Content::ContentSearchResult* pSearchResult);
-
-	void	UpdateContent();
+	void	requestUpdateContent();
+	void	updateContent();
 	void	DeleteContent();
+
+	void 	requestUpdateHeader();
+	void 	updateHeader();
 //	ZLbadaTreeModel* myModel;
 
 protected:

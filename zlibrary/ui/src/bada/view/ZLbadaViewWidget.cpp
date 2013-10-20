@@ -32,6 +32,7 @@ void ZLbadaViewWidget::repaint() {
 	// Draw and Show the form
 	//mybadaForm->Draw();
 	//mybadaForm->Show();
+
     if (mybadaForm == null ) return;
 	Rectangle formRect = mybadaForm->GetClientAreaBounds();
 

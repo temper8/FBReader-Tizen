@@ -114,10 +114,6 @@ std::string NetworkCatalogNode::imageUrl() const {
 	return url;
 }
 
-shared_ptr<ZLImage> NetworkCatalogNode::lastResortCoverImage() const {
-	return 0;
-//	return ((FBReaderNode*)parent())->image();
-}
 
 void NetworkCatalogNode::updateChildren() {
 	//if (isOpen()) {
@@ -244,11 +240,19 @@ void NetworkCatalogNode::reloadItem(shared_ptr<NetworkItem> item) {
 	updated();
 }
 
+shared_ptr<ZLImage> NetworkCatalogNode::lastResortCoverImage() const {
+	return 0;
+//	return ((FBReaderNode*)parent())->image();
+}
+
 shared_ptr<ZLImage> NetworkCatalogNode::extractCoverImage() const {
 	AppLog("NetworkCatalogNode::extractCoverImage");
 	return FBNode::defaultCoverImage("booktree-folder.png");
 }
 
+bool NetworkCatalogNode::imageIsUploaded() const{
+	return true;
+}
 
 shared_ptr<ZLImage> NetworkCatalogNode::image() const {
 	AppLog("NetworkCatalogNode::image()");

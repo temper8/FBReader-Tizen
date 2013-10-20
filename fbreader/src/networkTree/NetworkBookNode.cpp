@@ -92,6 +92,10 @@ ZLResourceKey NetworkBookNode::contentKey() const {
 	return MobileBookInfoDialog::resourceKey();
 }
 */
+bool  NetworkBookNode::imageIsUploaded() const {
+	return true;
+}
+
 shared_ptr<ZLImage> NetworkBookNode::image() const {
 	shared_ptr<ZLImage> image = NetworkCatalogUtil::getImageByUrl(myBook->URLByType[NetworkItem::URL_COVER]);
 	return !image.isNull() ? image : FBNode::defaultCoverImage("booktree-book.png");

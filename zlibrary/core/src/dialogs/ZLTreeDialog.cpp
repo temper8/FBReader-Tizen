@@ -140,7 +140,7 @@ void ZLTreeDialog::loadCovers() {
 			//}
 			if (!coverImage.isNull()) {
 					AppLog("addTask");
-					/*shared_ptr<ZLExecutionData> exe = coverImage->synchronizationData();
+					shared_ptr<ZLExecutionData> exe = coverImage->synchronizationData();
 					//if (!exe.isNull()) {AppLog("exe not null");ZLExecutionData::perform(exe);}
 					//else {AppLog("exe = null");}
 					if (!exe.isNull()) {
@@ -148,7 +148,7 @@ void ZLTreeDialog::loadCovers() {
 						updater->addTask(exe);
 						if (updater->hasTasks()) updater->run();
 
-						}*/
+						}
 					//ZLExecutionData::perform(coverImage->synchronizationData());
 					updateNode(node,index);
 				}

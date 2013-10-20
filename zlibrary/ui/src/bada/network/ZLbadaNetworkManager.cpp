@@ -40,8 +40,10 @@ static QString fixPath(const QString &path) {
 }
 */
 ZLbadaNetworkManager::ZLbadaNetworkManager() {
-	myMonitor = new HttpMonitor;
-	myMonitor->Construct();
+//	myMonitor = new HttpMonitor;
+//	myMonitor->Construct();
+
+
 //	myCache = new ZLQtNetworkCache(&myManager);
 //	myManager.setCache(myCache);
 //	myCookieJar = new ZLQtNetworkCookieJar(&myManager);
@@ -54,6 +56,8 @@ ZLbadaNetworkManager::ZLbadaNetworkManager() {
 }
 
 ZLbadaNetworkManager::~ZLbadaNetworkManager() {
+	AppLog("~ZLbadaNetworkManager()");
+//	delete myMonitor;
 }
 
 void ZLbadaNetworkManager::createInstance() {
@@ -93,14 +97,14 @@ QNetworkProxy ZLQtNetworkManager::proxy() const {
 std::string ZLbadaNetworkManager::perform(const ZLExecutionData::Vector &dataList) const {
 	AppLog("ZLbadaNetworkManager::perform");
 	result r = E_SUCCESS;
-//	QList<QNetworkReply*> replies;
 	std::set<std::string> errors;
 	std::set<HttpThread*> httpTreads;
-//	QEventLoop eventLoop;
-	//HttpMonitor* myMonitor = new HttpMonitor;
-	//myMonitor->Construct();
+
+	HttpMonitor* myMonitor = new HttpMonitor;
+	myMonitor->Construct();
 
     int ThreadCounter = 0;
+
 	for (ZLExecutionData::Vector::const_iterator it = dataList.begin(); it != dataList.end(); ++it) {
 		if (it->isNull() || !(*it)->isInstanceOf(ZLNetworkRequest::TYPE_ID)) {continue;}
 
@@ -137,7 +141,7 @@ std::string ZLbadaNetworkManager::perform(const ZLExecutionData::Vector &dataLis
 		myMonitor->Exit();
 		AppLog("myMonitor Exit");
 		if (httpTread->Start() == E_SUCCESS) AppLog("Start E_SUCCESS");
-
+		//httpTread->initRequest();
 		//if (__pHttpThread->OnStart()) AppLog("Start true");
 		AppLog("Start");
 
@@ -183,6 +187,8 @@ std::string ZLbadaNetworkManager::perform(const ZLExecutionData::Vector &dataLis
 			//CURLcode result = message->data.result;
 			//bool doAfterResult = request.doAfter(result == CURLE_OK);
 	    	bool doAfterResult = httpTread->myRequest->doAfter(true);
+	    	httpTread->Join();
+	    	delete httpTread;
 	}
 	AppLog("Exit 2");
 	std::string result;
@@ -192,7 +198,8 @@ std::string ZLbadaNetworkManager::perform(const ZLExecutionData::Vector &dataLis
 		}
 		result += *et;
 	}
-
+	httpTreads.clear();
+	delete myMonitor;
 	return result;
 }
 
