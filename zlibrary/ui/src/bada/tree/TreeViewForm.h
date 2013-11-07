@@ -69,6 +69,8 @@ protected:
 	void CreateContextMenuListStyle(void);
 	Tizen::Graphics::Point TouchPosition;
 
+	int updatedItem;
+
 public:
 
 

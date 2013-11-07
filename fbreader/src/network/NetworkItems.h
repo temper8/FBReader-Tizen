@@ -29,6 +29,7 @@
 #include <ZLFile.h>
 #include <ZLExecutionData.h>
 #include <ZLTypeId.h>
+#include <ZLRunnable.h>
 
 #include "BookReference.h"
 #include "../library/Lists.h"
@@ -107,10 +108,14 @@ public:
 	virtual void onDisplayItem();
 	// returns error message
 	virtual std::string loadChildren(List &children) = 0;
+	virtual void setChildrenReceiveListner(ZLRunnable* runnable) {myChildrenReceiveListner = runnable;}
+	ZLRunnable* myChildrenReceiveListner;
 
 public:
 	const VisibilityType Visibility;
 	const CatalogType Type;
+
+
 };
 
 class NetworkBookItem : public NetworkItem {

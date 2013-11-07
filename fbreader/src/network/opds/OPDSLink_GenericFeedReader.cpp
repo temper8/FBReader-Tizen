@@ -35,7 +35,7 @@ void OPDSLink::GenericFeedReader::processFeedStart() {
 }
 
 void OPDSLink::GenericFeedReader::processFeedMetadata(shared_ptr<OPDSFeedMetadata>) {
-	AppLog("processFeedMetadata");
+	AppLog("####### processFeedMetadata");
 }
 
 
@@ -43,15 +43,15 @@ void OPDSLink::GenericFeedReader::processFeedEnd() {
 }
 
 void OPDSLink::GenericFeedReader::processFeedEntry(shared_ptr<OPDSEntry> entry) {
-	AppLog("GenericFeedReader::processFeedEntry");
+	AppLog("####### GenericFeedReader::processFeedEntry");
 	std::map<std::string,std::string> links;
 	std::string iconURL;
 	for (size_t i = 0; i < entry->links().size(); ++i) {
 		ATOMLink &link = *(entry->links()[i]);
 		const std::string &href = link.href();
 		const std::string &rel = link.rel();
-	AppLog("href = %s",href.c_str());
-	AppLog("rel = %s",rel.c_str());
+	AppLog("####### href = %s",href.c_str());
+	AppLog("####### rel = %s",rel.c_str());
 		if (rel == "search") {
 			links[rel] = OpenSearchXMLReader::convertOpenSearchURL(href);
 		} else if (rel == "") {
@@ -80,10 +80,10 @@ void OPDSLink::GenericFeedReader::processFeedEntry(shared_ptr<OPDSEntry> entry) 
 	//AppLog("entry->id() == 0");
 	std::string id = entry->id()->uri();
 	std::string summary = entry->summary();
-	AppLog("id = %s",id.c_str());
-	AppLog("summary = %s",summary.c_str());
+	AppLog("####### OPDSLink id = %s",id.c_str());
+	AppLog("####### OPDSLink summary = %s",summary.c_str());
 	shared_ptr<NetworkLink> link = new OPDSLink(id.substr(25, -1));
-	AppLog("new OPDSLink");
+	AppLog("####### OPDSLink new");
 	link->setTitle(entry->title());
 	link->setSummary(summary);
 	link->setIcon(iconURL);
@@ -92,7 +92,8 @@ void OPDSLink::GenericFeedReader::processFeedEntry(shared_ptr<OPDSEntry> entry) 
 	link->setUpdated(entry->updated());
 	link->init();
 	myLinks.push_back(link);
-	AppLog("myLinks size =%d",myLinks.size());
+	AppLog("####### OPDSLink size =%d",myLinks.size());
+	AppLog("####### OPDSLink title =%s",entry->title().c_str());
 }
 
 

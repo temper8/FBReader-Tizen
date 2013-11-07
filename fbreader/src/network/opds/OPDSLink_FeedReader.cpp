@@ -39,12 +39,12 @@ void OPDSLink::FeedReader::processFeedStart() {
 }
 
 void OPDSLink::FeedReader::processFeedMetadata(shared_ptr<OPDSFeedMetadata> feed) {
-	AppLog("processFeedMetadata");
+	AppLog("####### processFeedMetadata");
 	std::map<std::string,std::string> links;
 	for (size_t i = 0; i < feed->links().size(); ++i) {
 		ATOMLink &link = *(feed->links()[i]);
 		const std::string &href = link.href();
-		AppLog("href =%s",href.c_str());
+		AppLog("####### href =%s",href.c_str());
 		shared_ptr<ZLMimeType> type = ZLMimeType::get(link.type());
 		const std::string &rel = link.rel();
 		if (rel == "search") {
@@ -81,12 +81,14 @@ void OPDSLink::FeedReader::processFeedMetadata(shared_ptr<OPDSFeedMetadata> feed
 	myLink = new OPDSLink(
 		myBaseURL
 	);
+
 	myLink->setUpdated(feed->updated());
 	myLink->setTitle(feed->title());
 	myLink->setSummary(summary);
 	myLink->setIcon(iconURL);
 	myLink->setLinks(links);
 	myLink->init();
+	AppLog("####### OPDSLink new = %s",feed->title().c_str());
 }
 
 

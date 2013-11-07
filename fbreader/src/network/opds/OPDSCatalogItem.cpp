@@ -72,25 +72,36 @@ OPDSCatalogItem::OPDSCatalogItem(
 	VisibilityType visibility,
 	CatalogType catalogType
 ) : NetworkCatalogItem(link, title, summary, urlByType, visibility, catalogType) {
+	myNetData = new NetworkOperationData(Link);
 }
 
 std::string OPDSCatalogItem::loadChildren(NetworkItem::List &children) {
-	AppLog("OPDSCatalogItem::loadChildren");
-	NetworkOperationData data(Link);
-	AppLog("Link SiteName = %s", Link.SiteName.c_str());
-	AppLog("Link title= %s", Link.getTitle().c_str());
+	AppLog("####### OPDSCatalogItem::loadChildren");
+	myLoadedChildren = &children;
+	//NetworkOperationData data(Link);
+	myNetData->myChildrenReceiveListner = new OPDSCatalogChildrenReceiveListner(this);
+	AppLog("####### OPDS Link SiteName = %s", Link.SiteName.c_str());
+	AppLog("####### OPDS Link title= %s", Link.getTitle().c_str());
 	shared_ptr<ZLExecutionData> networkData =
-		((OPDSLink&)Link).createNetworkData(URLByType[URL_CATALOG], data);
+		((OPDSLink&)Link).createNetworkData(URLByType[URL_CATALOG], *myNetData);
 
 	while (!networkData.isNull()) {
 		std::string error = ZLNetworkManager::Instance().perform(networkData);
 		if (!error.empty()) {
 			return error;
 		}
-		AppLog("OPDSCatalogItem::loadChildren perform(networkData");
-		children.insert(children.end(), data.Items.begin(), data.Items.end());
-		networkData = data.resume();
+		AppLog("####### OPDSCatalogItem::loadChildren perform(networkData");
+		//children.insert(children.end(), data.Items.begin(), data.Items.end());
+		networkData = myNetData->resume();
 	}
 
 	return "";
+}
+
+void OPDSCatalogItem::onChildrenReceived(){
+	AppLog("####### OPDSCatalogItem::onChildrenReceived");
+
+	myLoadedChildren->insert(myLoadedChildren->end(), myNetData->Items.begin(), myNetData->Items.end());
+	myNetData->Items.clear();
+	if (myChildrenReceiveListner) myChildrenReceiveListner->run();
 }

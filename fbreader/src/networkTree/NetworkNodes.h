@@ -94,9 +94,11 @@ public:
 
 	//void updateChildren(shared_ptr<ZLExecutionData::Listener> listener);
 	void updateChildren();
+	void onChildrenReceived();
 
 protected:
-	void onChildrenReceived(LoadSubCatalogRunnable *runnable);
+//	void onChildrenReceived(LoadSubCatalogRunnable *runnable);
+
 	shared_ptr<ZLImage> image() const;
 	std::string imageUrl() const;
 	std::string title() const;
@@ -110,6 +112,15 @@ private:
 	NetworkItem::List myChildrenItems;
 	std::vector<shared_ptr<ZLExecutionData::Listener> > myListeners;
 };
+
+class NetworkChildrenReceiveListner : public ZLRunnable {
+public:
+	NetworkChildrenReceiveListner(NetworkCatalogNode* networkCatalogNode):myNetworkCatalogNode(networkCatalogNode){};
+	void run() {myNetworkCatalogNode->onChildrenReceived();}
+private:
+	NetworkCatalogNode* myNetworkCatalogNode;
+};
+
 
 class NetworkCatalogRootNode : public NetworkCatalogNode {
 

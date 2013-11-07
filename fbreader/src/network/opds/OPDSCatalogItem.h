@@ -55,6 +55,20 @@ public:
 
 private:
 	std::string loadChildren(NetworkItem::List &children);
+	NetworkItem::List* myLoadedChildren;
+	NetworkOperationData* myNetData;
+public :
+	void onChildrenReceived();
 };
+
+class OPDSCatalogChildrenReceiveListner : public ZLRunnable {
+public:
+	OPDSCatalogChildrenReceiveListner(OPDSCatalogItem* p):myOPDSCatalogItem(p){};
+	void run() {myOPDSCatalogItem->onChildrenReceived();}
+private:
+	OPDSCatalogItem* myOPDSCatalogItem;
+};
+
+
 
 #endif /* __OPDSCATALOGITEM_H__ */

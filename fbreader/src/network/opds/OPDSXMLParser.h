@@ -36,6 +36,8 @@ public:
 public:
 	OPDSXMLParser(shared_ptr<OPDSFeedReader> feedReader);
 
+    virtual void afterReadDocument();
+
 private:
 	void startElementHandler(const char *tag, const char **attributes);
 	void endElementHandler(const char *tag);

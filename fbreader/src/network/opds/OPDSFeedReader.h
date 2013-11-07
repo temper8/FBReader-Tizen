@@ -34,6 +34,8 @@ public:
 	virtual void processFeedStart() = 0;
 	virtual void processFeedMetadata(shared_ptr<OPDSFeedMetadata> feed) = 0;
 	virtual void processFeedEnd() = 0;
+
+	virtual void afterReadDocument() { }
 };
 
 

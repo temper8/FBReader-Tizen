@@ -40,7 +40,7 @@ public:
 	const NetworkLink &Link;
 	NetworkItem::List Items;
 	std::string ResumeURI;
-
+	ZLRunnable* myChildrenReceiveListner;
 private:
 	size_t myResumeCount;
 };

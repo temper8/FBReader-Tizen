@@ -97,7 +97,12 @@ public:
 	void remove(size_t index);
 	void updated();
 
+	virtual void setChildrenUpdateListner(ZLRunnable* runnable) {myChildrenUpdateListner = runnable;}
+
 protected:
+
+	ZLRunnable* myChildrenUpdateListner;
+
 	size_t level() const;
 
 	ZLTreeListener *listener() const;

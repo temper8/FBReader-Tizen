@@ -57,6 +57,9 @@ public:
 	virtual void onNodeEndRemove();
 	virtual void onNodeUpdated(ZLTreeNode *node);
 	virtual void run();
+
+	virtual void onUpdated();
+
 	Tizen::Base::Object* Run(void);
 	Tizen::Base::Runtime::Thread* __pThread;
 //	virtual void onCloseRequest();

@@ -122,11 +122,17 @@ void NetworkCatalogNode::updateChildren() {
 	clear();
 
 	myChildrenItems.clear();
-	LoadSubCatalogRunnable loader(item(), myChildrenItems);
-	loader.executeWithUI();
+	//LoadSubCatalogRunnable loader(item(), myChildrenItems);
+	//loader.executeWithUI();
+	item().setChildrenReceiveListner(new NetworkChildrenReceiveListner(this));
+	std::string myErrorMessage = item().loadChildren(myChildrenItems);
 
-	if (loader.hasErrors()) {
-		loader.showErrorMessage();
+
+/*
+	//if (loader.hasErrors()) {
+	if (!myErrorMessage.empty()) {
+		//showErrorMessage(myErrorMessage);
+		//loader.showErrorMessage();
 	} else if (myChildrenItems.empty()) {
 		ZLDialogManager::Instance().informationBox(ZLResourceKey("emptyCatalogBox"));
 	}
@@ -145,10 +151,36 @@ void NetworkCatalogNode::updateChildren() {
 		}
 	} else {
 		NetworkNodesFactory::fillAuthorNode(this, myChildrenItems);
-	}
+	}*/
 	FBReader::Instance().invalidateAccountDependents();
+
+
 }
 
+void NetworkCatalogNode::onChildrenReceived() {
+	AppLog("###### NetworkCatalogNode::onChildrenReceived");
+	if (myChildrenItems.empty()) return;
+	AppLog("###### add children");
+	bool hasSubcatalogs = false;
+	for (NetworkItem::List::iterator it = myChildrenItems.begin(); it != myChildrenItems.end(); ++it) {
+		if ((*it)->typeId() == NetworkCatalogItem::TYPE_ID) {
+			hasSubcatalogs = true;
+			break;
+		}
+	}
+	//TODO ????возможны проблемы если CatalogItem смешаны с Аuthor????
+	if (hasSubcatalogs) {
+		for (NetworkItem::List::iterator it = myChildrenItems.begin(); it != myChildrenItems.end(); ++it) {
+			NetworkNodesFactory::createNetworkNode(this, *it);
+		}
+	} else {
+		NetworkNodesFactory::fillAuthorNode(this, myChildrenItems);
+	}
+
+	myChildrenItems.clear();
+
+	if (myChildrenUpdateListner) myChildrenUpdateListner->run();
+}
 /*
 void NetworkCatalogNode::updateChildren(shared_ptr<ZLExecutionData::Listener> listener) {
 	AppLog("NetworkCatalogNode::updateChildren");

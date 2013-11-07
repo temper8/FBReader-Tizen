@@ -425,7 +425,7 @@ void TreeViewForm::updateHeader(){
     RequestRedraw(true);
 }
 
-void	TreeViewForm::requestUpdateContent(){
+void TreeViewForm::requestUpdateContent(){
 	SendUserEvent(999,null);
 }
 
@@ -509,6 +509,30 @@ void TreeViewForm::OnUserEventReceivedN(RequestId requestId, Tizen::Base::Collec
 
 	AppLog("TreeViewForm::OnUserEventReceivedN requestId = %d", requestId);
 
+	if (requestId == 997) {
+		//int oldItemCount = ItemCount;
+		ItemCount = myTreeDialog->myCurrentNode->children().size();
+		int bottomIndex=__pListView->GetBottomDrawnItemIndex();
+		int topIndex = __pListView->GetTopDrawnItemIndex ();
+		AppLog("###### GetTopDrawnItemIndex = %d", topIndex);
+		AppLog("###### GetBottomDrawnItemIndex = %d", bottomIndex);
+		//if (bottomIndex < 0 ) updatedItem = 0;
+		if (bottomIndex <0 ) {
+			for (int i = 0; i<ItemCount; i++)
+						__pListView->RefreshList(i,LIST_REFRESH_TYPE_ITEM_ADD);
+			updatedItem = ItemCount;
+			return;
+		}
+
+		if ((updatedItem-bottomIndex)>5) return;
+		int upItem = ((updatedItem+5)<ItemCount)?(updatedItem+5):ItemCount;
+
+		for (int i = updatedItem; i<upItem; i++)
+			__pListView->RefreshList(i,LIST_REFRESH_TYPE_ITEM_ADD);
+		//__pListView->Invalidate(false);
+		updatedItem = upItem;
+		return;
+	}
 	if (requestId == 998) {
 		updateHeader();
 		return;

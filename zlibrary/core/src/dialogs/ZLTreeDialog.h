@@ -2,9 +2,16 @@
 #define __ZLTREEDIALOG_H__
 
 #include <ZLTreeListener.h>
+
+
+
 class ZLTreeTitledNode;
 // This object should be pure successor of ZLTreeListener
 // or be merged with it.
+
+
+
+
 class ZLTreeDialog : public ZLTreeListener  {
 
 protected:
@@ -26,6 +33,8 @@ public:
 	// This method should be called at every node state change except of adding/removing of children
 	virtual void onNodeUpdated(ZLTreeNode *node) = 0;
 
+	virtual void onUpdated() = 0;
+
 public:
 	virtual void setShowIcons(bool value) {}
 	virtual bool back() {}
@@ -39,5 +48,15 @@ public:
 	//ZLTreeListener::RootNode& myRootNode;
 
 };
+
+
+class ZLTreeDialogUpdater : public ZLRunnable {
+public:
+	ZLTreeDialogUpdater(ZLTreeDialog* treeDialog):myTreeDialog(treeDialog){};
+	void run() {myTreeDialog->onUpdated();}
+private:
+	ZLTreeDialog* myTreeDialog;
+};
+
 
 #endif /* __ZLTREEDIALOG_H__ */

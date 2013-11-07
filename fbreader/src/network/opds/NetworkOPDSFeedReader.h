@@ -45,6 +45,7 @@ public:
 	void processFeedMetadata(shared_ptr<OPDSFeedMetadata> feed);
 	void processFeedEnd();
 
+	void afterReadDocument();
 private:
 	shared_ptr<NetworkItem> readBookItem(OPDSEntry &entry);
 	shared_ptr<NetworkItem> readCatalogItem(OPDSEntry &entry);

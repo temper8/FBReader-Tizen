@@ -296,7 +296,7 @@ void OPDSXMLParser::endElementHandler(const char *tag) {
 	}
 //	AppLog("myAtomNamespaceId =%s",myAtomNamespaceId.c_str());
 //	AppLog("tagPrefix =%s",tagPrefix.c_str());
-//	AppLog("tagName =%s",tagName.c_str());
+//	AppLog("####### tagName =%s",tagName.c_str());
 
 	ZLStringUtil::stripWhiteSpaces(myBuffer);
 //	AppLog("myBuffer =%s",myBuffer.c_str());
@@ -626,4 +626,9 @@ void OPDSXMLParser::endElementHandler(const char *tag) {
 
 void OPDSXMLParser::characterDataHandler(const char *data, size_t len) {
 	myBuffer.append(data, len);
+}
+
+void OPDSXMLParser::afterReadDocument(){
+	AppLog("#######  OPDSXMLParser::afterReadDocument");
+	myFeedReader->afterReadDocument();
 }

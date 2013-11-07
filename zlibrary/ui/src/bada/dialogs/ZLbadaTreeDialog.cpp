@@ -69,7 +69,11 @@ void ZLbadaTreeDialog::setShowIcons(bool value){
 Object* ZLbadaTreeDialog::Run(void){
 	AppLog("__pThread Run");
 	myForm->requestUpdateHeader();
-	 myCurrentNode->requestChildren(0);
+
+	myCurrentNode->setChildrenUpdateListner(new ZLTreeDialogUpdater(this));
+
+	myCurrentNode->requestChildren(0);
+
 	 AppLog("enter node 2");
 	 myForm->requestUpdateContent();
 	// myForm->SendUserEvent(999,null);
@@ -135,6 +139,12 @@ void ZLbadaTreeDialog::treadTerminator(){
 	}
 }
 
+void ZLbadaTreeDialog::onUpdated(){
+	 AppLog("###### onUpdated");
+	 myForm->SendUserEvent(997,null);
+	//myForm->requestUpdateContent();
+	// myForm->updateContent();
+}
 
 bool ZLbadaTreeDialog::enter(ZLTreeNode* node) {
 	 AppLog("enter node");

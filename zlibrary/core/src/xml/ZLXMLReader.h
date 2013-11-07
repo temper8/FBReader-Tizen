@@ -72,6 +72,8 @@ public:
 	bool readDocument(shared_ptr<ZLInputStream> stream);
 	bool readDocument(shared_ptr<ZLAsynchronousInputStream> stream);
 
+    virtual void afterReadDocument();
+
 	const std::string &errorMessage() const;
 
 	const std::map<std::string,std::string> &namespaces() const;

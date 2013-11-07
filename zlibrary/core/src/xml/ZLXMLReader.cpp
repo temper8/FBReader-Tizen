@@ -112,12 +112,16 @@ ZLXMLReader::~ZLXMLReader() {
 	delete myInternalReader;
 }
 
+void ZLXMLReader::afterReadDocument(){
+	AppLog("#######  afterReadDocument");
+}
+
 bool ZLXMLReader::readDocument(const ZLFile &file) {
 	return readDocument(file.inputStream());
 }
 
 bool ZLXMLReader::readDocument(shared_ptr<ZLInputStream> stream) {
-	AppLog(" ZLXMLReader::readDocument");
+	AppLog("#######  ZLXMLReader::readDocument");
 	if (stream.isNull() || !stream->open()) {
 		AppLog(" ZLXMLReader::readDocument return false;");
 		return false;
@@ -262,8 +266,11 @@ const char *ZLXMLReader::attributeValue(const char **xmlattributes, const Attrib
 }
 
 bool ZLXMLReader::readDocument(shared_ptr<ZLAsynchronousInputStream> stream) {
+	AppLog("#######  readDocument ZLAsynchronousInputStream");
 	ZLXMLReaderHandler handler(*this);
-	return stream->processInput(handler);
+	bool result = stream->processInput(handler);
+	afterReadDocument();
+	return result;
 }
 
 const std::string &ZLXMLReader::errorMessage() const {

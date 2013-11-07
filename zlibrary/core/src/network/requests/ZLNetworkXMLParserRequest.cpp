@@ -75,6 +75,7 @@ bool ZLNetworkXMLParserRequest::handleHeader(void *ptr, size_t size) {
 }
 
 bool ZLNetworkXMLParserRequest::handleContent(const void *ptr, size_t size) {
+	AppLog("####### handleContent %d",size);
 	if (myInputStream.isNull()) {
 		if (myHttpEncoding == "gzip") {
 			myInputStream = new ZLGzipAsynchronousInputStream();

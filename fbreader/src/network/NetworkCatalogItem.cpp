@@ -30,6 +30,7 @@ NetworkCatalogItem::NetworkCatalogItem(
 	CatalogType catalogType
 ) :
 	NetworkItem(link, title, summary, urlByType),
+	myChildrenReceiveListner(0),
 	Visibility(visibility),
 	Type(catalogType)
 	{

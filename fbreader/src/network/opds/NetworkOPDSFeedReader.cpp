@@ -45,10 +45,16 @@ NetworkOPDSFeedReader::NetworkOPDSFeedReader(
 	myOpenSearchStartIndex(0) {AppLog("NetworkOPDSFeedReader");
 }
 
+void NetworkOPDSFeedReader::afterReadDocument(){
+	AppLog("#######  NetworkOPDSFeedReader::afterReadDocumen");
+	if (myData.myChildrenReceiveListner) myData.myChildrenReceiveListner->run();
+}
+
 void NetworkOPDSFeedReader::processFeedStart() {
 }
 
 void NetworkOPDSFeedReader::processFeedMetadata(shared_ptr<OPDSFeedMetadata> feed) {
+	AppLog("####### processFeedMetadata");
 	for (size_t i = 0; i < feed->links().size(); ++i) {
 		ATOMLink &link = *(feed->links()[i]);
 		const std::string &href = link.href();
@@ -144,6 +150,7 @@ void NetworkOPDSFeedReader::processFeedEntry(shared_ptr<OPDSEntry> entry) {
 }
 
 shared_ptr<NetworkItem> NetworkOPDSFeedReader::readBookItem(OPDSEntry &entry) {
+	AppLog("####### readBookItem");
 	std::string date;
 	if (!entry.dcIssued().isNull()) {
 		date = entry.dcIssued()->getDateTime(true);
@@ -269,6 +276,7 @@ shared_ptr<NetworkItem> NetworkOPDSFeedReader::readBookItem(OPDSEntry &entry) {
 }
 
 shared_ptr<NetworkItem> NetworkOPDSFeedReader::readCatalogItem(OPDSEntry &entry) {
+	AppLog("####### readCatalogItem");
 	std::string coverURL;
 	std::string url;
 	bool urlIsAlternate = false;
@@ -280,8 +288,8 @@ shared_ptr<NetworkItem> NetworkOPDSFeedReader::readCatalogItem(OPDSEntry &entry)
 		const std::string &href = link.href();
 		shared_ptr<ZLMimeType> type = ZLMimeType::get(link.type());
 		const std::string &rel = myLink.relation(link.rel(), link.type());
-		AppLog("readCatalogItem rel =%s",rel.c_str());
-		AppLog("readCatalogItem href =%s",href.c_str());
+		AppLog("####### readCatalogItem rel =%s",rel.c_str());
+		AppLog("####### readCatalogItem href =%s",href.c_str());
 		if (ZLMimeType::isImage(type)) {
 			if (rel == OPDSConstants::REL_THUMBNAIL ||
 					(coverURL.empty() && rel == OPDSConstants::REL_COVER)) {
