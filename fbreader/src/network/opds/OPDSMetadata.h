@@ -40,6 +40,7 @@ public:
 
 	// Entry level / acquisition links
 	static const std::string REL_ACQUISITION;
+	static const std::string REL_ACQUISITION_OPEN_ACCESS;
 	static const std::string REL_ACQUISITION_BUY;
 	static const std::string REL_ACQUISITION_BORROW;
 	static const std::string REL_ACQUISITION_SUBSCRIBE;

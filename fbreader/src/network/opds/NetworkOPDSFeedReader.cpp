@@ -60,6 +60,7 @@ void NetworkOPDSFeedReader::processFeedMetadata(shared_ptr<OPDSFeedMetadata> fee
 		const std::string &href = link.href();
 		shared_ptr<ZLMimeType> type = ZLMimeType::get(link.type());
 		const std::string &rel = myLink.relation(link.rel(), link.type());
+		AppLog("####### rel = %s",rel.c_str());
 		if (type == ZLMimeType::APPLICATION_ATOM_XML) {
 			if (rel == "self") {
 			} else if (rel == "next") {
@@ -127,7 +128,10 @@ void NetworkOPDSFeedReader::processFeedEntry(shared_ptr<OPDSEntry> entry) {
 		ATOMLink &link = *(e.links()[i]);
 		const std::string &type = link.type();
 		const std::string &rel = myLink.relation(link.rel(), type);
+		AppLog("####### processFeedEntry type = %s",type.c_str());
+		AppLog("####### processFeedEntry rel = %s",rel.c_str());
 		if (rel == OPDSConstants::REL_ACQUISITION ||
+				rel == OPDSConstants::REL_ACQUISITION_OPEN_ACCESS ||
 				rel == OPDSConstants::REL_ACQUISITION_SAMPLE ||
 				rel == OPDSConstants::REL_ACQUISITION_BUY ||
 				rel == OPDSConstants::REL_ACQUISITION_CONDITIONAL ||
