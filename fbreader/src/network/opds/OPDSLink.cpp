@@ -30,6 +30,7 @@
 #include <ZLNetworkManager.h>
 
 #include "OPDSLink.h"
+#include "OPDSLink_Reader.h"
 #include "OPDSLink_AdvancedSearch.h"
 #include "OPDSCatalogItem.h"
 #include "OPDSXMLParser.h"
@@ -102,11 +103,11 @@ std::string OPDSLink::AdvancedSearch::query(
 	return query;
 }
 
-//shared_ptr<NetworkLink> OPDSLink::read(const ZLFile &file) {
-//	Reader reader;
-//	reader.readDocument(file);
-//	return reader.link();
-//}
+shared_ptr<NetworkLink> OPDSLink::read(const ZLFile &file) {
+	Reader reader;
+	reader.readDocument(file);
+	return reader.link();
+}
 
 shared_ptr<ZLExecutionData> OPDSLink::createNetworkData(const std::string &url, NetworkOperationData &result) const {
 	AppLog("createNetworkData %s",url.c_str());
@@ -122,6 +123,15 @@ shared_ptr<ZLExecutionData> OPDSLink::createNetworkData(const std::string &url, 
 	OPDSXMLParser* pr = new OPDSXMLParser(fr);
 //	AppLog("OPDSXMLParser");
 	return ZLNetworkManager::Instance().createXMLParserRequest(	modifiedUrl, pr);
+}
+
+OPDSLink::OPDSLink(
+	const std::string &siteName,
+	const std::string &title,
+	const std::string &summary,
+	const std::string &icon,
+	const std::map<std::string,std::string> &links
+) : NetworkLink(siteName, title, summary, icon, links) {
 }
 
 OPDSLink::OPDSLink(

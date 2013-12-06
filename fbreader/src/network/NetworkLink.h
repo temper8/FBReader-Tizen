@@ -52,6 +52,14 @@ public:
 
 protected:
 	NetworkLink(
+		const std::string &siteName,
+		const std::string &title,
+		const std::string &summary,
+		const std::string &icon,
+		const std::map<std::string,std::string> &links
+	);
+
+	NetworkLink(
 		const std::string &siteName
 	);
 
