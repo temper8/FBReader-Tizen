@@ -221,16 +221,73 @@ void NetworkLinkCollection::saveLinkWithoutRefreshing(NetworkLink& link, bool is
 		std::for_each(myListeners.begin(), myListeners.end(), UpdateListeners());
 	}
 }
+void NetworkLinkCollection::loadTestLinks(std::vector<shared_ptr<NetworkLink> >& links){
+	shared_ptr<ATOMUpdated> au;
+/*	if (t != 0) {
+		au = new ATOMUpdated();
+		au->setLongSeconds_stupid(t);
+	}*/
+	std::map<std::string,std::string> linkUrls;
+/*	linkUrls["main"] = "http://coollib.com/opds";
+	//linkUrls["title"] = "http://coollib.com/opds/authorsindex";
+	linkUrls["icon"] = "http://coollib.com/favicon.ico";
+	std::string iconUrl = "http://coollib.com/favicon.ico";
+	std::string siteName = "coollib.com catalog";
+	std::string predId = "urn:coollib.com/opds";
+	std::string title = "coollib.net";
+	std::string summary = "test";*/
+	linkUrls["main"] = "http://192.168.136.105:8080";
+	//linkUrls["title"] = "http://coollib.com/opds/authorsindex";
+	//linkUrls["icon"] = "http://coollib.com/favicon.ico";
+	std::string iconUrl = "";
+	std::string siteName = "Home catalog";
+	std::string predId = "urn:home/opds";
+	std::string title = "Home Lib";
+	std::string summary = "test";
+
+	shared_ptr<NetworkLink> link = new OPDSLink(
+		siteName
+	);
+	link->setTitle(title);
+	link->setSummary(summary);
+	//link->setIcon(iconUrl);
+	link->setLinks(linkUrls);
+	link->setPredefinedId(predId);
+	link->setEnabled(true);
+	//link->setUpdated(au);
+	link->init();
+
+	links.push_back(link);
+}
 
 NetworkLinkCollection::NetworkLinkCollection() :
 	DirectoryOption(ZLCategoryKey::NETWORK, "Options", "DownloadDirectory", "") {
 
 	AppLog("NetworkLinkCollection");
 
-//	BooksDB::Instance().loadNetworkLinks(myLinks);
+
+/*
+	shared_ptr<ZLDir> dir = ZLFile(NetworkLink::NetworkDataDirectory()).directory();
+	AppLog("NetworkDataDirectory %s",NetworkLink::NetworkDataDirectory().c_str());
+	if (!dir.isNull()) {
+		std::vector<std::string> names;
+		dir->collectFiles(names, false);
+		for (std::vector<std::string>::iterator it = names.begin(); it != names.end(); ++it) {
+			AppLog("catalog %s",dir->itemPath(*it).c_str());
+			shared_ptr<NetworkLink> link = OPDSLink::read(ZLFile(dir->itemPath(*it)));
+			if (!link.isNull()) {
+				myLinks.push_back(link);
+			}
+		}
+	}
+*/
+	//BooksDB::Instance().loadNetworkLinks(myLinks);
+
 	std::sort(myLinks.begin(), myLinks.end(), Comparator());
 
 	updateLinks("http://data.fbreader.org/catalogs/generic-1.4.xml");
+
+	loadTestLinks(myLinks);
 }
 
 class NetworkLinkCollection::UpdateLinksScope : public ZLUserData {

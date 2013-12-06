@@ -55,6 +55,7 @@ private:
 	NetworkLinkCollection();
 	~NetworkLinkCollection();
 
+	void loadTestLinks(std::vector<shared_ptr<NetworkLink> >& links);
 public:
 	class Listener {
 	public:
