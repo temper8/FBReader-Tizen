@@ -99,6 +99,8 @@ static BookReference::Format formatByZLMimeType(const std::string &mimeType) {
 static BookReference::Type typeByRelation(const std::string &rel) {
 	if (rel == OPDSConstants::REL_ACQUISITION || rel.empty()) {
 		return BookReference::DOWNLOAD_FULL;
+	} else 	if (rel == OPDSConstants::REL_ACQUISITION_OPEN_ACCESS || rel.empty()) {
+		return BookReference::DOWNLOAD_FULL;
 	} else if (rel == OPDSConstants::REL_ACQUISITION_SAMPLE) {
 		return BookReference::DOWNLOAD_DEMO;
 	} else if (rel == OPDSConstants::REL_ACQUISITION_CONDITIONAL) {
