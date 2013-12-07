@@ -26,6 +26,7 @@
 
 #include "../networkActions/NetworkActions.h"
 //#include "../optionsDialogMobile/MobileBookInfoDialog.h"
+#include <FBase.h>
 
 const ZLTypeId NetworkBookNode::TYPE_ID(ZLTreePageNode::TYPE_ID);
 
@@ -39,24 +40,27 @@ const ZLResource &NetworkBookNode::resource() const {
 
 NetworkBookNode::NetworkBookNode(NetworkContainerNode *parent, shared_ptr<NetworkItem> book, SummaryType summaryType) : myBook(book), mySummaryType(summaryType) {
 	registerAction(new NetworkBookPreviewAction(this));
-//	init();
+	init();
 	parent->append(this);
 }
 
 void NetworkBookNode::init() {
 	const NetworkBookItem &book = this->book();
-
+	AppLog("NetworkBookNode::init %d", actions().size());
 	if (!book.reference(BookReference::DOWNLOAD_FULL).isNull() ||
 			!book.reference(BookReference::DOWNLOAD_FULL_CONDITIONAL).isNull()) {
+		AppLog("BookReference::DOWNLOAD_FULL");
 		registerAction(new NetworkBookReadAction(this, book, false));
 		registerAction(new NetworkBookDownloadAction(this, book, false));
 		registerAction(new NetworkBookDeleteAction(book));
 	}
 	if (!book.reference(BookReference::DOWNLOAD_DEMO).isNull()) {
+		AppLog("BookReference::DOWNLOAD_DEMO");
 		registerAction(new NetworkBookReadAction(this, book, true));
 		registerAction(new NetworkBookDownloadAction(this, book, true, resource()["demo"].value()));
 	}
 	if (!book.reference(BookReference::BUY).isNull()) {
+		AppLog("BookReference::BUY");
 		registerAction(new NetworkBookBuyDirectlyAction(this, book));
 	} else if (!book.reference(BookReference::BUY_IN_BROWSER).isNull()) {
 	 registerAction(new NetworkBookBuyInBrowserAction(book));

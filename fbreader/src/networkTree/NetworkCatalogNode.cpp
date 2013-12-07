@@ -289,7 +289,7 @@ bool NetworkCatalogNode::imageIsUploaded() const{
 shared_ptr<ZLImage> NetworkCatalogNode::image() const {
 	AppLog("NetworkCatalogNode::image()");
 	const std::string &url = myItem->URLByType[NetworkItem::URL_COVER];
-	AppLog("url=%s",url.c_str());
+	//AppLog("url=%s",url.c_str());
 	if (url.empty()) {
 		return lastResortCoverImage();
 	}

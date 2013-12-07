@@ -57,23 +57,23 @@ void TizenPictureView::_onAccept() const {
 
 void TizenPictureView::OnActionPerformed(const Control& source, int actionId)
 {
-	int i = 300 - actionId;
-	shared_ptr<ZLRunnableWithKey> action = myActions[i];
+	int id = actionId - 300;
+	AppLog("OnActionPerformed id= %d",id);
+	if (id<0) return;
+	shared_ptr<ZLRunnableWithKey> action = myActions[id];
 
 	if (!action.isNull()) {
 			//std::string text = myAction->text(ZLResource::resource("networkView")["bookNode"]);
 			std::string text = action->key().Name;
 			AppLog("OnActionPerformed= %s", text.c_str());
 			action->run();
-			Frame *pFrame = Application::GetInstance()->GetAppFrame()->GetFrame();
-			TizenDialogForm* myForm = (TizenDialogForm*)pFrame->GetCurrentForm();
-			myForm->pPreviousForm->SendUserEvent(2, null);
-			//if (text=="readDemo") 	return true;
-			//if (text=="read") 	return true;
+
+			if ((text=="readDemo")||(text=="read")) {
+				Frame *pFrame = Application::GetInstance()->GetAppFrame()->GetFrame();
+							TizenDialogForm* myForm = (TizenDialogForm*)pFrame->GetCurrentForm();
+							myForm->pPreviousForm->SendUserEvent(2, null);
+			}
 		}
-
-
-
 }
 
 void TizenPictureView::createActionButtons(TableViewItem* pItem){
@@ -88,14 +88,16 @@ void TizenPictureView::createActionButtons(TableViewItem* pItem){
 	actionsCount =0;
 	for (int i =1; i<myActions.size();i++){
 		shared_ptr<ZLRunnableWithKey> a = myActions[i];
-		//if (a->makesSense()&&(actionsCount<4)) { AppLog("makesSense true %d",actionsCount);
-		if (actionsCount<4) { AppLog("makesSense true %d",actionsCount);
+		if (a->makesSense()&&(actionsCount<4)) { AppLog("makesSense true %d",actionsCount);
+		//if (i<4) { AppLog("makesSense true %d",actionsCount);
 			std::string text = a->text(ZLResource::resource("networkView")["bookNode"]);
 			Button* pButton = new Button();
 			pButton->Construct(Rectangle(300, 20+100*actionsCount, 350, 80),String(text.c_str()));
-			pButton->SetActionId(300 + actionsCount);
+			pButton->SetActionId(300 + i);
 			pButton->AddActionEventListener(*this);
 			pItem->AddControl(pButton);
+			pItem->SetIndividualSelectionEnabled(pButton, true);
+			actionsCount++;
 		}
 		else AppLog("makesSense false");
 	}

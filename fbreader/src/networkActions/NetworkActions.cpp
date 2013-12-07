@@ -130,7 +130,7 @@ bool NetworkBookDownloadAction::makesSense() const {
 void NetworkBookDownloadAction::run() {
 	if (!NetworkOperationRunnable::tryConnect()) {
 	//	finished(std::string());
-		return;
+	//	return;
 	}
 
 	shared_ptr<BookReference> reference = myBook.reference(
@@ -144,7 +144,7 @@ void NetworkBookDownloadAction::run() {
 	DownloadBookRunnable *downloader = new DownloadBookRunnable(reference, myBook.Link.authenticationManager());
 //	downloader->setListener(this);
 	ZLDialogManager::Instance().wait(ZLResourceKey("downloadBook"), *downloader);
-	//downloader->run();
+	downloader->run();
 }
 
 void NetworkBookDownloadAction::bookDownloadingProgress(DownloadBookRunnable *downloader, int downloaded, int size) {

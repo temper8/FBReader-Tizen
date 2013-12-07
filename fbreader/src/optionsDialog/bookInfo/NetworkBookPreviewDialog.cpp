@@ -88,9 +88,10 @@ NetworkBookPreviewDialog::NetworkBookPreviewDialog(NetworkBookNode *node): myNod
 	const NetworkBookItem &book = node->book();
 
 	if (!myNode->myIsInitialized) {
-		myNode->init();
+		//myNode->init();
 		myNode->myIsInitialized = true;
 		}
+
 	myDialog->setMenuEntry( new NetworkBookMenuEntry(myNode));
 
 	ZLDialogContent &commonTab = myDialog->createTab(ZLResourceKey("Cover"));

@@ -78,7 +78,7 @@ BookPictureEntry::BookPictureEntry(shared_ptr<Book> book) : ZLPictureOptionEntry
 	if (myImage.isNull())	myImage = FBNode::defaultCoverImage("booktree-book.png");
 	bookActions.push_back(new BookReadAction(book));
 	bookActions.push_back(new BookReadAction(book));
-//	bookActions.push_back(new BookRemoveAction(book));
+	bookActions.push_back(new BookRemoveAction(book));
 }
 
 const std::string &BookPictureEntry::initialValue() const {
