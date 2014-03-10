@@ -51,7 +51,7 @@ bool ZLbadaFileOutputStream::open() {
 	//}
 
 	//myFile = fdopen(temporaryFileDescriptor, "w+");
-	 myFile = fopen(const_cast<char*>(myTemporaryName.data()), "w+");
+	 myFile = fopen(const_cast<char*>(myName.data()), "w+");
 	// AppLog("fopen");
 	return myFile != 0;
 }
