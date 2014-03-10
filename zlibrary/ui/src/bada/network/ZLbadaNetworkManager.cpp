@@ -133,7 +133,7 @@ std::string ZLbadaNetworkManager::perform(const ZLExecutionData::Vector &dataLis
 		AppLog("Construct");
 		myMonitor->Enter();
 		AppLog("myMonitor Enter");
-		if (myMonitor->count > 5) {
+		if (myMonitor->count > 10) {
 			    AppLog("myMonitor count>5");
 				myMonitor->Wait();
 				AppLog("Wait %d",myMonitor->count);
