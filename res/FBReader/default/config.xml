@@ -2,7 +2,7 @@
 <config>
 	<group name="Options">
 		<option name="BookPath" value="/mnt/mmc/Books"/>
-		<option name="DownloadDirectory" value=""/>
+		<option name="DownloadDirectory" value="/mnt/ums/Downloads"/>
 	</group>
 	<group name="TapScrolling">
 		<option name="Enabled" value="true"/>
