@@ -34,6 +34,8 @@ const std::string OPDSConstants::REL_ACQUISITION_SAMPLE_OR_FULL     = "http://da
 
 const std::string OPDSConstants::REL_COVER         = "http://opds-spec.org/cover";
 const std::string OPDSConstants::REL_THUMBNAIL     = "http://opds-spec.org/thumbnail";
+const std::string OPDSConstants::REL_IMAGE_THUMBNAIL     = "http://opds-spec.org/image/thumbnail";
+const std::string OPDSConstants::REL_STANZA_IMAGE_THUMBNAIL     = "x-stanza-cover-image-thumbnail";
 
 DCDate::DCDate() : 
 	ATOMDateConstruct(0) {

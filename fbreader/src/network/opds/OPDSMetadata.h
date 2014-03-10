@@ -51,6 +51,8 @@ public:
 	// Entry level / other
 	static const std::string REL_COVER;
 	static const std::string REL_THUMBNAIL;
+	static const std::string REL_IMAGE_THUMBNAIL;
+	static const std::string REL_STANZA_IMAGE_THUMBNAIL;
 };
 
 
