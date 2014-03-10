@@ -127,10 +127,10 @@ void ZLTreeDialog::loadCovers() {
 		AppLog("countnode = %d ",nodes.size());
 		int index =0;
 		for (ZLTreeNode::List::const_iterator it = nodes.begin(); it != nodes.end(); ++it) {
-			//if (terminateThread) {
+			if (exitThread()) {
 			//	AppLog("terminateThread 1");
-			//	break;
-			//}
+				break;
+			}
 			ZLTreeTitledNode &node = *(ZLTreeTitledNode*)*it;
 			AppLog("loadNode %d",index);
 			shared_ptr<ZLImage> coverImage = node.image();

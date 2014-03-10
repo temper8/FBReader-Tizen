@@ -16,8 +16,11 @@ class ZLTreeDialog : public ZLTreeListener  {
 
 protected:
 	ZLTreeDialog(const ZLResource &resource);
-	virtual bool exitThread() = 0;
 	bool showIcons;
+
+private:
+	virtual bool exitThread() = 0;
+
 public:
 	virtual ~ZLTreeDialog();
 	const ZLResource &myResource;
