@@ -158,6 +158,7 @@ public:
 //	ZLResourceKey contentKey() const;
 	shared_ptr<Book> book() const;
 
+
 private:
 	shared_ptr<ZLImage> originalImage() const;
 	const ZLResource &resource() const;
