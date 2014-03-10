@@ -149,6 +149,7 @@ Tizen::Ui::Controls::ListItemBase* TreeViewForm::CreateItem (int index, int item
 			Color blk = Color::GetColor(COLOR_ID_BLACK);
 
 			if (showIcons)  {
+			//if (false)  {
 				shared_ptr<ZLImage> cover;
 
 				if (TitledNode->imageIsUploaded())
@@ -163,6 +164,13 @@ Tizen::Ui::Controls::ListItemBase* TreeViewForm::CreateItem (int index, int item
 								Bitmap *tmpBmp = 	((ZLbadaImageData&)image).pBitmap;
 								pBmp = makeIcon(tmpBmp);
 								}
+						else {
+							 cover = TitledNode->extractCoverImage();
+							 shared_ptr<ZLImageData> coverData = ZLImageManager::Instance().imageData(*cover);
+							 ZLImageData &image = *coverData;
+							 Bitmap *tmpBmp = 	((ZLbadaImageData&)image).pBitmap;
+							 pBmp = makeIcon(tmpBmp);
+						}
 						}
 
 				pItem->AddElement(iconRect, ID_FORMAT_BITMAP, *pBmp, null, null);
@@ -261,7 +269,7 @@ void TreeViewForm::OnListViewItemStateChanged(Tizen::Ui::Controls::ListView &lis
 				      std::string actionName = node->actions()[0]->key().Name;
 				      AppLog("action name %s",actionName.c_str());
 				      if (actionName == "gotoParagraph") pPreviousForm->SendUserEvent(0, null);
-					  myTreeDialog->treadTerminator();
+					//  myTreeDialog->treadTerminator();
 					  node->actions()[0]->run();
 					  break;
 			}
