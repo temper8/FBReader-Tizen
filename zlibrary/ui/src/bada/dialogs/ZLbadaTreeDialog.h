@@ -75,7 +75,7 @@ public: ///////; Q_SLOTS:
 	virtual void updateNode(ZLTreeTitledNode &node, int index);
 	virtual void treadTerminator();
 	virtual void setShowIcons(bool value);
-
+	//virtual bool exitThread();
 private:
 	bool __terminateThread;
 	virtual bool exitThread();
