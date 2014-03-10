@@ -78,8 +78,11 @@ Object* ZLbadaTreeDialog::Run(void){
 	 myForm->requestUpdateContent();
 	// myForm->SendUserEvent(999,null);
 	 AppLog("UpdateContent finish enter");
-	 if (showIcons){
-		// loadCovers();
+	 if (showIcons&&!__terminateThread){
+		 AppLog("start loadCovers");
+		 __pThread->Sleep(1000);
+		 AppLog("after Sleep");
+		 loadCovers();
 	 }
 	 myForm->GetHeader()->StopWaitingAnimation(HEADER_ANIMATION_POSITION_TITLE);
 	 myForm->Invalidate(true);
