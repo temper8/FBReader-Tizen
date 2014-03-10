@@ -70,8 +70,14 @@ void TizenPictureView::OnActionPerformed(const Control& source, int actionId)
 
 			if ((text=="readDemo")||(text=="read")) {
 				Frame *pFrame = Application::GetInstance()->GetAppFrame()->GetFrame();
-							TizenDialogForm* myForm = (TizenDialogForm*)pFrame->GetCurrentForm();
-							myForm->pPreviousForm->SendUserEvent(2, null);
+				TizenDialogForm* myForm = (TizenDialogForm*)pFrame->GetCurrentForm();
+				myForm->pPreviousForm->SendUserEvent(2, null);
+			}
+			else {
+				Frame *pFrame = Application::GetInstance()->GetAppFrame()->GetFrame();
+				TizenDialogForm* myForm = (TizenDialogForm*)pFrame->GetCurrentForm();
+				myForm->__pTableView->UpdateTableView();
+				AppLog("OnActionPerformed UpdateTableView");
 			}
 		}
 }
