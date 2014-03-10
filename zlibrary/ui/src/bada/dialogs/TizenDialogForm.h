@@ -58,7 +58,8 @@ public:
 	shared_ptr<ZLOptionsDialog> __badaOptionsDialog;
 	std::vector<shared_ptr<ZLDialogContent> > myTabs;
 
-protected:
+//protected:
+public:
 	bool showApplyButton;
 	Tizen::Ui::Controls::GroupedTableView* __pTableView;
 
