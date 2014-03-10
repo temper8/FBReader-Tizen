@@ -240,9 +240,9 @@ void NetworkLinkCollection::loadTestLinks(std::vector<shared_ptr<NetworkLink> >&
 	//linkUrls["title"] = "http://coollib.com/opds/authorsindex";
 	//linkUrls["icon"] = "http://coollib.com/favicon.ico";
 	std::string iconUrl = "";
-	std::string siteName = "Home catalog";
+	std::string siteName = "My Test catalog";
 	std::string predId = "urn:home/opds";
-	std::string title = "Home Lib";
+	std::string title = "Test Lib";
 	std::string summary = "test";
 
 	shared_ptr<NetworkLink> link = new OPDSLink(
@@ -285,7 +285,7 @@ NetworkLinkCollection::NetworkLinkCollection() :
 
 	std::sort(myLinks.begin(), myLinks.end(), Comparator());
 
-	updateLinks("http://data.fbreader.org/catalogs/generic-1.4.xml");
+	updateLinks("http://data.fbreader.org/catalogs/generic-2.0.xml");
 
 	loadTestLinks(myLinks);
 }
