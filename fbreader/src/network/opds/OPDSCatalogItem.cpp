@@ -85,7 +85,8 @@ std::string OPDSCatalogItem::loadChildren(NetworkItem::List &children) {
 	shared_ptr<ZLExecutionData> networkData =
 		((OPDSLink&)Link).createNetworkData(URLByType[URL_CATALOG], *myNetData);
 
-	while (!networkData.isNull()) {
+	//while (!networkData.isNull()) { делаю бяку, чтоб не показывались следующие страницы, если список книг длинный.
+	if (!networkData.isNull()) {
 		std::string error = ZLNetworkManager::Instance().perform(networkData);
 		if (!error.empty()) {
 			return error;
