@@ -279,7 +279,7 @@ shared_ptr<ZLImage> NetworkCatalogNode::lastResortCoverImage() const {
 
 shared_ptr<ZLImage> NetworkCatalogNode::extractCoverImage() const {
 	AppLog("NetworkCatalogNode::extractCoverImage");
-	return FBNode::defaultCoverImage("booktree-folder.png");
+	return FBNode::defaultCoverImage("booktree-books.png");
 }
 
 bool NetworkCatalogNode::imageIsUploaded() const{
@@ -289,9 +289,10 @@ bool NetworkCatalogNode::imageIsUploaded() const{
 shared_ptr<ZLImage> NetworkCatalogNode::image() const {
 	AppLog("NetworkCatalogNode::image()");
 	const std::string &url = myItem->URLByType[NetworkItem::URL_COVER];
-	//AppLog("url=%s",url.c_str());
+	AppLog("NetworkCatalogNode::image url=%s",url.c_str());
 	if (url.empty()) {
-		return lastResortCoverImage();
+		return FBNode::defaultCoverImage("booktree-books.png");
+		//return lastResortCoverImage();
 	}
 	AppLog("getImageByUrl");
 	shared_ptr<ZLImage> image = NetworkCatalogUtil::getImageByUrl(url);
@@ -305,6 +306,6 @@ shared_ptr<ZLImage> NetworkCatalogNode::image() const {
 
 //	return lastResortCoverImage();
 	//return shared_ptr<ZLImage>();
-	return FBNode::defaultCoverImage("booktree-folder.png");
+	return FBNode::defaultCoverImage("booktree-books.png");
 }
 
