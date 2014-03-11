@@ -7,11 +7,14 @@
 
 #include "HttpThread.h"
 
+#include <FBase.h>
 #include <FIo.h>
-
+#include <FBaseUtilTypes.h>
+#include <FBaseUtilInflator.h>
 
 using namespace Tizen::Base;
 using namespace Tizen::Base::Runtime;
+using namespace Tizen::Base::Utility;
 using namespace Tizen::Graphics;
 using namespace Tizen::System;
 using namespace Tizen::App;
@@ -69,23 +72,33 @@ bool HttpThread::startRequest(){
 
 	//	__pTimer->Construct(*this);
 	//	__pTimer->Start(TIMER_TIMEOUT);
-	AppLog(" initRequest");
+	AppLog(" startRequest");
 
 	result r = E_SUCCESS;
 	HttpTransaction* pTransaction = null;
 	HttpRequest* pRequest = null;
 
 	String hostAddr(myRequest->url().c_str());
+	AppLog(" startRequest 2");
+	  hostAddr.Replace("&#38;","&");
+	 // hostAddr.Replace(L"8;","");
+	//---------------------
+	//  ByteBuffer* bb;
+	 // Osp::Base::String hostAddr;
+	//  bb = Tizen::Base::Utility::StringUtil::StringToUtf8N(hostAddr);
+	//  AppLog( "tmpContentPath %s",(char *)bb->GetPointer());
+//-------------
 
 	fileName = hostAddr;
 	fileName.Replace("/","_");
 	fileName.Replace(":","_");
-
+	AppLog(" startRequest 3");
 	if(__pSession == null)	{
 		__pSession = new HttpSession();
+		AppLog(" startRequest 4");
 		if(__pSession == null)	goto CATCH;
 
-		r = __pSession->Construct(NET_HTTP_SESSION_MODE_NORMAL, null, hostAddr, null);
+		r = __pSession->Construct(NET_HTTP_SESSION_MODE_MULTIPLE_HOST , null, hostAddr, null);
 		if (IsFailed(r))  goto CATCH;
 	}
 	AppLog("new HttpSession");
@@ -105,7 +118,9 @@ bool HttpThread::startRequest(){
 		r = GetLastResult();
 		goto CATCH;
 	}
-	r = pRequest->SetUri(myRequest->url().c_str());
+	//r = pRequest->SetUri(myRequest->url().c_str());
+	r = pRequest->SetUri(hostAddr);
+
 	if(IsFailed(r))
 		goto CATCH;
 
@@ -200,15 +215,15 @@ void HttpThread::OnTransactionReadyToRead(HttpSession& httpSession, HttpTransact
 	HttpResponse* pHttpResponse = httpTransaction.GetResponse();
 	if(pHttpResponse == null) return;
 	AppLog("####### pHttpResponse != null #######");
-	AppLog("####### HttpStatusCode %d",pHttpResponse->GetStatusCode());
+	AppLog("####### HttpStatusCode %d",pHttpResponse->GetHttpStatusCode());
 	//if (pHttpResponse->GetStatusCode() == E_SUCCESS)HTTP_STATUS_OK
-	if (pHttpResponse->GetStatusCode() == HTTP_STATUS_OK)
+	if (pHttpResponse->GetHttpStatusCode() == HTTP_STATUS_OK)
 	{
 		AppLog("####### GetHttpStatusCode() == HTTP_STATUS_OK #######");
 		HttpHeader* pHttpHeader = pHttpResponse->GetHeader();
 		if(pHttpHeader != null)
 		{
-			String* tempHeaderString = pHttpHeader->GetRawHeaderN();
+			String* rawHttpHeader = pHttpHeader->GetRawHeaderN();
 			//AppLog("####### tempHeaderString %s",tempHeaderString->GetPointer());
 			ByteBuffer* pBuffer = pHttpResponse->ReadBodyN();
 			AppLog("####### pBuffer->GetLimit() %d",pBuffer->GetLimit());
@@ -217,14 +232,29 @@ void HttpThread::OnTransactionReadyToRead(HttpSession& httpSession, HttpTransact
 			myRequest->handleContent(pArray, (size_t)availableBodyLen);
 			//String text(L"Read Body Length: ");
 			//text.Append(availableBodyLen);
+		/*	ByteBuffer* pBuf1 = null;
+			pBuf1 = Tizen::Base::Utility::Inflator::InflateN(*pBuffer);
+			if (null != pBuf1)
+			   {
+				Tizen::Io::File file;
+			//	file.Construct("/mnt/mmc/FBReaderWrite/" + fileName, "w");
+				file.Construct("/mnt/ums/Downloads/" + fileName, "w");
+				file.Write(*pBuf1);
+				delete pBuf1;
+			    }
+*/
 
-		//	Tizen::Io::File file;
+			//Tizen::Io::File file;
 		//	file.Construct("/mnt/mmc/FBReaderWrite/" + fileName, "w");
-		//	file.Write(*pBuffer);
-
-			delete tempHeaderString;
+			//file.Construct("/mnt/ums/Downloads/" + fileName, "w");
+			//file.Write(*pBuffer);
+			//file.Write(*rawHttpHeader);
+			delete rawHttpHeader;
 			delete pBuffer;
 		}
+	}
+	else {
+	//	AppLog("####### HttpStatusCode %d",pHttpResponse->GetHttpStatusCode());
 	}
 //	Thread::Stop();
 }
@@ -253,9 +283,27 @@ void HttpThread::OnTransactionHeaderCompleted(HttpSession& httpSession, HttpTran
 void HttpThread::OnTransactionCompleted(HttpSession& httpSession, HttpTransaction& httpTransaction)
 {
 	AppLog("####### OnTransactionCompleted! #######");
+	HttpResponse* pHttpResponse = httpTransaction.GetResponse();
+	if(pHttpResponse == null)
+		AppLog("####### pHttpResponse == null #######");
+	else
+		AppLog("####### pHttpResponse != null #######");
+	AppLog("####### HttpStatusCode %d",pHttpResponse->GetHttpStatusCode());
+	//if (pHttpResponse->GetStatusCode() == E_SUCCESS)HTTP_STATUS_OK
 
+	if (pHttpResponse->GetHttpStatusCode() == HTTP_STATUS_OK)
+	{
+		AppLog("####### GetHttpStatusCode() == HTTP_STATUS_OK #######");
+	}
+	if (pHttpResponse->GetHttpStatusCode() == HTTP_STATUS_FOUND)
+		{
+			AppLog("####### GetHttpStatusCode() == HTTP_STATUS_FOUND #######");
+
+		}
+	//else
+		Quit();
 	delete &httpTransaction;
-	Quit();
+
 	//finishRequest();
 
 
