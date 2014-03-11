@@ -296,10 +296,13 @@ shared_ptr<NetworkItem> NetworkOPDSFeedReader::readCatalogItem(OPDSEntry &entry)
 		const std::string &rel = myLink.relation(link.rel(), link.type());
 		AppLog("####### readCatalogItem rel =%s",rel.c_str());
 		AppLog("####### readCatalogItem href =%s",href.c_str());
+		AppLog("####### readCatalogItem type =%s",link.type().c_str());
 		if (ZLMimeType::isImage(type)) {
-			if (rel == OPDSConstants::REL_THUMBNAIL ||
+			AppLog("####### readCatalogItem isImage");
+			if (rel == OPDSConstants::REL_THUMBNAIL || rel == OPDSConstants::REL_IMAGE_THUMBNAIL || rel == OPDSConstants::REL_STANZA_IMAGE_THUMBNAIL ||
 					(coverURL.empty() && rel == OPDSConstants::REL_COVER)) {
 				coverURL = href;
+				AppLog("####### coverURL = %s",coverURL.c_str());
 			}
 		} else if (*type == *ZLMimeType::APPLICATION_ATOM_XML) {
 			if (rel == ATOMConstants::REL_ALTERNATE) {
@@ -352,7 +355,13 @@ shared_ptr<NetworkItem> NetworkOPDSFeedReader::readCatalogItem(OPDSEntry &entry)
 	annotation.erase(std::remove(annotation.begin(), annotation.end(), 0x09), annotation.end());
 	annotation.erase(std::remove(annotation.begin(), annotation.end(), 0x0A), annotation.end());
 	std::map<NetworkItem::URLType,std::string> urlMap;
-	urlMap[NetworkItem::URL_COVER] = coverURL;
+
+	size_t index = coverURL.find("data:");
+	if (index != std::string::npos) {
+			urlMap[NetworkItem::URL_COVER] = coverURL;
+		}
+	else
+		urlMap[NetworkItem::URL_COVER] = ZLNetworkUtil::url(myBaseURL, coverURL);
 	urlMap[NetworkItem::URL_CATALOG] = ZLNetworkUtil::url(myBaseURL, url);
 	urlMap[NetworkItem::URL_HTML_PAGE] = ZLNetworkUtil::url(myBaseURL, htmlURL);
 	if (litresCatalogue) {
