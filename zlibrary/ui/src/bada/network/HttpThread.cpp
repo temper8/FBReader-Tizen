@@ -67,6 +67,77 @@ result HttpThread::Construct()
 	return r;
 }
 
+bool HttpThread::newRequest(Tizen::Base::String &url){
+
+	AppLog("new startRequest");
+
+	result r = E_SUCCESS;
+	HttpTransaction* pTransaction = null;
+	HttpRequest* pRequest = null;
+
+	String hostAddr = url;
+	AppLog("new  startRequest 2");
+
+	hostAddr.Replace("&#38;","&");
+
+
+	fileName = hostAddr;
+	fileName.Replace("/","_");
+	fileName.Replace(":","_");
+	AppLog("new  startRequest 3");
+	if(__pSession == null)	{
+		__pSession = new HttpSession();
+		AppLog("new  startRequest 4");
+		if(__pSession == null)	goto CATCH;
+
+		r = __pSession->Construct(NET_HTTP_SESSION_MODE_MULTIPLE_HOST , null, hostAddr, null);
+		if (IsFailed(r))  goto CATCH;
+	}
+	AppLog("new HttpSession");
+
+	pTransaction = __pSession->OpenTransactionN();
+	if (null == pTransaction)	{
+		r = GetLastResult();
+		goto CATCH;
+	}
+	AppLog("new OpenTransactionN");
+
+	r = pTransaction->AddHttpTransactionListener(*this);
+	if (IsFailed(r)) goto CATCH;
+
+	pRequest = const_cast<HttpRequest*>(pTransaction->GetRequest());
+	if(pRequest == null)	{
+		r = GetLastResult();
+		goto CATCH;
+	}
+	//r = pRequest->SetUri(myRequest->url().c_str());
+	r = pRequest->SetUri(hostAddr);
+
+	if(IsFailed(r))
+		goto CATCH;
+
+	r = pRequest->SetMethod(NET_HTTP_METHOD_GET);
+	if(IsFailed(r))	goto CATCH;
+
+	AppLog("new Before Submit");
+	r = pTransaction->Submit();
+	AppLog("new After Submit r=%s",GetErrorMessage(r));
+
+	if(IsFailed(r))	goto CATCH;
+	AppLog("new return true;");
+	return true;
+
+	CATCH:
+		if(pTransaction != null){
+			delete pTransaction;
+			pTransaction = null;
+		}
+		AppLog("new HttpClient::TestHttpGet() failed. (%s)", GetErrorMessage(r));
+		//return r;
+		AppLog("new return false;");
+		return false;
+
+}
 bool HttpThread::startRequest(){
 	//	__pTimer = new Timer;
 
@@ -80,14 +151,9 @@ bool HttpThread::startRequest(){
 
 	String hostAddr(myRequest->url().c_str());
 	AppLog(" startRequest 2");
-	  hostAddr.Replace("&#38;","&");
-	 // hostAddr.Replace(L"8;","");
-	//---------------------
-	//  ByteBuffer* bb;
-	 // Osp::Base::String hostAddr;
-	//  bb = Tizen::Base::Utility::StringUtil::StringToUtf8N(hostAddr);
-	//  AppLog( "tmpContentPath %s",(char *)bb->GetPointer());
-//-------------
+
+	hostAddr.Replace("&#38;","&");
+
 
 	fileName = hostAddr;
 	fileName.Replace("/","_");
@@ -298,11 +364,34 @@ void HttpThread::OnTransactionCompleted(HttpSession& httpSession, HttpTransactio
 	if (pHttpResponse->GetHttpStatusCode() == HTTP_STATUS_FOUND)
 		{
 			AppLog("####### GetHttpStatusCode() == HTTP_STATUS_FOUND #######");
+			HttpHeader* pHttpHeader = pHttpResponse->GetHeader();
+			if(pHttpHeader != null)
+					{
+						String* rawHttpHeader = pHttpHeader->GetRawHeaderN();
+						if (rawHttpHeader->Contains("Location:")) {
+							//AppLog("####### tempHeaderString %s",tempHeaderString->GetPointer());
+							//Tizen::Base::Collection::IEnumerator* fieldValues = pHttpHeader->GetFieldValuesN("Location");
+							AppLog("####### GetFieldValuesN");
+							String location;
+							int indexOfN;
+							rawHttpHeader->IndexOf("\n",0,indexOfN);
+							rawHttpHeader->SubString(10,indexOfN-11,location);
+							AppLog("####### GetCurrent");
+							ByteBuffer* bb = Tizen::Base::Utility::StringUtil::StringToUtf8N(*rawHttpHeader);
+							AppLog( "####### rawHttpHeader = %s",(char *)bb->GetPointer());
+							ByteBuffer* bb2 = Tizen::Base::Utility::StringUtil::StringToUtf8N(location);
+							AppLog( "####### location = %s",(char *)bb2->GetPointer());
+							delete &httpTransaction;
+							newRequest(location);
+						}
 
+					}
 		}
-	//else
+	else {
 		Quit();
-	delete &httpTransaction;
+		delete &httpTransaction;
+	}
+
 
 	//finishRequest();
 
