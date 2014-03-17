@@ -34,9 +34,7 @@ HttpMonitor::~HttpMonitor(){
 void  HttpMonitor::AddRef(void)
   {
   __pMutex->Acquire();
-
   count++;
-
   __pMutex->Release();
   }
 
@@ -274,6 +272,29 @@ static size_t handleContent(void *ptr, size_t size, size_t nmemb, ZLNetworkReque
 	return (request->handleContent(ptr, dataSize)) ? dataSize : 0;
 }
 
+void HttpThread::OnTransactionHeaderCompleted(HttpSession& httpSession, HttpTransaction& httpTransaction, int headerLen, bool rs)
+{
+	AppLog("####### OnTransactionHeaderCompleted! #######");
+	HttpResponse* pHttpResponse = httpTransaction.GetResponse();
+	if(pHttpResponse == null) return;
+	HttpHeader* pHttpHeader = pHttpResponse->GetHeader();
+	if(pHttpHeader != null)
+		{
+			String* rawHttpHeader = pHttpHeader->GetRawHeaderN();
+			//AppLog("####### tempHeaderString %s",tempHeaderString->GetPointer());
+			AppLog("####### header->GetLength() %d",rawHttpHeader->GetLength());
+			AppLog("####### headerLen %d", headerLen);
+			if (rawHttpHeader->Contains("Content-Encoding: gzip")) {
+						AppLog("####### header Content-Encoding: gzip");
+			}
+
+			 ByteBuffer* bb = Tizen::Base::Utility::StringUtil::StringToUtf8N(*rawHttpHeader);
+			 byte* pArray = (byte*)bb->GetPointer();
+			AppLog("####### header GetCapacity %d", bb->GetCapacity());
+			myRequest->handleHeader(pArray, (size_t)headerLen);
+		}
+}
+
 void HttpThread::OnTransactionReadyToRead(HttpSession& httpSession, HttpTransaction& httpTransaction, int availableBodyLen)
 {
 	AppLog("####### OnTransactionReadyToRead! #######");
@@ -286,38 +307,53 @@ void HttpThread::OnTransactionReadyToRead(HttpSession& httpSession, HttpTransact
 	if (pHttpResponse->GetHttpStatusCode() == HTTP_STATUS_OK)
 	{
 		AppLog("####### GetHttpStatusCode() == HTTP_STATUS_OK #######");
-		HttpHeader* pHttpHeader = pHttpResponse->GetHeader();
+	/*	HttpHeader* pHttpHeader = pHttpResponse->GetHeader();
 		if(pHttpHeader != null)
 		{
 			String* rawHttpHeader = pHttpHeader->GetRawHeaderN();
 			//AppLog("####### tempHeaderString %s",tempHeaderString->GetPointer());
-			ByteBuffer* pBuffer = pHttpResponse->ReadBodyN();
+
 			AppLog("####### pBuffer->GetLimit() %d",pBuffer->GetLimit());
 			//pBuffer->SetByte(pBuffer->GetLimit()-1 ,'\0');
-			const byte* pArray = pBuffer->GetPointer();
-			myRequest->handleContent(pArray, (size_t)availableBodyLen);
+
 			//String text(L"Read Body Length: ");
 			//text.Append(availableBodyLen);
-		/*	ByteBuffer* pBuf1 = null;
-			pBuf1 = Tizen::Base::Utility::Inflator::InflateN(*pBuffer);
-			if (null != pBuf1)
-			   {
-				Tizen::Io::File file;
-			//	file.Construct("/mnt/mmc/FBReaderWrite/" + fileName, "w");
-				file.Construct("/mnt/ums/Downloads/" + fileName, "w");
-				file.Write(*pBuf1);
-				delete pBuf1;
-			    }
+			//ByteBuffer* bb = Tizen::Base::Utility::StringUtil::StringToUtf8N(*rawHttpHeader);
+			//AppLog( "####### rawHttpHeader = %s",(char *)bb->GetPointer());
+
+			if (rawHttpHeader->Contains("Content-Encoding: gzip")) {
+				AppLog("####### Content-Encoding: gzip");
+				ByteBuffer* pBuf1 = null;
+				pBuf1 = Tizen::Base::Utility::Inflator::InflateN(*pBuffer,availableBodyLen);
+				if (null != pBuf1)
+						   {AppLog("####### null != pBuf1");
+								Tizen::Io::File file;
+							//	file.Construct("/mnt/mmc/FBReaderWrite/" + fileName, "w");
+								file.Construct("/mnt/ums/Downloads/buffer.zip", "w");
+								file.Write(*pBuf1);
+								//const byte* pArray = pBuf1->GetPointer();
+								//myRequest->handleContent(pArray, (size_t)pBuf1->GetCapacity());
+								//delete pBuf1;
+							    }
+
+			}
+			else {
+				const byte* pArray = pBuffer->GetPointer();
+				myRequest->handleContent(pArray, (size_t)availableBodyLen);
+			}
 */
+		ByteBuffer* pBuffer = pHttpResponse->ReadBodyN();
+		const byte* pArray = pBuffer->GetPointer();
+		myRequest->handleContent(pArray, (size_t)availableBodyLen);
 
 			//Tizen::Io::File file;
 		//	file.Construct("/mnt/mmc/FBReaderWrite/" + fileName, "w");
 			//file.Construct("/mnt/ums/Downloads/" + fileName, "w");
 			//file.Write(*pBuffer);
 			//file.Write(*rawHttpHeader);
-			delete rawHttpHeader;
+			//delete rawHttpHeader;
 			delete pBuffer;
-		}
+
 	}
 	else {
 	//	AppLog("####### HttpStatusCode %d",pHttpResponse->GetHttpStatusCode());
@@ -339,10 +375,6 @@ void HttpThread::OnTransactionReadyToWrite(HttpSession& httpSession, HttpTransac
 	AppLog("####### OnTransactionReadyToWrite! #######");
 }
 
-void HttpThread::OnTransactionHeaderCompleted(HttpSession& httpSession, HttpTransaction& httpTransaction, int headerLen, bool rs)
-{
-	AppLog("####### OnTransactionHeaderCompleted! #######");
-}
 
 
 
