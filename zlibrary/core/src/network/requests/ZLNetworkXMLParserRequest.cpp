@@ -64,20 +64,23 @@ bool ZLNetworkXMLParserRequest::doAfter(const std::string &error) {
 
 bool ZLNetworkXMLParserRequest::handleHeader(void *ptr, size_t size) {
 	std::string header = ZLUnicodeUtil::toLower(std::string((const char *) ptr, size));
-
+	//AppLog("####### handleHeader %d",size);
 	if (ZLStringUtil::stringStartsWith(header, CONTENT_ENCODING)) {
 		std::string encoding = header.substr(CONTENT_ENCODING.size());
 		ZLStringUtil::stripWhiteSpaces(encoding);
 		myHttpEncoding = encoding;
+		//AppLog("####### myHttpEncoding %s",encoding.c_str());
 	}
 
 	return true;
 }
 
 bool ZLNetworkXMLParserRequest::handleContent(const void *ptr, size_t size) {
-	AppLog("####### handleContent %d",size);
+	//AppLog("####### handleContent %d",size);
 	if (myInputStream.isNull()) {
-		if (myHttpEncoding == "gzip") {
+		//AppLog("####### myHttpEncoding %s",myHttpEncoding.c_str());
+		//if (myHttpEncoding == "gzip") {
+		if (myHttpEncoding.compare(0,4, "gzip") == 0 ) {
 			myInputStream = new ZLGzipAsynchronousInputStream();
 		} else {
 			myInputStream = new ZLPlainAsynchronousInputStream();
