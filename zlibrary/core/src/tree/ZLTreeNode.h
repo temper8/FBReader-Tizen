@@ -90,6 +90,7 @@ public:
 	const std::vector<shared_ptr<ZLRunnableWithKey> > &actions() const;
 	std::string actionText(const shared_ptr<ZLRunnableWithKey> &action) const;
 	
+	virtual bool beforeExpandNode();
 	void close();
 	void insert(ZLTreeNode *node, size_t index);
 	void append(ZLTreeNode *node);

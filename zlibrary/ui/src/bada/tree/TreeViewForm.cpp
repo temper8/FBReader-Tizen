@@ -244,11 +244,13 @@ void TreeViewForm::OnListViewItemStateChanged(Tizen::Ui::Controls::ListView &lis
 		    int actionsCount = node->actions().size();
 			AppLog("node->actions().size %d", actionsCount);
 
+			//node->beforeExpandNode();
 
 			switch (actionsCount){
 			case  0: if (ZLTreeTitledNode *TitledNode = zlobject_cast<ZLTreeTitledNode*>(node))
 						{
 					 	 AppLog("Node is  %s ",TitledNode->title().c_str());
+					 	 TitledNode->beforeExpandNode();
 					 	 myTreeDialog->enter(node);
 					 	 AppLog("exit enter");
 						};

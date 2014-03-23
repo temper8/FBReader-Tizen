@@ -71,7 +71,53 @@ void NetworkCatalogNode::init() {
 	}
 	registerTreeAction(new ReloadAction(*this));
 }
+bool NetworkCatalogNode::beforeExpandNode(){
+	AppLog("###### beforeExpandNode NetworkCatalogNode ");
+	if (!NetworkOperationRunnable::tryConnect()) {
+		return false;
+	}
 
+	const NetworkLink &link = item().Link;
+	if (!link.authenticationManager().isNull()) {
+		AppLog("###### beforeExpandNode authenticationManager not Null ");
+
+		NetworkAuthenticationManager &mgr = *link.authenticationManager();
+		IsAuthorisedRunnable checker(mgr);
+		checker.executeWithUI();
+		if (checker.hasErrors()) {
+			AppLog("###### beforeExpandNode checker.hasErrors ");
+			checker.showErrorMessage();
+			return false;
+		}
+		if (checker.result() == B3_TRUE) {
+			AppLog("###### beforeExpandNode checker.result() == B3_TRUE ");
+		}
+		if ( mgr.needsInitialization()) {
+			AppLog("###### beforeExpandNode mgr needsInitialization ");
+		}
+
+
+
+		if (checker.result() == B3_TRUE && mgr.needsInitialization()) {
+			AppLog("###### beforeExpandNode needsInitialization ");
+			/*InitializeAuthenticationManagerRunnable initializer(mgr);
+			initializer.executeWithUI();
+			if (initializer.hasErrors()) {
+				LogOutRunnable logout(mgr);
+				logout.executeWithUI();
+			}*/
+		}
+
+	}
+
+//	if (myNode.myChildrenItems.empty()) {
+//		myNode.updateChildren();
+//	}
+//	myNode.expandOrCollapseSubtree();
+//	FBReader::Instance().refreshWindow();
+	AppLog("###### beforeExpandNode return true ");
+	return true;
+}
 void NetworkCatalogNode::requestChildren(shared_ptr<ZLExecutionData::Listener> listener) {
 	if (children().empty())
 		updateChildren();

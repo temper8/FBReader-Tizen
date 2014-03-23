@@ -157,13 +157,14 @@ NetworkCatalogRootNode::NetworkCatalogRootNode(ZLTreeListener::RootNode *parent,
 }
 
 void NetworkCatalogRootNode::init() {
-	AppLog("init()");
+	AppLog("###### init()");
+	/*
 	shared_ptr<NetworkAuthenticationManager> mgr = myLink.authenticationManager();
-	AppLog("authenticationManager");
+	AppLog("###### authenticationManager");
 	registerTreeAction(new ReloadAction(*this));
-	AppLog("ReloadAction");
+	AppLog("###### ReloadAction");
 	if (!mgr.isNull()) {
-
+		AppLog("###### mgr.isNull");
 		registerTreeAction(new LoginAction(*mgr));
 		registerTreeAction(new LogoutAction(*mgr));
 		if (!mgr->refillAccountLink().empty()) {
@@ -179,6 +180,7 @@ void NetworkCatalogRootNode::init() {
 		}
 		AppLog("passwordRecoverySupported");
 	}
+	*/
 //	registerAction(new DontShowAction(myLink));
 //	registerTreeAction(new EditAction(this, myLink));
 //	registerTreeAction(new DeleteAction(this, myLink));

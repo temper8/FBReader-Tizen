@@ -203,3 +203,8 @@ void ZLTreeNode::updated() {
 	if (ZLTreeListener *handler = listener())
 		handler->onNodeUpdated(this);
 }
+
+bool ZLTreeNode::beforeExpandNode(){
+	AppLog("###### beforeExpandNode");
+	return true;
+}

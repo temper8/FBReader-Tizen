@@ -54,6 +54,7 @@ public:
 
 	shared_ptr<ZLImage> extractCoverImage() const;
 	virtual bool imageIsUploaded() const;
+	bool beforeExpandNode();
 
 protected:
 
