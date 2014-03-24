@@ -45,7 +45,7 @@ public:
 	static bool tryConnect();
 
 protected:
-//	NetworkOperationRunnable(const std::string &uiMessageKey);
+	NetworkOperationRunnable(const std::string &uiMessageKey);
 	NetworkOperationRunnable();
 	
 	void destroy();
@@ -170,6 +170,19 @@ private:
 	NetworkCatalogNode* myNode;
 	NetworkItem::List myChildren;
 	*/
+};
+
+class IsAuthorisedRunnable : public NetworkOperationRunnable {
+
+public:
+	IsAuthorisedRunnable(NetworkAuthenticationManager &mgr);
+	void run();
+
+	ZLBoolean3 result();
+
+private:
+	NetworkAuthenticationManager &myManager;
+	ZLBoolean3 myResult;
 };
 
 #endif /* __NETWORKOPERATIONRUNNABLE_H__ */

@@ -30,10 +30,9 @@
 #include "../network/authentication/NetworkAuthenticationManager.h"
 #include "../networkTree/NetworkNodes.h"
 
-//NetworkOperationRunnable::NetworkOperationRunnable(const std::string &uiMessageKey) {
-//	myDialog =
-//		ZLDialogManager::Instance().createProgressDialog(ZLResourceKey(uiMessageKey));
-//}
+NetworkOperationRunnable::NetworkOperationRunnable(const std::string &uiMessageKey) {
+	//myDialog =	ZLDialogManager::Instance().createProgressDialog(ZLResourceKey(uiMessageKey));
+}
 
 NetworkOperationRunnable::NetworkOperationRunnable() {
 	AppLog("NetworkOperationRunnable");
@@ -221,3 +220,18 @@ void LoadSubCatalogRunnable::run() {
 //	myErrorMessage = myItem.loadChildren(myChildren);
 }
 */
+IsAuthorisedRunnable::IsAuthorisedRunnable(NetworkAuthenticationManager &mgr) :
+	NetworkOperationRunnable("authenticationCheck"),
+	myManager(mgr),
+	myResult(B3_UNDEFINED) {
+}
+
+void IsAuthorisedRunnable::run() {
+	NetworkAuthenticationManager::AuthenticationStatus auth = myManager.isAuthorised(true);
+	myErrorMessage = auth.Message;
+	myResult = auth.Status;
+}
+
+ZLBoolean3 IsAuthorisedRunnable::result() {
+	return myResult;
+}
