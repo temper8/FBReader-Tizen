@@ -16,7 +16,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
  * 02110-1301, USA.
  */
-
+#include <FBase.h>
 #include <ZLNetworkUtil.h>
 #include <ZLNetworkManager.h>
 
@@ -42,18 +42,19 @@ const ZLNetworkSSLCertificate &LitResAuthenticationManager::certificate() {
 }
 
 NetworkAuthenticationManager::AuthenticationStatus LitResAuthenticationManager::isAuthorised(bool useNetwork) {
+	AppLog("###### isAuthorised");
 	bool authState = !mySidUserNameOption.value().empty() && !mySidOption.value().empty();
 	if (mySidChecked || !useNetwork) {
 		return AuthenticationStatus(authState);
 	}
-
+	AppLog("###### isAuthorised 2");
 	if (!authState) {
 		mySidChecked = true;
 		mySidUserNameOption.setValue("");
 		mySidOption.setValue("");
 		return AuthenticationStatus(false);
 	}
-
+	AppLog("###### isAuthorised 3 ");
 	std::string firstName, lastName, newSid;
 	shared_ptr<ZLXMLReader> xmlReader = new LitResLoginDataParser(firstName, lastName, newSid);
 
@@ -204,10 +205,12 @@ std::string LitResAuthenticationManager::currentAccount() {
 
 
 bool LitResAuthenticationManager::needsInitialization() {
+	AppLog("###### beforeExpandNode LitResAuthenticationManager needsInitialization ");
 	const std::string &sid = mySidOption.value();
-	if (sid.empty()) {
+	if (sid.empty()) { AppLog("###### beforeExpandNode LitResAuthenticationManager needsInitialization false ");
 		return false;
 	}
+	AppLog("###### beforeExpandNode LitResAuthenticationManager needsInitialization 2 ");
 	return sid != myInitializedDataSid;
 }
 

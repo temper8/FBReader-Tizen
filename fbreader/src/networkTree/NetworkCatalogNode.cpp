@@ -34,8 +34,10 @@
 #include "../network/NetworkItems.h"
 #include "../network/NetworkBookCollection.h"
 #include "../network/NetworkLink.h"
+
 #include "../network/authentication/NetworkAuthenticationManager.h"
 #include "../networkActions/NetworkOperationRunnable.h"
+#include "../networkActions/AuthenticationDialog.h"
 
 class NetworkCatalogNode::OpenInBrowserAction : public ZLTreeAction {
 
@@ -71,11 +73,31 @@ void NetworkCatalogNode::init() {
 	}
 	registerTreeAction(new ReloadAction(*this));
 }
+
+bool NetworkCatalogNode::needAuthenticationDialog(){
+	return item().accessibility() == NetworkCatalogItem::SIGNED_IN;
+}
+
+bool NetworkCatalogNode::runAuthenticationDialog() {
+	AppLog("###### runAuthenticationDialog");
+	if (item().accessibility() == NetworkCatalogItem::SIGNED_IN) {
+		AppLog("######  SIGNED_IN");
+		const NetworkLink &link = item().Link;
+		AuthenticationDialog::run(*link.authenticationManager());
+		return true;
+	}
+	else {
+		return false;
+	}
+
+}
 bool NetworkCatalogNode::beforeExpandNode(){
 	AppLog("###### beforeExpandNode NetworkCatalogNode ");
 	if (!NetworkOperationRunnable::tryConnect()) {
 		return false;
 	}
+
+
 
 	const NetworkLink &link = item().Link;
 	if (!link.authenticationManager().isNull()) {
@@ -96,8 +118,6 @@ bool NetworkCatalogNode::beforeExpandNode(){
 			AppLog("###### beforeExpandNode mgr needsInitialization ");
 		}
 
-
-
 		if (checker.result() == B3_TRUE && mgr.needsInitialization()) {
 			AppLog("###### beforeExpandNode needsInitialization ");
 			/*InitializeAuthenticationManagerRunnable initializer(mgr);
@@ -107,7 +127,6 @@ bool NetworkCatalogNode::beforeExpandNode(){
 				logout.executeWithUI();
 			}*/
 		}
-
 	}
 
 //	if (myNode.myChildrenItems.empty()) {

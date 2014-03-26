@@ -208,3 +208,13 @@ bool ZLTreeNode::beforeExpandNode(){
 	AppLog("###### beforeExpandNode");
 	return true;
 }
+
+bool ZLTreeNode::runAuthenticationDialog() {
+	AppLog("###### runAuthenticationDialog");
+	return false;
+}
+
+bool ZLTreeNode::needAuthenticationDialog(){
+	AppLog("###### needAuthenticationDialog");
+	return false;
+}

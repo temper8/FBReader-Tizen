@@ -35,3 +35,7 @@ NetworkItem::NetworkItem(
 
 NetworkItem::~NetworkItem() {
 }
+
+NetworkCatalogItem::AccessibilityType NetworkCatalogItem::accessibility() {
+	return NetworkCatalogItem::ALWAYS;
+}

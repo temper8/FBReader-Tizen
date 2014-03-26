@@ -9,6 +9,7 @@
 #include <FIo.h>
 #include "../view/badaForm.h"
 #include "../image/ZLbadaImageManager.h"
+#include "AuthenticationForm.h"
 
 using namespace Tizen::App;
 using namespace Tizen::Base;
@@ -231,6 +232,17 @@ void TreeViewForm::OnListViewContextItemStateChanged(Tizen::Ui::Controls::ListVi
 	AppLog("OnListViewContextItemStateChanged");
 }
 
+void TreeViewForm::showAuthenticationForm(){
+	myAuthenticationForm = new AuthenticationForm;
+	myAuthenticationForm->Initialize();
+	myAuthenticationForm->SetPreviousForm(this);
+	Frame *pFrame = UiApp::GetInstance()->GetAppFrame()->GetFrame();
+	pFrame->AddControl(myAuthenticationForm);
+	pFrame->SetCurrentForm(myAuthenticationForm);
+
+	myAuthenticationForm->Invalidate(true);
+}
+
 void TreeViewForm::OnListViewItemStateChanged(Tizen::Ui::Controls::ListView &listView, int index, int elementId, Tizen::Ui::Controls::ListItemStatus status){
 	AppLog("OnListViewItemStateChanged");
 	if (status == LIST_ITEM_STATUS_SELECTED) {
@@ -247,12 +259,17 @@ void TreeViewForm::OnListViewItemStateChanged(Tizen::Ui::Controls::ListView &lis
 			//node->beforeExpandNode();
 
 			switch (actionsCount){
-			case  0: if (ZLTreeTitledNode *TitledNode = zlobject_cast<ZLTreeTitledNode*>(node))
+
+			case  0: if (node->needAuthenticationDialog()) {
+							showAuthenticationForm();
+						}
+					else
+					//if (ZLTreeTitledNode *TitledNode = zlobject_cast<ZLTreeTitledNode*>(node))
 						{
-					 	 AppLog("Node is  %s ",TitledNode->title().c_str());
-					 	 TitledNode->beforeExpandNode();
-					 	 myTreeDialog->enter(node);
-					 	 AppLog("exit enter");
+					 //	 AppLog("Node is  %s ",TitledNode->title().c_str());
+						node->beforeExpandNode();
+					 	myTreeDialog->enter(node);
+					 	AppLog("exit enter");
 						};
 					 break;
 			//case  1:

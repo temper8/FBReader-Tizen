@@ -91,7 +91,13 @@ public:
 		OTHER,
 		BY_AUTHORS,
 	};
-
+	// catalog accessibility types:
+     enum AccessibilityType {
+			NEVER,
+			ALWAYS,
+			SIGNED_IN,
+			HAS_BOOKS
+		};
 public:
 	NetworkCatalogItem(
 		const NetworkLink &link,
@@ -114,7 +120,7 @@ public:
 public:
 	const VisibilityType Visibility;
 	const CatalogType Type;
-
+	virtual AccessibilityType accessibility();
 
 };
 

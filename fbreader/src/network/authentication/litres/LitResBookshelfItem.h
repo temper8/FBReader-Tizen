@@ -41,6 +41,7 @@ private:
 
 private:
 	bool myForceReload;
+	virtual AccessibilityType accessibility();
 };
 
 #endif /* __LITRESBOOKSHELFITEM_H__ */

@@ -65,3 +65,8 @@ std::string LitResBookshelfItem::loadChildren(NetworkItem::List &children) {
 	std::sort(children.begin(), children.end(), NetworkBookItemComparator());
 	return error;
 }
+
+NetworkCatalogItem::AccessibilityType LitResBookshelfItem::accessibility() {
+	return NetworkCatalogItem::SIGNED_IN;
+}
+

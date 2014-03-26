@@ -19,6 +19,7 @@
 #define ID_FORMAT_CUSTOM  		106
 
 //class ZLTreeDialog;
+class AuthenticationForm;
 
 class TreeViewForm :
 	public Tizen::Ui::Controls::Form,
@@ -45,12 +46,14 @@ private:
 	static const int ID_FORMAT_TITLE = 500;
 	static const int ID_FORMAT_SUBTITLE = 501;
 	static const int ID_FORMAT_BITMAP = 502;
+
 protected:
 	// Ui
 //	bool OnStart(void);
 	// Called after the Run() method is called.
 //	void OnStop(void);
-
+	AuthenticationForm* myAuthenticationForm;
+	void showAuthenticationForm();
 	ZLTreeDialog* myTreeDialog;
 	static const int ID_CONTEXT_ITEM = 200;
 	static const int ID_CONTEXT_ITEM1 = 201;
