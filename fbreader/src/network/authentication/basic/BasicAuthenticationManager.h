@@ -57,6 +57,7 @@ public:
 
 public:
 	AuthenticationStatus isAuthorised(bool useNetwork = true);
+	std::string authoriseUser(const std::string &userName,const std::string &pwd);
 	std::string authorise(const std::string &pwd); // returns error message
 	void logOut();
 

@@ -12,6 +12,8 @@
 #include <FBase.h>
 #include <FUi.h>
 
+class ZLTreeNode;
+
 class AuthenticationForm :
 	public Tizen::Ui::Controls::Form,
 	 public Tizen::Ui::IActionEventListener,
@@ -31,7 +33,11 @@ public:
 	void SetPreviousForm(Tizen::Ui::Controls::Form* form);
 	Tizen::Base::String userName;
 	Tizen::Base::String password;
+	ZLTreeNode* myNode;
+
 private:
+
+
 	Tizen::Ui::Controls::Label* userNameLabel;
 	Tizen::Ui::Controls::EditField* userNameEditField;
 

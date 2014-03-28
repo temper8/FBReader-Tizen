@@ -6,6 +6,7 @@
  */
 
 #include "AuthenticationForm.h"
+#include "ZLTreeNode.h"
 
 using namespace Tizen::Base;
 using namespace Tizen::Ui;
@@ -100,6 +101,7 @@ void AuthenticationForm::OnActionPerformed(const Tizen::Ui::Control& source, int
 	case ID_BUTTON_OK:
 		userName = userNameEditField->GetText();
 		password = passwordEditField->GetText();
+		myNode->authorise("temper8@ya.ru","726/830");
 		break;
 
 	case ID_BUTTON_CANCEL:

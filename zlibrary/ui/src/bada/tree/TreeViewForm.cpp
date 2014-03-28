@@ -236,6 +236,8 @@ void TreeViewForm::showAuthenticationForm(){
 	myAuthenticationForm = new AuthenticationForm;
 	myAuthenticationForm->Initialize();
 	myAuthenticationForm->SetPreviousForm(this);
+	myAuthenticationForm->myNode = myNode;
+
 	Frame *pFrame = UiApp::GetInstance()->GetAppFrame()->GetFrame();
 	pFrame->AddControl(myAuthenticationForm);
 	pFrame->SetCurrentForm(myAuthenticationForm);
@@ -252,23 +254,23 @@ void TreeViewForm::OnListViewItemStateChanged(Tizen::Ui::Controls::ListView &lis
 			String strName;
 
 			//ZLTreeNode* node = myModel->myCurrentNode->children().at(index);
-			ZLTreeNode* node = myTreeDialog->myCurrentNode->children().at(index);
-		    int actionsCount = node->actions().size();
+			 myNode = myTreeDialog->myCurrentNode->children().at(index);
+		    int actionsCount = myNode->actions().size();
 			AppLog("node->actions().size %d", actionsCount);
 
 			//node->beforeExpandNode();
 
 			switch (actionsCount){
 
-			case  0: if (node->needAuthenticationDialog()) {
+			case  0: if (myNode->needAuthenticationDialog()) {
 							showAuthenticationForm();
 						}
 					else
 					//if (ZLTreeTitledNode *TitledNode = zlobject_cast<ZLTreeTitledNode*>(node))
 						{
 					 //	 AppLog("Node is  %s ",TitledNode->title().c_str());
-						node->beforeExpandNode();
-					 	myTreeDialog->enter(node);
+						myNode->beforeExpandNode();
+					 	myTreeDialog->enter(myNode);
 					 	AppLog("exit enter");
 						};
 					 break;
@@ -285,11 +287,11 @@ void TreeViewForm::OnListViewItemStateChanged(Tizen::Ui::Controls::ListView &lis
 
 					}
 				*/
-				      std::string actionName = node->actions()[0]->key().Name;
+				      std::string actionName = myNode->actions()[0]->key().Name;
 				      AppLog("action name %s",actionName.c_str());
 				      if (actionName == "gotoParagraph") pPreviousForm->SendUserEvent(0, null);
 					//  myTreeDialog->treadTerminator();
-					  node->actions()[0]->run();
+				      myNode->actions()[0]->run();
 					  break;
 			}
 

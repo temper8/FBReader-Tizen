@@ -55,6 +55,7 @@ protected:
 	AuthenticationForm* myAuthenticationForm;
 	void showAuthenticationForm();
 	ZLTreeDialog* myTreeDialog;
+	ZLTreeNode* myNode;
 	static const int ID_CONTEXT_ITEM = 200;
 	static const int ID_CONTEXT_ITEM1 = 201;
 

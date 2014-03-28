@@ -76,3 +76,7 @@ bool NetworkAuthenticationManager::passwordRecoverySupported() {
 std::string NetworkAuthenticationManager::recoverPassword(const std::string &) {
 	return NetworkErrors::errorMessage(NetworkErrors::ERROR_UNSUPPORTED_OPERATION);
 }
+
+std::string NetworkAuthenticationManager::authoriseUser(const std::string &userName,const std::string &pwd) {
+return "";
+}

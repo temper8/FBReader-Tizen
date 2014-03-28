@@ -34,6 +34,7 @@ public:
 
 public:
 	AuthenticationStatus isAuthorised(bool useNetwork = true);
+	virtual std::string authoriseUser(const std::string &userName,const std::string &pwd);
 	std::string authorise(const std::string &pwd);
 	void logOut();
 	bool skipIPSupported();

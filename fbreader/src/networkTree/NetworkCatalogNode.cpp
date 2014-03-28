@@ -74,6 +74,14 @@ void NetworkCatalogNode::init() {
 	registerTreeAction(new ReloadAction(*this));
 }
 
+bool NetworkCatalogNode::authorise(std::string userName, std::string password){
+	AppLog("###### authorise userName = %s",userName.c_str());
+	AppLog("###### authorise password = %s",password.c_str());
+	const NetworkLink &link = item().Link;
+	link.authenticationManager()->authoriseUser(userName,password);
+	return false;
+}
+
 bool NetworkCatalogNode::needAuthenticationDialog(){
 	return item().accessibility() == NetworkCatalogItem::SIGNED_IN;
 }

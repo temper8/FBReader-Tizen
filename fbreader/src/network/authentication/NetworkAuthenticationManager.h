@@ -52,6 +52,7 @@ public:
 	};
 
 	virtual AuthenticationStatus isAuthorised(bool useNetwork = true) = 0;
+	virtual std::string authoriseUser(const std::string &userName,const std::string &pwd) = 0; // returns error message
 	virtual std::string authorise(const std::string &pwd) = 0; // returns error message
 	virtual void logOut() = 0;
 

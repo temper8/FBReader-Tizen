@@ -81,11 +81,17 @@ NetworkAuthenticationManager::AuthenticationStatus LitResAuthenticationManager::
 	return AuthenticationStatus(true);
 }
 
+std::string LitResAuthenticationManager::authoriseUser(const std::string &userName,const std::string &pwd) {
+	mySidUserNameOption.setValue(userName);
+	return authorise(pwd);
+}
+
 std::string LitResAuthenticationManager::authorise(const std::string &pwd) {
 	std::string firstName, lastName, newSid;
 	shared_ptr<ZLXMLReader> xmlReader = new LitResLoginDataParser(firstName, lastName, newSid);
 
 	std::string url = Link.url(NetworkLink::URL_SIGN_IN);
+	AppLog("###### authorise url = %s",url.c_str());
 	ZLNetworkUtil::appendParameter(url, "login", UserNameOption.value());
 	ZLNetworkUtil::appendParameter(url, "pwd", pwd);
 	if (SkipIPOption.value()) {

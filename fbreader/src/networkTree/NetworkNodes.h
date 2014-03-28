@@ -55,6 +55,7 @@ public:
 	shared_ptr<ZLImage> extractCoverImage() const;
 	virtual bool imageIsUploaded() const;
 
+	virtual bool authorise(std::string userName, std::string password);
 	virtual bool needAuthenticationDialog();
 	bool runAuthenticationDialog();
 	bool beforeExpandNode();

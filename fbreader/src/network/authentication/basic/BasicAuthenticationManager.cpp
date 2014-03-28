@@ -69,6 +69,10 @@ NetworkAuthenticationManager::AuthenticationStatus BasicAuthenticationManager::i
 	return AuthenticationStatus(true);
 }
 
+std::string BasicAuthenticationManager::authoriseUser(const std::string &userName,const std::string &pwd){
+	return "";
+}
+
 std::string BasicAuthenticationManager::authorise(const std::string &pwd) {
 	shared_ptr<ZLExecutionData> data = new BasicAuthenticationRequest(
 		Link.url(NetworkLink::URL_SIGN_IN),
