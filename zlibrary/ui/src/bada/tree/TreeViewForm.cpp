@@ -489,49 +489,7 @@ void TreeViewForm::_ClearContentInfoList()
 	}
 }
 
-/*
-void TreeViewForm::OnTouchDoublePressed(const Control &source, const Point &currentPosition, const TouchEventInfo &touchInfo)
-{
-	AppLog("OnTouchDoublePressed");
-}
 
-void TreeViewForm::OnTouchFocusIn(const Control &source, const Point &currentPosition, const TouchEventInfo &touchInfo)
-{
-	AppLog("OnTouchFocusIn");
-}
-
-void TreeViewForm::OnTouchFocusOut(const Control &source, const Point &currentPosition, const TouchEventInfo &touchInfo)
-{
-	AppLog("OnTouchFocusOut");
-}
-
-void TreeViewForm::OnTouchLongPressed(const Control &source, const Point &currentPosition, const TouchEventInfo &touchInfo)
-{
-	AppLog("OnTouchLongPressed");
-
-	// Display the OptionMenu
-
-}
-
-void TreeViewForm::OnTouchMoved(const Tizen::Ui::Control &source, const Point &currentPosition, const TouchEventInfo &touchInfo)
-{
-	AppLog("OnTouchMoved");
-//	myHolder.view()->onStylusMove(currentPosition.x, currentPosition.y);
-}
-
-void TreeViewForm::OnTouchPressed(const Control &source, const Point &currentPosition, const TouchEventInfo &touchInfo)
-{
-	AppLog("OnTouchPressed");
-	TouchPosition = currentPosition;
-//	myHolder.view()->onStylusPress(currentPosition.x, currentPosition.y);
-}
-
-void TreeViewForm::OnTouchReleased(const Control &source, const Point &currentPosition, const TouchEventInfo &touchInfo)
-{
-	AppLog("OnTouchReleased");
-
-}
-*/
 
 void TreeViewForm::OnUserEventReceivedN(RequestId requestId, Tizen::Base::Collection::IList* pArgs)
 {
