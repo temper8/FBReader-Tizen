@@ -67,6 +67,7 @@ void ZLbadaNetworkManager::createInstance() {
 bool ZLbadaNetworkManager::connect() const
 {
 	AppLog("ZLbadaNetworkManager::connect()");
+	return true;
 }
 void ZLbadaNetworkManager::initPaths() {
 	/*
@@ -109,7 +110,7 @@ std::string ZLbadaNetworkManager::perform(const ZLExecutionData::Vector &dataLis
 		if (it->isNull() || !(*it)->isInstanceOf(ZLNetworkRequest::TYPE_ID)) {continue;}
 
 		ZLNetworkRequest &request = (ZLNetworkRequest&)**it;
-		AppLog("request.url() = %s", request.url().c_str());
+		AppLog("###### request.url() = %s", request.url().c_str());
 		HttpThread* httpTread = new HttpThread(myMonitor, request);
 		httpTreads.insert(httpTread);
 		if (!request.doBefore()) {
@@ -133,7 +134,7 @@ std::string ZLbadaNetworkManager::perform(const ZLExecutionData::Vector &dataLis
 		AppLog("Construct");
 		myMonitor->Enter();
 		AppLog("myMonitor Enter");
-		if (myMonitor->count > 10) {
+		if (myMonitor->count > 5) {
 			    AppLog("myMonitor count>5");
 				myMonitor->Wait();
 				AppLog("Wait %d",myMonitor->count);

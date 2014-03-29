@@ -82,7 +82,7 @@ NetworkAuthenticationManager::AuthenticationStatus LitResAuthenticationManager::
 }
 
 std::string LitResAuthenticationManager::authoriseUser(const std::string &userName,const std::string &pwd) {
-	mySidUserNameOption.setValue(userName);
+	UserNameOption.setValue(userName);
 	return authorise(pwd);
 }
 
@@ -105,7 +105,7 @@ std::string LitResAuthenticationManager::authorise(const std::string &pwd) {
 			xmlReader
 		);
 	std::string error = ZLNetworkManager::Instance().perform(networkData);
-
+	AppLog("###### authorise newSid = %s",newSid.c_str());
 	mySidChecked = true;
 	if (!error.empty()) {
 		mySidUserNameOption.setValue("");
@@ -228,7 +228,7 @@ std::string LitResAuthenticationManager::initialize() {
 	if (sid == myInitializedDataSid) {
 		return "";
 	}
-
+	AppLog("###### myPurchasedBooksList size %d", myPurchasedBooksList.size());
 	std::string dummy1;
 
 	ZLExecutionData::Vector dataList;
@@ -245,6 +245,7 @@ std::string LitResAuthenticationManager::initialize() {
 	myInitializedDataSid = sid;
 	loadPurchasedBooksOnSuccess(myPurchasedBooksIds, myPurchasedBooksList);
 	loadAccountOnSuccess();
+	AppLog("###### myPurchasedBooksList2 size %d", myPurchasedBooksList.size());
 	return "";
 }
 

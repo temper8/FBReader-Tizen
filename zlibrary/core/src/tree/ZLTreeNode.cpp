@@ -218,3 +218,8 @@ bool ZLTreeNode::needAuthenticationDialog(){
 	AppLog("###### needAuthenticationDialog");
 	return false;
 }
+
+bool ZLTreeNode::authorise(std::string userName, std::string password){
+	AppLog("###### authorise");
+	return true;
+}

@@ -119,11 +119,11 @@ void ZLbadaFSDir::collectFiles(std::vector<std::string> &names, bool includeSyml
         if (!dirEntry.IsDirectory())
         {
         	Tizen::Base::String str = dirEntry.GetName();
-        	AppLog("fileEntry name Length = %d",str.GetLength()) ;
+        //	AppLog("fileEntry name Length = %d",str.GetLength()) ;
         	Utf8Encoding utf8;
         	ByteBuffer* pBB = utf8.GetBytesN(str);
         	std::string  shortName((const char*)pBB->GetPointer(),str.GetLength());
-        	AppLog("fileEntry name = %s",shortName.c_str()) ;
+        //	AppLog("fileEntry name = %s",shortName.c_str()) ;
         	names.push_back(shortName);
         	delete pBB;
         }

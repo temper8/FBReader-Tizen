@@ -101,7 +101,11 @@ void AuthenticationForm::OnActionPerformed(const Tizen::Ui::Control& source, int
 	case ID_BUTTON_OK:
 		userName = userNameEditField->GetText();
 		password = passwordEditField->GetText();
-		myNode->authorise("temper8@ya.ru","726/830");
+		if (myNode->authorise("temper8@ya.ru","726/830")) {
+			myPreviousForm->SendUserEvent(10, null);
+		}
+		else
+			myPreviousForm->SendUserEvent(0, null);
 		break;
 
 	case ID_BUTTON_CANCEL:

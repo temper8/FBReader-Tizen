@@ -90,6 +90,7 @@ public:
 	const std::vector<shared_ptr<ZLRunnableWithKey> > &actions() const;
 	std::string actionText(const shared_ptr<ZLRunnableWithKey> &action) const;
 	
+	virtual bool authorise(std::string userName, std::string password);
 	virtual bool runAuthenticationDialog();
 	virtual bool needAuthenticationDialog();
 	virtual bool beforeExpandNode();

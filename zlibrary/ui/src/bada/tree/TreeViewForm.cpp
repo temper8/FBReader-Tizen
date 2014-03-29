@@ -605,6 +605,20 @@ void TreeViewForm::OnUserEventReceivedN(RequestId requestId, Tizen::Base::Collec
 			pPreviousForm->SendUserEvent(0, null);
 		}
 		break;
+	case 10: // авторизация удалась
+		{	AppLog("TreeViewForm::OnUserEventReceivedN 10");
+			pFrame->SetCurrentForm(*this);
+			pFrame->RequestRedraw();
+			if (prevForm != null)		{
+				pFrame->RemoveControl(*prevForm);
+				}
+			if (myNode != null) {
+				myNode->beforeExpandNode();
+				AppLog("before enter");
+				myTreeDialog->enter(myNode);
+			}
+		}
+		break;
 	default:
 		break;
 	}

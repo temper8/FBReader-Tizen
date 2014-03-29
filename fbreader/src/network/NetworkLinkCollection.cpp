@@ -285,7 +285,8 @@ NetworkLinkCollection::NetworkLinkCollection() :
 
 	std::sort(myLinks.begin(), myLinks.end(), Comparator());
 
-	updateLinks("http://data.fbreader.org/catalogs/generic-2.0.xml");
+	//updateLinks("http://data.fbreader.org/catalogs/generic-2.0.xml");
+	updateLinks("http://data.fbreader.org/catalogs/generic-1.4.xml");
 
 	loadTestLinks(myLinks);
 }

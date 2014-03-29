@@ -57,12 +57,14 @@ std::string LitResBookshelfItem::loadChildren(NetworkItem::List &children) {
 		return NetworkErrors::errorMessage(NetworkErrors::ERROR_AUTHENTICATION_FAILED);
 	}
 	std::string error;
-	if (myForceReload) {
+	if (myForceReload) { AppLog("reloadPurchasedBooks");
 		error = mgr.reloadPurchasedBooks();
 	}
 	myForceReload = true;
 	mgr.collectPurchasedBooks(children);
+	AppLog("###### children size %d", children.size());
 	std::sort(children.begin(), children.end(), NetworkBookItemComparator());
+	myChildrenReceiveListner->run();
 	return error;
 }
 

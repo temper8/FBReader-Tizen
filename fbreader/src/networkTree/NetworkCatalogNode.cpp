@@ -79,7 +79,7 @@ bool NetworkCatalogNode::authorise(std::string userName, std::string password){
 	AppLog("###### authorise password = %s",password.c_str());
 	const NetworkLink &link = item().Link;
 	link.authenticationManager()->authoriseUser(userName,password);
-	return false;
+	return true;
 }
 
 bool NetworkCatalogNode::needAuthenticationDialog(){
@@ -119,21 +119,25 @@ bool NetworkCatalogNode::beforeExpandNode(){
 			checker.showErrorMessage();
 			return false;
 		}
+		/*
 		if (checker.result() == B3_TRUE) {
 			AppLog("###### beforeExpandNode checker.result() == B3_TRUE ");
 		}
 		if ( mgr.needsInitialization()) {
 			AppLog("###### beforeExpandNode mgr needsInitialization ");
-		}
+		}*/
 
 		if (checker.result() == B3_TRUE && mgr.needsInitialization()) {
 			AppLog("###### beforeExpandNode needsInitialization ");
-			/*InitializeAuthenticationManagerRunnable initializer(mgr);
-			initializer.executeWithUI();
-			if (initializer.hasErrors()) {
+			std::string myErrorMessage = mgr.initialize();
+			//InitializeAuthenticationManagerRunnable initializer(mgr);
+			//initializer.executeWithUI();
+			//if (initializer.hasErrors()) {
+			if (!myErrorMessage.empty()){
+				AppLog("###### beforeExpandNode !myErrorMessage.empty ");
 				LogOutRunnable logout(mgr);
 				logout.executeWithUI();
-			}*/
+			}
 		}
 	}
 

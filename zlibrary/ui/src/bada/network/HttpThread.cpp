@@ -150,9 +150,15 @@ bool HttpThread::startRequest(){
 	String hostAddr(myRequest->url().c_str());
 	AppLog(" startRequest 2");
 
+
+	// если это литрес  по https
+	if (hostAddr.Contains("https")) {
+		hostAddr.Replace("https","http");
+		hostAddr.Replace("&#38;lfrom=51","");
+		ByteBuffer* bb = Tizen::Base::Utility::StringUtil::StringToUtf8N(hostAddr);
+		AppLog("####### hostAddr %s",bb->GetPointer());
+	}
 	hostAddr.Replace("&#38;","&");
-
-
 	fileName = hostAddr;
 	fileName.Replace("/","_");
 	fileName.Replace(":","_");
