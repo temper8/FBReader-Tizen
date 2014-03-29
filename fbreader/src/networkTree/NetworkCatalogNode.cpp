@@ -83,7 +83,10 @@ bool NetworkCatalogNode::authorise(std::string userName, std::string password){
 }
 
 bool NetworkCatalogNode::needAuthenticationDialog(){
-	return item().accessibility() == NetworkCatalogItem::SIGNED_IN;
+	if (item().accessibility() == NetworkCatalogItem::SIGNED_IN) {
+		return	!item().Link.authenticationManager()->isAuthorised(true).Status;
+	}
+	return false;
 }
 
 bool NetworkCatalogNode::runAuthenticationDialog() {
