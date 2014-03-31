@@ -52,6 +52,7 @@ result AuthenticationForm::OnInitializing(void)
 
     userNameEditField = new EditField();
     userNameEditField->Construct(Rectangle(50, 114, 600, 90),EDIT_FIELD_STYLE_EMAIL,INPUT_STYLE_OVERLAY);
+    userNameEditField->SetText("temper8@ya.ru");
   //  userNameEditField->AddTextEventListener(*this);
     AddControl(userNameEditField);
 
@@ -64,6 +65,7 @@ result AuthenticationForm::OnInitializing(void)
 
     passwordEditField = new EditField();
     passwordEditField->Construct(Rectangle(50, 324, 600, 90),EDIT_FIELD_STYLE_PASSWORD,INPUT_STYLE_OVERLAY);
+    passwordEditField->SetText("726/830");
     //passwordEditField->AddTextEventListener(*this);
 
     AddControl(passwordEditField);
@@ -99,9 +101,15 @@ void AuthenticationForm::OnActionPerformed(const Tizen::Ui::Control& source, int
 	switch (actionId)
 	{
 	case ID_BUTTON_OK:
-		userName = userNameEditField->GetText();
-		password = passwordEditField->GetText();
-		if (myNode->authorise("temper8@ya.ru","726/830")) {
+		//userName = userNameEditField->GetText();
+		ByteBuffer* userName;
+		userName = Tizen::Base::Utility::StringUtil:: StringToUtf8N(userNameEditField->GetText());
+		//AppLog( "tmpContentPath %s",(char *)userName->GetPointer());
+		//password = passwordEditField->GetText();
+		ByteBuffer* password;
+		password = Tizen::Base::Utility::StringUtil:: StringToUtf8N(passwordEditField->GetText());
+		//if (myNode->authorise("temper8@ya.ru","726/830")) {
+		if (myNode->authorise((char *)userName->GetPointer(),(char *)password->GetPointer())) {
 			myPreviousForm->SendUserEvent(10, null);
 		}
 		else
