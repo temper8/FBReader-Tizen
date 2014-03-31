@@ -47,13 +47,18 @@ NetworkBookNode::NetworkBookNode(NetworkContainerNode *parent, shared_ptr<Networ
 void NetworkBookNode::init() {
 	const NetworkBookItem &book = this->book();
 	AppLog("NetworkBookNode::init %d", actions().size());
-	if (!book.reference(BookReference::DOWNLOAD_FULL).isNull() ||
-			!book.reference(BookReference::DOWNLOAD_FULL_CONDITIONAL).isNull()) {
+	if (!book.reference(BookReference::DOWNLOAD_FULL).isNull()||!book.reference(BookReference::DOWNLOAD_FULL_CONDITIONAL).isNull()) {
 		AppLog("BookReference::DOWNLOAD_FULL");
 		registerAction(new NetworkBookReadAction(this, book, false));
 		registerAction(new NetworkBookDownloadAction(this, book, false));
 		registerAction(new NetworkBookDeleteAction(book));
 	}
+	/*if (!book.reference(BookReference::DOWNLOAD_FULL_CONDITIONAL).isNull()) {
+		AppLog("BookReference::DOWNLOAD_FULL_CONDITIONAL");
+		registerAction(new NetworkBookReadAction(this, book, false));
+		registerAction(new NetworkBookDownloadAction(this, book, false));
+		registerAction(new NetworkBookDeleteAction(book));
+	}*/
 	if (!book.reference(BookReference::DOWNLOAD_DEMO).isNull()) {
 		AppLog("BookReference::DOWNLOAD_DEMO");
 		registerAction(new NetworkBookReadAction(this, book, true));
