@@ -13,8 +13,8 @@
         <Privileges>
             <Privilege>http://tizen.org/privilege/content.read</Privilege>
             <Privilege>http://tizen.org/privilege/http</Privilege>
-            <Privilege>http://tizen.org/privilege/power</Privilege>
             <Privilege>http://tizen.org/privilege/notification</Privilege>
+            <Privilege>http://tizen.org/privilege/power</Privilege>
             <Privilege>http://tizen.org/privilege/content.write</Privilege>
         </Privileges>
         <UiApp HwAcceleration="On" LaunchingHistoryVisible="True" Main="True" MenuIconVisible="True" Name="FBReader">
@@ -24,7 +24,7 @@
                 <DisplayName Locale="eng-GB">FBReader</DisplayName>
             </DisplayNames>
             <Icons>
-                <Icon Section="MainMenu" Type="Xhigh">FBReader-type1.png</Icon>
+                <Icon Section="MainMenu" Type="Xhigh">fbreader_main.png</Icon>
             </Icons>
             <LaunchConditions/>
         </UiApp>
