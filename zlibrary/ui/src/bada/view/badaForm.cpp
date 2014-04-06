@@ -67,9 +67,11 @@ bool badaForm::Initialize(ZLbadaViewWidget* Holder)
 	__pOptionMenu->Construct();
 	__pOptionMenu->AddActionEventListener(*this);
 //	__pOptionMenu->AddKeyEventListener(*this);
-	 this->AddTouchEventListener(*this);
-	 this->AddOrientationEventListener(*this);
-	 this->SetPropagatedKeyEventListener (this);
+
+	 AddTouchEventListener(*this);
+	 AddOrientationEventListener(*this);
+
+	 SetPropagatedKeyEventListener (this);
 
 	formRect = GetClientAreaBounds();
 
@@ -78,6 +80,9 @@ bool badaForm::Initialize(ZLbadaViewWidget* Holder)
 	if (capturedCanvas) delete capturedCanvas;
 	capturedCanvas = new Canvas();
 	capturedCanvas->Construct(formRect);
+
+	//SetOrientation(ORIENTATION_AUTOMATIC);
+
 
 	GetSystemInfomation();
 
@@ -561,30 +566,32 @@ void badaForm::OnTouchReleased(const Control &source, const Point &currentPositi
 
 void badaForm::setOrientation(int angle){
 
-	Tizen::Ui::Orientation badaAngle;
+	Tizen::Ui::Orientation orientation;
 
 	switch (angle) {
 		case ZLView::DEGREES0:
-			badaAngle = ORIENTATION_PORTRAIT;
+			orientation = ORIENTATION_PORTRAIT;
 			break;
 		case ZLView::DEGREES90:
-			badaAngle = ORIENTATION_LANDSCAPE ;
+			orientation = ORIENTATION_LANDSCAPE ;
 			break;
 		case ZLView::DEGREES180:
-			badaAngle = ORIENTATION_PORTRAIT_REVERSE;
+			orientation = ORIENTATION_PORTRAIT_REVERSE;
 			break;
 	    case ZLView::DEGREES270:
-		    badaAngle = ORIENTATION_LANDSCAPE_REVERSE;
+	    	orientation = ORIENTATION_LANDSCAPE_REVERSE;
 			break;
 	    case -1:
-	    	badaAngle = ORIENTATION_AUTOMATIC_FOUR_DIRECTION;
+	    	orientation = ORIENTATION_AUTOMATIC_FOUR_DIRECTION;
 	    	break;
 	}
-	AppLog("badaAngle %d",badaAngle);
-	if (GetOrientation() != badaAngle) SetOrientation(badaAngle);
+	AppLog("orientation %d",orientation);
+	if (GetOrientation() != orientation) SetOrientation(orientation);
 }
 
 void badaForm::OnOrientationChanged( const Tizen::Ui::Control&  source,  Tizen::Ui::OrientationStatus  orientationStatus ){
+	AppLog("OnOrientationChanged");
+
     myDrawMode = DRAW_CURRENT_PAGE;
 	if (myTimer) {
 	   myTimer->Cancel();
@@ -592,7 +599,7 @@ void badaForm::OnOrientationChanged( const Tizen::Ui::Control&  source,  Tizen::
 	   myTimer = 0;
    }
 
-	AppLog("OnOrientationChanged");
+
     needRepaintHolder = true;
 
 	formRect = GetClientAreaBounds();
@@ -713,7 +720,8 @@ void badaForm::OnActionPerformed(const Tizen::Ui::Control& source, int actionId)
     else
     {
     	myHolder->doAction(ActionIdList[indx]);
-    	Invalidate(false);
+    	myHolder->repaint();
+    	//Invalidate(false);
     }
 }
 
@@ -767,7 +775,8 @@ void badaForm::OnUserEventReceivedN(RequestId requestId, Tizen::Base::Collection
 			AppLog("badaForm::OnUserEventReceivedN requestId = 0 ");
 			pFrame->SetCurrentForm(*this);
 			//pFrame->RequestRedraw();
-			Invalidate(false);
+			myHolder->repaint();
+			//Invalidate(false);
 			//myHolder.doAction(ActionIdList[2]);
 			//DetailForm* pDetailForm = static_cast<DetailForm *>(pFrame->GetControl("DetailForm"));
 			//badaForm* pbadaForm = (badaForm*)(pFrame->GetControl("badaForm"));
