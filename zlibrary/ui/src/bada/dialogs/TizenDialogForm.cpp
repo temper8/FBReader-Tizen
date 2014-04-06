@@ -111,7 +111,7 @@ void TizenDialogForm::SetPreviousForm(Tizen::Ui::Controls::Form* preForm)
 
 void TizenDialogForm::OnFormBackRequested(Tizen::Ui::Controls::Form& source){
 	AppLog("Close button is clicked!");
-//	__badaOptionsDialog->accept();
+	__badaOptionsDialog->accept();
 	Frame *pFrame = Application::GetInstance()->GetAppFrame()->GetFrame();
 
 	pPreviousForm->SendUserEvent(0, null);
