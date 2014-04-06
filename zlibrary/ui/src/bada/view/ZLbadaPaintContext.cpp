@@ -136,16 +136,16 @@ std::string ZLbadaPaintContext::checkFont(const std::string &family) {
 }
 
 void ZLbadaPaintContext::setFont(const std::string &family, int size, bool bold, bool italic) {
-//	AppLog( "setFont %s",family.c_str());
-//	AppLog( "setFont size %d, %d, %d ",size,bold,italic);
-//	AppLog( "setFont family %s",family.c_str());
-	//bool fontChanged = false;
+	AppLog( "setFont %s",family.c_str());
+	AppLog( "setFont size %d, %d, %d ",size,bold,italic);
+	AppLog( "setFont family %s",family.c_str());
+	bool fontChanged = false;
 	bool famylyChanged = false;
 	bool styleChanged = false;
 
 
 
-	std::string newFont = checkFont(family);
+	std::string newFont = family;//checkFont(family);
 
 	if ((myStoredFamily != newFont)||(myStoredSize != size)||(myStoredBold != bold)) famylyChanged = true;
 	int style = ( bold ? FONT_STYLE_BOLD : FONT_STYLE_PLAIN);// | ( italic ? FONT_STYLE_ITALIC : 0);
@@ -169,6 +169,10 @@ void ZLbadaPaintContext::setFont(const std::string &family, int size, bool bold,
 
 	if (famylyChanged) {
 		deltaItalic = 0;
+		if (myFontRegular!=null) delete myFontRegular;
+		myFontRegular = null;
+		if (myFontItalic!=null) delete myFontItalic;
+		myFontItalic = null;
 		if (myFontRegular == null) {
 					myFontRegular = new Tizen::Graphics::Font;
 					AppLog( "Construct font");
@@ -187,10 +191,7 @@ void ZLbadaPaintContext::setFont(const std::string &family, int size, bool bold,
 					}
 	//	AppLog( "setFont end");
 	}
-/*	    if (myFontRegular!=null) delete myFontRegular;
-		myFontRegular = null;
-	    if (myFontItalic!=null) delete myFontItalic;
-		myFontItalic = null;
+/*
 	//	std::string newFont = checkFont(family);
 		AppLog("newFont %s",newFont.c_str());
 
@@ -260,7 +261,7 @@ void ZLbadaPaintContext::setFont(const std::string &family, int size, bool bold,
 
 	if (italic) myFont = myFontItalic;
 		else myFont = myFontRegular;
-//	AppLog("set myFont");
+	//	AppLog("set myFont");
 	//AppLog("maxh=%d, getsize=%d, getas=%d, getdes=%d", myFont->GetMaxHeight(), myFont->GetSize(), myFont->GetAscender(), myFont->GetDescender());
 	mySpaceWidth = -1;
 	//myDescent = myFont->GetDescender();
