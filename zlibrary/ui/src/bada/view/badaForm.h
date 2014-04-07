@@ -99,6 +99,11 @@ protected:
 	virtual void OnFormBackRequested(Tizen::Ui::Controls::Form& source);
 	virtual void OnFormMenuRequested (Tizen::Ui::Controls::Form &source);
 
+	Tizen::Ui::Controls::Popup* quitPopup;
+	void initQuitPopup();
+	void showQuitPopup();
+	void hideQuitPopup();
+
 public:
 	int ScreenHeight;
 	int ScreenWidth;

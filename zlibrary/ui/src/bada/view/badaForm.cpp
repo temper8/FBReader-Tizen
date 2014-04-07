@@ -28,8 +28,12 @@ using namespace Tizen::System;
 using namespace Tizen::Base::Runtime;
 using namespace Tizen::Media;
 
-#define ID_BACK_TO_READING	2600
 
+
+
+#define ID_BACK_TO_READING		2600
+#define ID_CONTIUE_READING		2601
+#define ID_CLOSE_FBREADER   	2602
 
 badaForm *badaForm::ourInstance = 0;
 
@@ -38,7 +42,7 @@ badaForm &badaForm::Instance() {
 }
 
 
-badaForm::badaForm(void): needRepaintHolder(false),myDrawMode(DRAW_CURRENT_PAGE),applicationWindowsNotInited(true), myHolder(null), MenuItemCount(0), /*showNewPage(true), touchMove(0),*/ myTimer(0){
+badaForm::badaForm(void): needRepaintHolder(false),myDrawMode(DRAW_CURRENT_PAGE),applicationWindowsNotInited(true), myHolder(null), MenuItemCount(0), quitPopup(0),/*showNewPage(true), touchMove(0),*/ myTimer(0){
 	ourInstance = this;
 }
 
@@ -236,37 +240,48 @@ bool badaForm::OnKeyReleased(Tizen::Ui::Control& source, const Tizen::Ui::KeyEve
 	return used;
 }
 
+void badaForm::showQuitPopup(void)
+{
+	if (quitPopup == null) initQuitPopup();
+	quitPopup->SetShowState(true);
+	quitPopup->Show();
+}
+
+void badaForm::hideQuitPopup(void)
+{
+	quitPopup->SetShowState(false);
+	Invalidate(true);
+}
+
+
+void badaForm::initQuitPopup(){
+    // Creates an instance of Popup
+    quitPopup = new Popup;
+    quitPopup->Construct(false, Dimension(400,235));
+    quitPopup->SetTitleText(L"Popup Sample");
+
+
+    Button* pContinueButton = new Button();
+    pContinueButton->Construct(Rectangle(5, 15, 390, 100), L"Continue reading");
+    pContinueButton->SetActionId(ID_CONTIUE_READING);
+    pContinueButton->AddActionEventListener(*this);
+
+    quitPopup->AddControl(pContinueButton);
+
+    Button* pCloseButton = new Button();
+    pCloseButton->Construct(Rectangle(5, 120, 390, 100), L"Close FBReader");
+    pCloseButton->SetActionId(ID_CLOSE_FBREADER);
+    pCloseButton->AddActionEventListener(*this);
+
+    quitPopup->AddControl(pCloseButton);
+
+
+}
+
 void badaForm::OnFormBackRequested(Tizen::Ui::Controls::Form& source){
 	AppLog("Back is clicked!");
 
-	MessageBox messageBox;
-
-	messageBox.Construct(L"MessageBox Title", L"Exit?", MSGBOX_STYLE_YESNO, 3000);
-
-	int modalResult = 0;
-
-	// Calls ShowAndWait() : Draws and Shows itself and processes events
-	messageBox.ShowAndWait(modalResult);
-
-	switch (modalResult)
-	    {
-	    case MSGBOX_RESULT_YES:
-	        {
-	        	//FBReader &fbreader = FBReader::Instance();
-	        	//fbreader.doAction(ActionCode::QUIT);
-	        	//FBReader::Instance().quit();
-	        	Application* a = Tizen::App::Application::GetInstance();
-	        	a->Terminate();
-	        }
-	        break;
-	    case MSGBOX_RESULT_NO:
-	    	        {
-	    	            // ....
-	    	        }
-	    	        break;
-	    default:
-	        break;
-	    }
+	showQuitPopup();
 
 }
 void badaForm::OnFormMenuRequested (Tizen::Ui::Controls::Form &source){
@@ -668,7 +683,9 @@ result badaForm::OnInitializing(void)
 result badaForm::OnTerminating(void)
 {
 	result r = E_SUCCESS;
-
+	if (quitPopup != null) {
+		quitPopup->Destroy();
+	}
     delete __pOptionMenu;
 
 	return r;
@@ -700,14 +717,36 @@ void badaForm::OnActionPerformed(const Tizen::Ui::Control& source, int actionId)
 {
     int indx;
     AppLog("actionId %d",actionId);
-    if (actionId == ID_BACK_TO_READING ) {
-    	FBReader &fbreader = FBReader::Instance();
-    	fbreader.showBookTextView();
-    	RemoveOptionkeyActionListener(*this);
-    	SetFormStyle(FORM_STYLE_NORMAL);
-    	Invalidate(false);
-    	return;
+    switch (actionId)
+    {
+    case ID_CLOSE_FBREADER:
+        {
+        	hideQuitPopup();
+        	Application* a = Tizen::App::Application::GetInstance();
+        	a->Terminate();
+        	return;
+        }
+        break;
+    case ID_CONTIUE_READING:
+        {
+            hideQuitPopup();
+            return;
+        }
+        break;
+    case ID_BACK_TO_READING:
+        {
+            FBReader &fbreader = FBReader::Instance();
+            fbreader.showBookTextView();
+            RemoveOptionkeyActionListener(*this);
+            SetFormStyle(FORM_STYLE_NORMAL);
+            Invalidate(false);
+            return;
+        }
+        break;
+    default:
+        break;
     }
+
 
     indx = actionId - ID_OPTIONMENU_ITEM0;//__pOptionMenu->GetItemIndexFromActionId(actionId);
     if (indx<0) return;
