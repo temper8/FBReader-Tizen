@@ -42,7 +42,7 @@ badaForm &badaForm::Instance() {
 }
 
 
-badaForm::badaForm(void): needRepaintHolder(false),myDrawMode(DRAW_CURRENT_PAGE),applicationWindowsNotInited(true), myHolder(null), MenuItemCount(0), quitPopup(0),/*showNewPage(true), touchMove(0),*/ myTimer(0){
+badaForm::badaForm(void): needRepaintHolder(false),myDrawMode(DRAW_CURRENT_PAGE),applicationWindowsNotInited(true), myHolder(null), MenuItemCount(0), pQuitPopup(0),/*showNewPage(true), touchMove(0),*/ myTimer(0){
 	ourInstance = this;
 }
 
@@ -242,39 +242,37 @@ bool badaForm::OnKeyReleased(Tizen::Ui::Control& source, const Tizen::Ui::KeyEve
 
 void badaForm::showQuitPopup(void)
 {
-	if (quitPopup == null) initQuitPopup();
-	quitPopup->SetShowState(true);
-	quitPopup->Show();
+	if (pQuitPopup == null) initQuitPopup();
+	pQuitPopup->SetShowState(true);
+	pQuitPopup->Show();
 }
 
 void badaForm::hideQuitPopup(void)
 {
-	quitPopup->SetShowState(false);
+	pQuitPopup->SetShowState(false);
 	Invalidate(true);
 }
 
 
 void badaForm::initQuitPopup(){
     // Creates an instance of Popup
-    quitPopup = new Popup;
-    quitPopup->Construct(false, Dimension(400,235));
-    quitPopup->SetTitleText(L"Popup Sample");
-
+    pQuitPopup = new Popup;
+    pQuitPopup->Construct(false, Dimension(400,235));
+    //quitPopup->SetTitleText(L"Popup Sample");
 
     Button* pContinueButton = new Button();
     pContinueButton->Construct(Rectangle(5, 15, 390, 100), L"Continue reading");
     pContinueButton->SetActionId(ID_CONTIUE_READING);
     pContinueButton->AddActionEventListener(*this);
 
-    quitPopup->AddControl(pContinueButton);
+    pQuitPopup->AddControl(pContinueButton);
 
     Button* pCloseButton = new Button();
     pCloseButton->Construct(Rectangle(5, 120, 390, 100), L"Close FBReader");
     pCloseButton->SetActionId(ID_CLOSE_FBREADER);
     pCloseButton->AddActionEventListener(*this);
 
-    quitPopup->AddControl(pCloseButton);
-
+    pQuitPopup->AddControl(pCloseButton);
 
 }
 
@@ -683,8 +681,8 @@ result badaForm::OnInitializing(void)
 result badaForm::OnTerminating(void)
 {
 	result r = E_SUCCESS;
-	if (quitPopup != null) {
-		quitPopup->Destroy();
+	if (pQuitPopup != null) {
+		pQuitPopup->Destroy();
 	}
     delete __pOptionMenu;
 
