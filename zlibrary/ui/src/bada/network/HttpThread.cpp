@@ -64,7 +64,7 @@ result HttpThread::Construct()
 	myMonitor->AddRef();
 	return r;
 }
-
+/*
 bool HttpThread::newRequest(Tizen::Base::String &url){
 
 	AppLog("new startRequest");
@@ -90,6 +90,7 @@ bool HttpThread::newRequest(Tizen::Base::String &url){
 
 		r = __pSession->Construct(NET_HTTP_SESSION_MODE_MULTIPLE_HOST , null, hostAddr, null);
 		if (IsFailed(r))  goto CATCH;
+
 	}
 	AppLog("new HttpSession");
 
@@ -136,6 +137,8 @@ bool HttpThread::newRequest(Tizen::Base::String &url){
 		return false;
 
 }
+
+*/
 bool HttpThread::startRequest(){
 	//	__pTimer = new Timer;
 
@@ -170,6 +173,7 @@ bool HttpThread::startRequest(){
 
 		r = __pSession->Construct(NET_HTTP_SESSION_MODE_MULTIPLE_HOST , null, hostAddr, null);
 		if (IsFailed(r))  goto CATCH;
+		__pSession->SetAutoRedirectionEnabled(true);
 	}
 	AppLog("new HttpSession");
 
@@ -402,7 +406,7 @@ void HttpThread::OnTransactionCompleted(HttpSession& httpSession, HttpTransactio
 	if (pHttpResponse->GetHttpStatusCode() == HTTP_STATUS_FOUND)
 		{
 			AppLog("####### GetHttpStatusCode() == HTTP_STATUS_FOUND #######");
-			HttpHeader* pHttpHeader = pHttpResponse->GetHeader();
+			/*HttpHeader* pHttpHeader = pHttpResponse->GetHeader();
 			if(pHttpHeader != null)
 					{
 						String* rawHttpHeader = pHttpHeader->GetRawHeaderN();
@@ -424,6 +428,9 @@ void HttpThread::OnTransactionCompleted(HttpSession& httpSession, HttpTransactio
 						}
 
 					}
+					*/
+			Quit();
+			delete &httpTransaction;
 		}
 	else {
 		Quit();

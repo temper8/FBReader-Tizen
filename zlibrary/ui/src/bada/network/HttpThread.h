@@ -47,7 +47,7 @@ public:
 	// Called before the Run() method is called.
 	// Can decide whether it can be run or not by returning true or false.
 	// If this method returns false, the thread is terminated immediately.
-	bool newRequest(Tizen::Base::String &url);
+//	bool newRequest(Tizen::Base::String &url);
 	bool startRequest();
 	void finishRequest();
 	bool OnStart(void);
