@@ -16,6 +16,7 @@
 #include <FIo.h>
 #include <FText.h>
 #include <FXml.h>
+#include <FAppApp.h>
 
 using namespace Tizen::Graphics;
 using namespace Tizen::Base::Utility;
@@ -136,16 +137,14 @@ std::string ZLbadaPaintContext::checkFont(const std::string &family) {
 }
 
 void ZLbadaPaintContext::setFont(const std::string &family, int size, bool bold, bool italic) {
-	AppLog( "setFont %s",family.c_str());
-	AppLog( "setFont size %d, %d, %d ",size,bold,italic);
-	AppLog( "setFont family %s",family.c_str());
+//	AppLog( "setFont %s",family.c_str());
+//	AppLog( "setFont size %d, %d, %d ",size,bold,italic);
+//	AppLog( "setFont family %s",family.c_str());
 	bool fontChanged = false;
 	bool famylyChanged = false;
 	bool styleChanged = false;
 
-
-
-	std::string newFont = family;//checkFont(family);
+	std::string newFont = checkFont(family);
 
 	if ((myStoredFamily != newFont)||(myStoredSize != size)||(myStoredBold != bold)) famylyChanged = true;
 	int style = ( bold ? FONT_STYLE_BOLD : FONT_STYLE_PLAIN);// | ( italic ? FONT_STYLE_ITALIC : 0);
@@ -166,7 +165,7 @@ void ZLbadaPaintContext::setFont(const std::string &family, int size, bool bold,
 	myStoredBold = bold ;
 	myStoredItalic = italic;
 	myStoredFamily = newFont;
-
+/*
 	if (famylyChanged) {
 		deltaItalic = 0;
 		if (myFontRegular!=null) delete myFontRegular;
@@ -181,8 +180,6 @@ void ZLbadaPaintContext::setFont(const std::string &family, int size, bool bold,
 					        {
 								AppLog( "IsFailed");
 					        }
-
-
 					}
 
 		if (myFontItalic == null) {
@@ -190,8 +187,8 @@ void ZLbadaPaintContext::setFont(const std::string &family, int size, bool bold,
 					myFontItalic->Construct(style| FONT_STYLE_ITALIC ,size);
 					}
 	//	AppLog( "setFont end");
-	}
-/*
+	}*/
+
 	//	std::string newFont = checkFont(family);
 		AppLog("newFont %s",newFont.c_str());
 
@@ -255,8 +252,8 @@ void ZLbadaPaintContext::setFont(const std::string &family, int size, bool bold,
 					myFontItalic->Construct(style| FONT_STYLE_ITALIC ,size);
 					}
 
-	}
-*/
+	//}
+
 
 
 	if (italic) myFont = myFontItalic;
@@ -545,6 +542,8 @@ void ZLbadaPaintContext::collectFiles(std::map<std::string, std::string> &names,
     AppLog("Succeeded");
 }
 
+static std::string fontDirectory;
+
 ZLFont::ZLFont(){};
 	//names.insert(std::make_pair(shortName,fullName));
 ZLFont::~ZLFont(){};
@@ -556,19 +555,19 @@ void ZLFont::initValue(char* name, char* value){
 		 	return;
 			}
 	if (!strcmp(name,"regular")) {
-			fontStyles[0]="/Res/Fonts/" + std::string(value);
+			fontStyles[0]=fontDirectory + std::string(value);
 			return;
 			}
 	if (!strcmp(name,"italic")) {
-			fontStyles[1]="/Res/Fonts/" + std::string(value);
+			fontStyles[1]=fontDirectory + std::string(value);
 			return;
 			}
 	if (!strcmp(name,"bold")) {
-			fontStyles[2]="/Res/Fonts/" + std::string(value);
+			fontStyles[2]=fontDirectory + std::string(value);
 			return;
 			}
 	if (!strcmp(name,"boldItalic")) {
-			fontStyles[3]="/Res/Fonts/" + std::string(value);
+			fontStyles[3]=fontDirectory + std::string(value);
 			return;
 			}
 	return;
@@ -592,7 +591,13 @@ void ZLbadaPaintContext::initMyFontsList(){
 	 xmlNodePtr pRoot = null;
 	 xmlNodePtr pCurrentElement = null;
 	 // Create UI controls
-	 pDocument = xmlParseFile("/Res/Fonts/fonts.xml");
+	 Tizen::Base::String path = Tizen::App::App::GetInstance()->GetAppRootPath() + L"/res/Fonts/";
+	 Tizen::Base::ByteBuffer* bb = Tizen::Base::Utility::StringUtil::StringToUtf8N(path);
+
+	 fontDirectory = (char *)bb->GetPointer();
+	 AppLog( "fontDirectory %s",fontDirectory.c_str());
+	 std::string fontsFile = fontDirectory + "fonts.xml";
+	 pDocument = xmlParseFile(fontsFile.c_str());
 	 pRoot = xmlDocGetRootElement(pDocument);
 
 	 for (pCurrentElement = pRoot->children; pCurrentElement;
@@ -626,7 +631,8 @@ ZLbadaPaintContext::ZLbadaPaintContext():myFont(0), defaultFont("Liberation Seri
 	mySpaceWidth = -1;
 	myDescent = 0;
 	myFontIsStored = false;
-	//tizen initMyFontsList();
+	//tizen
+	initMyFontsList();
 	fontData = 0;
 	myFontRegular = null;
 	myFontItalic  = null;
