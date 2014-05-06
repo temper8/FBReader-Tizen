@@ -97,17 +97,24 @@ static BookReference::Format formatByZLMimeType(const std::string &mimeType) {
 }
 
 static BookReference::Type typeByRelation(const std::string &rel) {
+
 	if (rel == OPDSConstants::REL_ACQUISITION || rel.empty()) {
+		AppLog("####### book type DOWNLOAD_FULL");
 		return BookReference::DOWNLOAD_FULL;
 	} else 	if (rel == OPDSConstants::REL_ACQUISITION_OPEN_ACCESS || rel.empty()) {
+		AppLog("####### book type DOWNLOAD_FULL");
 		return BookReference::DOWNLOAD_FULL;
 	} else if (rel == OPDSConstants::REL_ACQUISITION_SAMPLE) {
+		AppLog("####### book type DOWNLOAD_DEMO");
 		return BookReference::DOWNLOAD_DEMO;
 	} else if (rel == OPDSConstants::REL_ACQUISITION_CONDITIONAL) {
+		AppLog("####### book type DOWNLOAD_FULL_CONDITIONAL");
 		return BookReference::DOWNLOAD_FULL_CONDITIONAL;
 	} else if (rel == OPDSConstants::REL_ACQUISITION_SAMPLE_OR_FULL) {
+		AppLog("####### book type DOWNLOAD_FULL_OR_DEMO");
 		return BookReference::DOWNLOAD_FULL_OR_DEMO;
 	} else if (rel == OPDSConstants::REL_ACQUISITION_BUY) {
+		AppLog("####### book type BUY");
 		return BookReference::BUY;
 	} else {
 		return BookReference::UNKNOWN;
@@ -176,6 +183,8 @@ shared_ptr<NetworkItem> NetworkOPDSFeedReader::readBookItem(OPDSEntry &entry) {
 		shared_ptr<ZLMimeType> type = ZLMimeType::get(link.type());
 		const std::string &rel = myLink.relation(link.rel(), link.type());
 		const BookReference::Type referenceType = typeByRelation(rel);
+		AppLog("####### book href %s",href.c_str());
+		AppLog("####### book rel %s",rel.c_str());
 		if (rel == OPDSConstants::REL_COVER) {
 			if (urlMap[NetworkItem::URL_COVER].empty() && ZLMimeType::isImage(type)) {
 				urlMap[NetworkItem::URL_COVER] = href;
@@ -365,6 +374,8 @@ shared_ptr<NetworkItem> NetworkOPDSFeedReader::readCatalogItem(OPDSEntry &entry)
 	urlMap[NetworkItem::URL_CATALOG] = ZLNetworkUtil::url(myBaseURL, url);
 	urlMap[NetworkItem::URL_HTML_PAGE] = ZLNetworkUtil::url(myBaseURL, htmlURL);
 	if (litresCatalogue) {
+		AppLog("####### new LitResBookshelfItem = %s",entry.title().c_str());
+		if (dependsOnAccount ) AppLog("####### new LitResBookshelfItem dependsOnAccount = true");
 		return new LitResBookshelfItem(
 			(OPDSLink&)myData.Link,
 			entry.title(),
@@ -373,6 +384,7 @@ shared_ptr<NetworkItem> NetworkOPDSFeedReader::readCatalogItem(OPDSEntry &entry)
 			dependsOnAccount ? NetworkCatalogItem::LoggedUsers : NetworkCatalogItem::Always
 		);
 	} else {
+		AppLog("####### new OPDSCatalogItem = %s",entry.title().c_str());
 		return new OPDSCatalogItem(
 			(OPDSLink&)myData.Link,
 			entry.title(),

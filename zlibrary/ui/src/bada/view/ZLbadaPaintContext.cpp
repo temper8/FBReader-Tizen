@@ -152,6 +152,7 @@ void ZLbadaPaintContext::setFont(const std::string &family, int size, bool bold,
 		styleChanged = true;
 	}
 	if ((!famylyChanged)) {
+		AppLog( "setFont not famylyChanged");
 		 if ((pCanvas!=0))  {
 			if (italic) myFont = myFontItalic;
 				else myFont = myFontRegular;
@@ -235,19 +236,21 @@ void ZLbadaPaintContext::setFont(const std::string &family, int size, bool bold,
 
 
 		}
-		else {
+		else {	AppLog("findFont 3");
 			myFontRegular = new Tizen::Graphics::Font;
-			myFontRegular->Construct(badaFont.c_str(),style,size);
+			//myFontRegular->Construct(badaFont.c_str(),style,size);
+			myFontRegular->Construct(style,size);
 			myFontItalic = new Tizen::Graphics::Font;
-			myFontItalic->Construct(badaFont.c_str(),style| FONT_STYLE_ITALIC ,size);
+			//myFontItalic->Construct(badaFont.c_str(),style| FONT_STYLE_ITALIC ,size);
+			myFontItalic->Construct(style| FONT_STYLE_ITALIC ,size);
 		}
 
-		if (myFontRegular == null) {
+		if (myFontRegular == null) {	AppLog("findFont 4");
 					myFontRegular = new Tizen::Graphics::Font;
 					myFontRegular->Construct(style,size);
 					}
 
-		if (myFontItalic == null) {
+		if (myFontItalic == null) { 	AppLog("findFont 5");
 					myFontItalic = new Tizen::Graphics::Font;
 					myFontItalic->Construct(style| FONT_STYLE_ITALIC ,size);
 					}
@@ -625,7 +628,7 @@ void ZLbadaPaintContext::initMyFontsList(){
 	}
 }
 
-ZLbadaPaintContext::ZLbadaPaintContext():myFont(0), defaultFont("Liberation Serif"),myStoredFamily("xxx"), defaultFontLoaded(false) {
+ZLbadaPaintContext::ZLbadaPaintContext():myFont(0), defaultFont("Liberation Serif"),myStoredFamily("xxx"),myStoredSize(1), defaultFontLoaded(false) {
 	// TODO Auto-generated constructor stub
 	AppLog("ZLbadaPaintContext::ZLbadaPaintContext()");
 	mySpaceWidth = -1;
@@ -636,6 +639,8 @@ ZLbadaPaintContext::ZLbadaPaintContext():myFont(0), defaultFont("Liberation Seri
 	fontData = 0;
 	myFontRegular = null;
 	myFontItalic  = null;
+
+
 }
 
 ZLbadaPaintContext::~ZLbadaPaintContext() {

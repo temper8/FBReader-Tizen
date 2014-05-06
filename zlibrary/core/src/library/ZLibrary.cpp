@@ -149,7 +149,7 @@ void ZLibrary::initApplication(const std::string &name) {
 	bb = Tizen::Base::Utility::StringUtil::StringToUtf8N(tizenStr);
 	AppLog( "WrDir %s",(char *)bb->GetPointer());
 	ourApplicationWritableDirectory = std::string((char *)bb->GetPointer());
-	//ourApplicationWritableDirectory =	"/mnt/mmc/FBReaderWrite" + FileNameDelimiter + name;
+//	ourApplicationWritableDirectory =	"/mnt/ums/Downloads/FBReaderWrite" + FileNameDelimiter + name;
 
 	ourDefaultFilesPathPrefix = ourApplicationDirectory + FileNameDelimiter + "default" + FileNameDelimiter;
 	AppLog("ZLibrary ourApplicationWritableDirectory =%s",ourApplicationWritableDirectory.c_str());

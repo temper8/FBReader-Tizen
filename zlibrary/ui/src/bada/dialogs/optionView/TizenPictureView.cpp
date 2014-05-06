@@ -87,16 +87,16 @@ void TizenPictureView::createActionButtons(TableViewItem* pItem){
 	std::string s1 = "Button1";
 
 	int actionsCount = myActions.size();
-	AppLog("actionsCount %d", actionsCount);
+	AppLog("action Count %d", actionsCount);
 
-	actionsCount = myActions.size();
-	AppLog("after init actionsCount %d", actionsCount);
 	actionsCount =0;
 	for (int i =1; i<myActions.size();i++){
 		shared_ptr<ZLRunnableWithKey> a = myActions[i];
-		if (a->makesSense()&&(actionsCount<4)) { AppLog("makesSense true %d",actionsCount);
+		std::string text = a->text(ZLResource::resource("networkView")["bookNode"]);
+		AppLog("action text %s", text.c_str());
+		if (a->makesSense()&&(actionsCount<4)) { AppLog("action makesSense true %d",actionsCount);
 		//if (i<4) { AppLog("makesSense true %d",actionsCount);
-			std::string text = a->text(ZLResource::resource("networkView")["bookNode"]);
+
 			Button* pButton = new Button();
 			pButton->Construct(Rectangle(300, 20+100*actionsCount, 350, 80),String(text.c_str()));
 			pButton->SetActionId(300 + i);
@@ -105,7 +105,7 @@ void TizenPictureView::createActionButtons(TableViewItem* pItem){
 			pItem->SetIndividualSelectionEnabled(pButton, true);
 			actionsCount++;
 		}
-		else AppLog("makesSense false");
+		else AppLog("action makesSense false %d",actionsCount);
 	}
 }
 

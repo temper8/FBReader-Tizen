@@ -178,6 +178,7 @@ shared_ptr<ZLExecutionData> OPDSLink::advancedSearchData(
 
 shared_ptr<ZLExecutionData> OPDSLink::resume(NetworkOperationData &data) const {
 	const std::string url = data.ResumeURI;
+	AppLog("ResumeURI %s", url.c_str());
 	data.clear();
 	return createNetworkData(url, data);
 }
